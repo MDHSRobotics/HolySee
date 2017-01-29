@@ -53,8 +53,11 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init (JNIEnv *env, jo
 		std::cout << "Unable to get onInitialized() method ref" << std::endl;
 	}
 
+	//do initialization here ----------------
 
-	myNewEnv->CallVoidMethod(g_obj, g_mid);
+	//---------------------------------------
+
+	myNewEnv->CallVoidMethod(g_obj, g_mid);   //call back to signify initialization is completed
 
 	if(myNewEnv->ExceptionCheck()){
 		myNewEnv->ExceptionDescribe();

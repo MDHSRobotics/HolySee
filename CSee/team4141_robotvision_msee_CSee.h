@@ -39,7 +39,6 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_stop
 JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_switchTo
   (JNIEnv *, jobject, jstring);
 
-
 #ifdef __cplusplus
 }
 #endif

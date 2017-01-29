@@ -11,7 +11,7 @@ public class CSee implements Runnable,ICSee {
 		System.loadLibrary("PocoXML");
 		System.loadLibrary("PocoJSON");
 		System.loadLibrary("PocoUtil");
-//		System.loadLibrary("opencv_world310");
+//		System.loadLibrary("opencv_world310"); //for windows
 		System.loadLibrary("CSee");
 	}
 	

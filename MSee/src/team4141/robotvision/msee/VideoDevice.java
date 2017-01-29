@@ -8,12 +8,10 @@ public class VideoDevice extends Source {
 	private Integer framesPerSecond;
 	private String colorspace;
 	private String pixelFormat;
-	private String id;
 	
 	public VideoDevice(String id, String cardType, String busInfo) {
-		super(cardType);
+		super(id,cardType);
 		this.busInfo = busInfo;
-		this.id=id;
 	}
 	public String getBusInfo() {
 		return busInfo;
@@ -49,10 +47,6 @@ public class VideoDevice extends Source {
 		return pixelFormat;
 	}
 
-	@Override
-	public String getId() {
-		return id;
-	}	
 	
 	@Override
 	public String toString() {
@@ -68,6 +62,12 @@ public class VideoDevice extends Source {
 			if(sb.length()>1) sb.append(",");
 			sb.append("\"name\":\"");
 			sb.append(getName());
+			sb.append("\"");
+		}
+		if(getDescription()!=null){
+			if(sb.length()>1) sb.append(",");
+			sb.append("\"description\":\"");
+			sb.append(getDescription());
 			sb.append("\"");
 		}
 		if(getBusInfo()!=null){

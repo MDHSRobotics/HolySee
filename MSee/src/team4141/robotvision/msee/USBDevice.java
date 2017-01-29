@@ -1,26 +1,16 @@
 package team4141.robotvision.msee;
 
 public class USBDevice extends Source{
-	String description;
 
 	public String getDevice() {
-		return getName();
-	}
-	
-	public String getDescription() {
-		return description;
+		return getId();
 	}
 
 	public USBDevice(String device, String description) {
-		super(device);
-		this.description = description;
+		super(device,description);
 	}
 
-	@Override
-	public String getId() {
-		return getName();
-	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

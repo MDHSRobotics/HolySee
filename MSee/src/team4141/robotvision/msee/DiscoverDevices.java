@@ -53,9 +53,11 @@ public class DiscoverDevices implements Runnable{
 				while(configKeys.hasNext()){
 					String confKey = configKeys.next();
 					if(confKey.startsWith(this.handler.getName()) && confKey.contains(keyIdentifyer) && ConfigManager.get(confKey).equals(key)){
-//						System.out.println(confKey+":"+key);
-						sourcePrefix = confKey.substring(0,confKey.lastIndexOf(".")+1);
-//						System.out.println(sourcePrefix);
+						sourcePrefix = confKey.substring(0,confKey.lastIndexOf("."));
+						String deviceName = sourcePrefix.substring(sourcePrefix.lastIndexOf(".")+".".length());
+						System.out.println("device name = "+deviceName);
+						source.setName(deviceName);
+						break;
 					}
 				}
 				if(sourcePrefix!=null){
@@ -64,7 +66,7 @@ public class DiscoverDevices implements Runnable{
 						String confKey = configKeys.next();
 						if(confKey.startsWith(sourcePrefix) && !confKey.contains(keyIdentifyer)){
 //							System.out.println(confKey);
-							String parameterName = confKey.substring(sourcePrefix.length());
+							String parameterName = confKey.substring(sourcePrefix.length()+1);
 							String parameterValue = ConfigManager.get(confKey);
 //							System.out.println(parameterName+" = "+parameterValue);
 							if("AR".equals(parameterName)){
@@ -111,7 +113,7 @@ public class DiscoverDevices implements Runnable{
 			parseCameraInfo(dev,result);
 			result = discover(DISCOVER_CAMERA_CONTROLS_COMMAND,dev.getId());
 			parseCameraControlsInfo(dev,result);
-			sources.put(dev.getName(), dev);
+			sources.put(dev.getDescription(), dev);
 		}
 	}
 
@@ -230,7 +232,10 @@ public class DiscoverDevices implements Runnable{
 	private void discoverUSB() {
 		System.out.println("discovering USB");
 		String result = discover(DISCOVER_USB_COMMAND);
-		parseUSBInfo(result);
+		List<Source> lidars = parseUSBInfo(result);
+		for(Source dev : lidars){
+			sources.put(dev.getDescription(), dev);
+		}		
 	}
 	
 	private void parseCameraControlsInfo(Source dev,String cameraDetails) {
@@ -300,7 +305,7 @@ public class DiscoverDevices implements Runnable{
 				}
 				catch(IllegalArgumentException ex)
 				{
-					System.err.printf("control %s of type %s is not supported.  Ignored\n",name,type);
+					//System.err.printf("control %s of type %s is not supported.  Ignored\n",name,type);
 				}
 				
 			}
@@ -308,95 +313,49 @@ public class DiscoverDevices implements Runnable{
 //		System.out.println(cameraDetails);
 	}
 
-	private void parseUSBInfo(String usbText) {
+	private List<Source> parseUSBInfo(String usbText) {
 		// data is in the format of:
-//		Bus info             Device     Class      Description
-//		======================================================
-//		/0/100/1f.2/0/1      /dev/sda1  volume     40GiB Linux raid autodetect partition
-//		/0/100/1f.2/0/2      /dev/sda2  volume     509MiB Linux raid autodetect partition
-//		/0/100/1f.2/0/3      /dev/sda3  volume     500GiB Linux raid autodetect partition
-//		/0/100/1f.2/0/4      /dev/sda4  volume     200GiB Linux raid autodetect partition
+//		/dev/input/event7 - Logitech_USB_Receiver
+//		/dev/input/mouse1 - Logitech_USB_Receiver
+//		/dev/input/event8 - Logitech_USB_Receiver
+//		/dev/input/event9 - Logitech_USB_Receiver
+//		/dev/hidraw0 - Logitech_USB_Receiver
+//		/dev/hidraw1 - Logitech_USB_Receiver
+//		/dev/hidraw2 - Logitech_USB_Receiver
+//		/dev/hidraw3 - Logitech_USB_Receiver
+//		/dev/usb/hiddev0 - Logitech_USB_Receiver
+//		/dev/ttyUSB0 - Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001
+//		/dev/input/event6 - Chicony_Electronics_Co._Ltd._USB2.0_HD_UVC_WebCam_0x0001
+//		/dev/video0 - Chicony_Electronics_Co._Ltd._USB2.0_HD_UVC_WebCam_0x0001
 
+		List<Source> lidars = new ArrayList<Source>();
 		StringTokenizer lineTokenizer= new StringTokenizer(usbText,"\n"); //get each line 1 at a time
-//		String busKey = "Bus ";
-//		String deviceKey = "Device ";
-//		String IdKey = "ID ";
-//		String fieldSeparator=" ";
-//		String idSeparator=":";
-//		String addressDelimiter=":";
-		String devToken="/dev/";
-		String keyHWPathField="Bus info";
-		String keyDeviceField="Device";
-		String keyClassField="Class";
-		String keyDescriptionField="Description";
-		String hwPath=null;
 		String device=null;
-		String deviceClass=null;
 		String description=null;
+		String devToken = "/dev";
 			
 		List<String> fields = new ArrayList<String>();  // to track the order in which they came in
 		List<Integer> fieldPositions = new ArrayList<Integer>();  // to track the start position of each field in the order in which they came in
-		
-		String line = lineTokenizer.nextToken();  //get the first line
-		
-		//if line starts with WARNING: disgregard it
-		if(line.startsWith("WARNING:")) line = lineTokenizer.nextToken();
-		if(line.contains(keyHWPathField)){
-			fieldPositions.add(line.indexOf(keyHWPathField));
-			fields.add(keyHWPathField);
-		}
-		if(line.contains(keyDeviceField)){
-			fieldPositions.add(line.indexOf(keyDeviceField));
-			fields.add(keyDeviceField);
-		}
-		if(line.contains(keyClassField)){
-			fieldPositions.add(line.indexOf(keyClassField));
-			fields.add(keyClassField);
-		}
-		if(line.contains(keyDescriptionField)){
-			fieldPositions.add(line.indexOf(keyDescriptionField));
-			fields.add(keyDescriptionField);
-		}
-		line = lineTokenizer.nextToken(); //skip the separator line
-		
+		String separator = " - ";
+		String line;
 		while(lineTokenizer.hasMoreTokens()){
 			line = lineTokenizer.nextToken();
-			for(int i=0;i<fieldPositions.size();i++){
-				int start = fieldPositions.get(i);
-				String data;
-				if(i==fieldPositions.size()-1){
-					//on last field
-					data=line.substring(start).trim();
-				}
-				else
-				{
-					int end = fieldPositions.get(i+1);
-					data=line.substring(start,end).trim();
-				}
-				if(keyHWPathField.equals(fields.get(i))){
-					hwPath = data;
-				}
-				if(keyDeviceField.equals(fields.get(i))){
-					device = data;
-				}
-				if(keyClassField.equals(fields.get(i))){
-					deviceClass = data;
-				}
-				if(keyDescriptionField.equals(fields.get(i))){
-					description = data;
-				}
-				
+//			System.out.println(line);
+			StringTokenizer fieldTokenizer = new StringTokenizer(line,separator);
+			// each line has 2 parts, the 
+			if (fieldTokenizer.countTokens()==2){
+				device = fieldTokenizer.nextToken();
+				description = fieldTokenizer.nextToken();
 			}
-//			if(device!=null  && device.length()>devToken.length() && device.contains(devToken) && description!=null){
-//				//testing
-//				System.out.printf("%s|%s|%s|%s\n", hwPath,device,deviceClass,description 	);
-//			}								
+
 			if(device!=null  && device.length()>devToken.length() && device.contains(devToken) && description!=null && sources.containsKey(description)){
 				//bare minimum we need device and description
-				sources.put(description,new USBDevice(device, description));
+				USBDevice dev  = new USBDevice(device, description);
+				lidars.add(dev);
+//				System.out.println(dev.toString());
 			}								
 		}
-
+		return lidars;
 	}
 
 	private String discover(String... command) {

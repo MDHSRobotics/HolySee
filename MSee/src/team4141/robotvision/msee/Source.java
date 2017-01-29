@@ -3,13 +3,15 @@ package team4141.robotvision.msee;
 import java.util.Hashtable;
 
 public abstract class Source {
-	public abstract String getId();
 	
 	protected Hashtable<String,Setting> settings;
 	protected String name;
-	
-	public Source(String name){
-		this.name = name;
+	protected String description;
+	protected String id;
+
+	public Source(String id, String description){
+		this.id = id;
+		this.description = description;
 		this.settings = new Hashtable<String,Setting>();
 	}
 	@Override
@@ -25,5 +27,14 @@ public abstract class Source {
 	}
 	public String getName(){
 		return name;
+	}
+	public String getId() {
+		return id;
+	}	
+	public String getDescription(){
+		return description;
+	}
+	public void setName(String name){
+		this.name = name;
 	}
 }

@@ -128,7 +128,7 @@ void LidarSource::imageScan()
 	//create an image (png) representing the scan
 	//use opencv
 	if (scan.size() > 0){
-		cv::Mat img(2 * (int)Reading::range, 2 * (int)Reading::range, CV_8UC1,255);
+		cv::Mat img(2 * (int)Reading::range/4, 2 * (int)Reading::range/4, CV_8UC1,255);
 		for (Reading reading : scan){
 			if (reading.getQuality() != 0){
 				printf("(%d,%d)=%d\n", reading.getY(), reading.getX(), reading.getColor());
