@@ -6,6 +6,7 @@ This repository contains Team 4141's Robot Vision solution.
 
 For background information, see [Robot Vision Concepts](https://github.com/MDHSRobotics/TeamWiki/wiki/Robot%20Vision%20Concepts).
 
+
 This repository contains the following projects:
 
 1. __MSee__ a Java application which is the orchestrator of the vision system.  
@@ -21,3 +22,4 @@ This repository contains the following projects:
    * ISee enables the operator to select which channel is streamed from the robot to the console
    * ISee provides the operator with a video streamer viewer to view the selected feed
    
+For more information, see For background information, see [Robot Vision Concepts](https://github.com/MDHSRobotics/TeamWiki/wiki/Robot%20Vision%20Concepts).
