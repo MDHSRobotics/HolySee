@@ -8,6 +8,9 @@ public abstract class Source {
 	protected String name;
 	protected String description;
 	protected String id;
+	protected Boolean showRaw;
+	protected String arName;
+	protected String cvName;
 
 	public Source(String id, String description){
 		this.id = id;
@@ -28,6 +31,12 @@ public abstract class Source {
 	public String getName(){
 		return name;
 	}
+	public String getARName(){
+		return arName;
+	}
+	public String getCVName(){
+		return cvName;
+	}
 	public String getId() {
 		return id;
 	}	
@@ -37,4 +46,16 @@ public abstract class Source {
 	public void setName(String name){
 		this.name = name;
 	}
+	public void setARName(String arName){
+		this.arName = arName;
+	}
+	public void setCVName(String cvName){
+		this.cvName = cvName;
+	}
+	public Boolean showRaw() {
+		return showRaw;
+	}		
+	public void setShowRaw(boolean showRaw) {
+		this.showRaw = showRaw;
+	}		
 }

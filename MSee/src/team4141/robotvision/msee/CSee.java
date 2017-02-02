@@ -16,11 +16,12 @@ public class CSee implements Runnable,ICSee {
 	}
 	
 	private native void init();
+	private native  void registerVideoSource(String name,boolean showRaw,String arName,String cvName);
+	private native void registerLidarSource(String name,String arName,String cvName);
 	public native void start();
 	public native void stop();
-	private native void switchTo(String feedName);
-	
-	
+	public native void switchTo(String channelName);
+	public native String[] getChannels();
 
 	private Gson gson = new Gson();
 	private boolean isInitialized = false;
@@ -40,7 +41,16 @@ public class CSee implements Runnable,ICSee {
 	@Override
 	public void run() {
 //		discoverSources();
+		for(String key  : handler.getSources().keySet()){
+			Source source = handler.getSources().get(key);
+			if(source instanceof VideoDevice) registerVideoSource(source.getName(),source.showRaw(),source.getARName(),source.getCVName());
+			if(source instanceof USBDevice) registerLidarSource(source.getName(),source.getARName(),source.getCVName());
+		}
 		init();
+		
+		for(String channel : getChannels()){
+			System.out.printf("channel %s\n",channel);
+		}
 	}
 
 //	private void init() {

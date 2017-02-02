@@ -70,6 +70,23 @@ public class VideoDevice extends Source {
 			sb.append(getDescription());
 			sb.append("\"");
 		}
+		if(showRaw()!=null){
+			if(sb.length()>1) sb.append(",");
+			sb.append("\"showRaw\":");
+			sb.append(showRaw.booleanValue());
+		}
+		if(getARName()!=null){
+			if(sb.length()>1) sb.append(",");
+			sb.append("\"arName\":\"");
+			sb.append(getARName());
+			sb.append("\"");
+		}
+		if(getCVName()!=null){
+			if(sb.length()>1) sb.append(",");
+			sb.append("\"cvName\":\"");
+			sb.append(getCVName());
+			sb.append("\"");
+		}
 		if(getBusInfo()!=null){
 			if(sb.length()>1) sb.append(",");
 			sb.append("\"busInfo\":\"");

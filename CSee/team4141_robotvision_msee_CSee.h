@@ -17,6 +17,22 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init
 
 /*
  * Class:     team4141_robotvision_msee_CSee
+ * Method:    registerVideoSource
+ * Signature: (Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerVideoSource
+  (JNIEnv *, jobject, jstring, jboolean, jstring, jstring);
+
+/*
+ * Class:     team4141_robotvision_msee_CSee
+ * Method:    registerLidarSource
+ * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerLidarSource
+  (JNIEnv *, jobject, jstring, jstring, jstring);
+
+/*
+ * Class:     team4141_robotvision_msee_CSee
  * Method:    start
  * Signature: ()V
  */
@@ -38,6 +54,14 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_stop
  */
 JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_switchTo
   (JNIEnv *, jobject, jstring);
+
+/*
+ * Class:     team4141_robotvision_msee_CSee
+ * Method:    getChannels
+ * Signature: ()[Ljava/lang/String;
+ */
+JNIEXPORT jobjectArray JNICALL Java_team4141_robotvision_msee_CSee_getChannels
+  (JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

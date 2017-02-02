@@ -162,4 +162,9 @@ public class MSee implements CSeeHandler,SocketClientHandler, DiscoveryHandler, 
 		
 	}
 
+	@Override
+	public HashMap<String, Source> getSources() {
+		return sources;
+	}
+
 }

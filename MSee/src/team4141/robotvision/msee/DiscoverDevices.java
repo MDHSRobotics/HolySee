@@ -70,16 +70,13 @@ public class DiscoverDevices implements Runnable{
 							String parameterValue = ConfigManager.get(confKey);
 //							System.out.println(parameterName+" = "+parameterValue);
 							if("AR".equals(parameterName)){
-								source.add(new Setting(parameterName,parameterValue));
+								source.setARName(parameterValue);
 							}
 							if("CV".equals(parameterName)){
-								source.add(new Setting(parameterName,parameterValue));
+								source.setCVName(parameterValue);
 							}
-							if("save".equals(parameterName)){
-								source.add(new Setting(parameterName,Boolean.valueOf(parameterValue)));
-							}
-							if("filePath".equals(parameterName)){
-								source.add(new Setting(parameterName,parameterValue));
+							if("showRaw".equals(parameterName)){
+								source.setShowRaw(Boolean.valueOf(parameterValue));
 							}
 						}
 					}
@@ -112,7 +109,7 @@ public class DiscoverDevices implements Runnable{
 			result = discover(DISCOVER_CAMERA_INFO_COMMAND,dev.getId());
 			parseCameraInfo(dev,result);
 			result = discover(DISCOVER_CAMERA_CONTROLS_COMMAND,dev.getId());
-			parseCameraControlsInfo(dev,result);
+//			parseCameraControlsInfo(dev,result);
 			sources.put(dev.getDescription(), dev);
 		}
 	}
