@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Streamer.h"
 #include <stdio.h>
 
@@ -31,7 +30,7 @@ void Streamer::initialize(){
 }
 
 
-bool Streamer::registerSource(std::shared_ptr<Source> source){
+bool Streamer::registerSource(std::shared_ptr<Source>& source){
 	sources.push_back(source);
 	printf("%s registered\n",source->getName().c_str());
 	return true; //invalid registration
@@ -39,6 +38,10 @@ bool Streamer::registerSource(std::shared_ptr<Source> source){
 
 int Streamer::countChannels(){
 	return channelNames.size();
+}
+
+std::vector<std::string> Streamer::getChannelNames(){
+	return channelNames;
 }
 
 void Streamer::free(){
@@ -70,7 +73,7 @@ std::string Streamer::getPipeline(){
 		Source* source = sources.at(s).get();
 		if (source->countConnections()>0){
 			//source will need to be added to pipeline
-			std::string& base = source->getPipelineSegment();
+			std::string base = source->getPipelineSegment();
 			if (source->countConnections() > 1){
 				//tee needed
 				pipeline.append(base);

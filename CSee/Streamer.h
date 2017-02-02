@@ -14,8 +14,9 @@ public:
 	Streamer();
 	void initialize();
 	std::string getPipeline();
-	bool registerSource(std::shared_ptr<Source>);
+	bool registerSource(std::shared_ptr<Source>&);
 	int countChannels();
+	std::vector<std::string> getChannelNames();
 	void free();
 };
 

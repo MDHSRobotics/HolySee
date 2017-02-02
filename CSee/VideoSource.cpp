@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "VideoSource.h"
 
 
@@ -16,6 +15,6 @@ std::string VideoSource::getPipelineSegment(){
 	std::string segment;
 	segment.append("autovideosrc ");
 	//segment.append(device);
-	segment.append(" ! videoconvert ! video/x-raw,width=320,framerate=15/1,format=GRAY8 ! videoconvert");
+	segment.append(" ! videoconvert ! video/x-raw,width=640,framerate=15/1,format=GRAY8 ! videoconvert");
 	return segment;
 }

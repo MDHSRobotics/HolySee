@@ -16,7 +16,7 @@ public class CSee implements Runnable,ICSee {
 	}
 	
 	private native void init();
-	private native  void registerVideoSource(String name,boolean showRaw,String arName,String cvName);
+	private native  void registerVideoSource(String name,String device,boolean showRaw,String arName,String cvName);
 	private native void registerLidarSource(String name,String arName,String cvName);
 	public native void start();
 	public native void stop();
@@ -43,13 +43,15 @@ public class CSee implements Runnable,ICSee {
 //		discoverSources();
 		for(String key  : handler.getSources().keySet()){
 			Source source = handler.getSources().get(key);
-			if(source instanceof VideoDevice) registerVideoSource(source.getName(),source.showRaw(),source.getARName(),source.getCVName());
+			if(source instanceof VideoDevice) registerVideoSource(source.getName(),source.getId(),source.showRaw(),source.getARName(),source.getCVName());
 			if(source instanceof USBDevice) registerLidarSource(source.getName(),source.getARName(),source.getCVName());
 		}
 		init();
-		
-		for(String channel : getChannels()){
-			System.out.printf("channel %s\n",channel);
+		String[] channels = getChannels();
+		if(channels!=null && channels.length>0){
+			for(String channel : channels){
+				System.out.printf("channel %s\n",channel);
+			}
 		}
 	}
 

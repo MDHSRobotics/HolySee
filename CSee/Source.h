@@ -15,13 +15,13 @@ public:
 	Source(std::string& name, bool showRaw, std::string& AR_Name, std::string& CV_Name);
 	~Source();
 	std::string getName();
-	std::string Source::getARName();
-	std::string Source::getCVName();
-	bool Source::showRaw();
-	bool Source::hasAR();
-	bool Source::hasCV();
-	int Source::countConnections();
-	int Source::countChannels();
+	std::string getARName();
+	std::string getCVName();
+	bool showRaw();
+	bool hasAR();
+	bool hasCV();
+	int countConnections();
+	int countChannels();
 	std::vector< std::string> getChannelNames();
 	std::vector<std::string> getConnectionNames();
 	virtual std::string getPipelineSegment() = 0; //abstract method must be implemented by subclasses

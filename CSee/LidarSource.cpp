@@ -1,9 +1,8 @@
-#include "stdafx.h"
-
 #include "LidarSource.h"
 #include <iostream>
 #include <fstream>
 #include <cstdint>
+#include <stdexcept>
 
 #include "opencv2/opencv.hpp"
 #include "opencv2/core/types_c.h"
@@ -55,9 +54,7 @@ void LidarSource::initialize(){
 	//   printf("Connected!\n");
 	//drv->startMotor();
 	//drv->startScanExpress(false);
-	System::Console::WriteLine(L"Only simulation true is supported");
-	exit(1);
-
+	throw std::runtime_error("!isSimulation not supported");
 }
 
 void LidarSource::shutdown(){

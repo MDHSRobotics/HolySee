@@ -18,10 +18,10 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init
 /*
  * Class:     team4141_robotvision_msee_CSee
  * Method:    registerVideoSource
- * Signature: (Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)V
+ * Signature: (Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerVideoSource
-  (JNIEnv *, jobject, jstring, jboolean, jstring, jstring);
+  (JNIEnv *, jobject, jstring, jstring, jboolean, jstring, jstring);
 
 /*
  * Class:     team4141_robotvision_msee_CSee
