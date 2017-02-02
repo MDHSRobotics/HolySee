@@ -1,6 +1,10 @@
 # HolySee
 
-This repository contains Team 4141's Robot Vision solution.  For background information, see [Robot Vision Concepts](https://github.com/MDHSRobotics/TeamWiki/wiki/Robot%20Vision%20Concepts).
+This repository contains Team 4141's Robot Vision solution. 
+
+![HolySee Block Architecture](https://github.com/MDHSRobotics/TeamWiki/blob/master/images/CV%20Block%20Arch.png)
+
+For background information, see [Robot Vision Concepts](https://github.com/MDHSRobotics/TeamWiki/wiki/Robot%20Vision%20Concepts).
 
 This repository contains the following projects:
 
