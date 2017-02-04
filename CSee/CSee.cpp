@@ -17,8 +17,7 @@
 //Globals
 // cached refs for later callbacks
 
-jobject g_obj;
-JavaVM* jvm;
+
 Streamer streamer;
 
 JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerVideoSource
@@ -69,39 +68,10 @@ JNIEXPORT jobjectArray JNICALL Java_team4141_robotvision_msee_CSee_getChannels
 	return j_channels;
 }
 
-JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init (JNIEnv *env, jobject jObj){
-	//convert local to global reference
-	g_obj = env->NewGlobalRef(jObj);
-	env->GetJavaVM(&jvm);
-
-//	std::cout << "JNI globals cached" << std::endl;
-
-
-	JNIEnv* myNewEnv;
-	jint getEnvStat = jvm->GetEnv((void**)&myNewEnv, JNI_VERSION_1_8);
-
-	if(getEnvStat == JNI_EDETACHED){
-		std::cout << "GetEnv: not attached" << std::endl;
-		if(jvm->AttachCurrentThread((void **)&myNewEnv,NULL)!=0){
-			std::cout << "Failed to attach" << std::endl;
-		}
-	}
-	else if(getEnvStat == JNI_OK){
-//		std::cout << "GetEnv: JNI OK" << std::endl;
-	}
-	else if(getEnvStat == JNI_EVERSION){
-		std::cout << "GetEnv: JNI version not supported" << std::endl;
-	}
-
-//	save refs for callback
-	jclass g_class = myNewEnv->GetObjectClass(jObj);
-	if(g_class == NULL){
-		std::cout << "Failed to find class" << std::endl;
-	}
-
-	jmethodID g_mid = myNewEnv->GetMethodID(g_class,"onInitialized", "()V");
-	if(g_mid == NULL){
-		std::cout << "Unable to get onInitialized() method ref" << std::endl;
+JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init (JNIEnv *j_env, jobject j_obj){
+	jmethodID j_mid = j_env->GetMethodID(j_env->GetObjectClass(j_obj),"onInitialized", "()V");
+	if(j_mid == NULL){
+		throw std::runtime_error("unable to locate onInitialized callback method");;
 	}
 
 	//do initialization here ----------------
@@ -110,10 +80,10 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init (JNIEnv *env, jo
 
 	//---------------------------------------
 
-	myNewEnv->CallVoidMethod(g_obj, g_mid);   //call back to signify initialization is completed
+	j_env->CallVoidMethod(j_obj, j_mid);   //call back to signify initialization is completed
 
-	if(myNewEnv->ExceptionCheck()){
-		myNewEnv->ExceptionDescribe();
+	if(j_env->ExceptionCheck()){
+		j_env->ExceptionDescribe();
 	}
 }
 
