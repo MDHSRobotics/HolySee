@@ -1,9 +1,6 @@
 // MSee2.cpp : main project file.
 
-#include "stdafx.h"
 #include "MSee.h"
-
-using namespace System;
 
 //MSee is the orchestrator
 //It is responsible for 
@@ -16,9 +13,12 @@ using namespace System;
 
 
 
-int main(array<System::String ^> ^args)
+int main(int argc,char *argv[])
 {
-	MSee* msee = new MSee(std::string("Tegra"), std::string("..\\msee.conf"));
+	std::string instanceName("Tegra");
+	std::string configFile("src/msee.conf");
+
+	MSee* msee = new MSee(instanceName,configFile);
 
 	delete msee;
     return 0;

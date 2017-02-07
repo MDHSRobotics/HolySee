@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Config.h"
 
 #include <stdlib.h>  
@@ -56,11 +55,13 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 			}
 		}
 		std::string usbText;
-		discover(std::string("w:\\lshw.bat"),usbText);
+		std::string usbCommand("/usr/local/msee/lshw.sh");
+		std::string cameraCommand("/usr/local/msee/v4l2.sh");
+		discover(usbCommand,usbText);
 		discoverUSB(usbText);
 
 		std::string camerasText;
-		discover(std::string("w:\\v4l2.bat"), camerasText);
+		discover(cameraCommand, camerasText);
 		discoverCameras(camerasText);
 
 	}
@@ -89,7 +90,7 @@ void Config::parseNodes(){
 void Config::discover(std::string& command, std::string& result){
 		std::array<char, 128> buffer;
 		result.clear();
-		std::shared_ptr<FILE> pipe(_popen(command.c_str(), "r"), _pclose);
+		std::shared_ptr<FILE> pipe(popen(command.c_str(), "r"), pclose);
 		if (!pipe) throw std::runtime_error("popen() failed!");
 		while (!feof(pipe.get())) {
 			if (fgets(buffer.data(), 128, pipe.get()) != NULL)
