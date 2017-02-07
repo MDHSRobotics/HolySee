@@ -18,7 +18,17 @@
 // cached refs for later callbacks
 
 
-Streamer streamer;
+Streamer* streamer = NULL;
+
+Streamer * getStreamer(){
+	if(streamer==NULL){
+		char * args = (char*)std::string("").c_str();
+
+		streamer = new Streamer(0,&args);
+	}
+	return streamer;
+  //TODO delete streamer when shutting down
+}
 
 JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerVideoSource
   (JNIEnv *j_env, jobject j_obj, jstring j_name, jstring j_device, jboolean j_showRaw, jstring j_arName, jstring j_cvName){
@@ -36,7 +46,7 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerVideoSource
 	j_env->ReleaseStringUTFChars(j_cvName,_cvName);
 	bool showRaw = (bool)j_showRaw;
 	std::shared_ptr<Source> v(new VideoSource(name,device,showRaw,arName,cvName));
-	streamer.registerSource(v);
+	getStreamer()->registerSource(v);
 	printf("csee registering video %s[%s,%d,%s,%s]\n",name.c_str(),device.c_str(),showRaw,arName.c_str(),cvName.c_str());
 }
 
@@ -52,18 +62,18 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_registerLidarSource
 	j_env->ReleaseStringUTFChars(j_arName,_arName);
 	j_env->ReleaseStringUTFChars(j_cvName,_cvName);
 	std::shared_ptr<Source> l(new LidarSource(name,arName,cvName));
-	streamer.registerSource(l);
+	getStreamer()->registerSource(l);
 	printf("csee registering video %s[%s,%s]\n",name.c_str(),arName.c_str(),cvName.c_str());
 }
 
 JNIEXPORT jobjectArray JNICALL Java_team4141_robotvision_msee_CSee_getChannels
   (JNIEnv *j_env, jobject j_obj){
 	jobjectArray j_channels;
-	if(streamer.countChannels()<1) return (jobjectArray)NULL;
+	if(getStreamer()->countChannels()<1) return (jobjectArray)NULL;
 
-	j_channels = (jobjectArray) j_env->NewObjectArray(streamer.countChannels(),j_env->FindClass("java/lang/String"),j_env->NewStringUTF(""));
-	for(int s=0;s<streamer.countChannels();s++){
-		j_env->SetObjectArrayElement(j_channels,s,j_env->NewStringUTF(streamer.getChannelNames().at(s).c_str()));
+	j_channels = (jobjectArray) j_env->NewObjectArray(getStreamer()->countChannels(),j_env->FindClass("java/lang/String"),j_env->NewStringUTF(""));
+	for(int s=0;s<getStreamer()->countChannels();s++){
+		j_env->SetObjectArrayElement(j_channels,s,j_env->NewStringUTF(getStreamer()->getChannelNames().at(s).c_str()));
 	}
 	return j_channels;
 }
@@ -76,7 +86,7 @@ JNIEXPORT void JNICALL Java_team4141_robotvision_msee_CSee_init (JNIEnv *j_env, 
 
 	//do initialization here ----------------
 
-	streamer.initialize();
+	getStreamer()->initialize();
 
 	//---------------------------------------
 
