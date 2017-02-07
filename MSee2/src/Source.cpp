@@ -1,7 +1,7 @@
 #include "Source.h"
 
 
-Source::Source(std::string& name, std::string& device, bool showRaw, std::string& arName, std::string& cvName): name(name), device(device), showRaw(showRaw), arName(arName), cvName(cvName)
+Source::Source(std::string name, std::string device, bool showRaw, std::string arName, std::string cvName): name(name), device(device), _showRaw(showRaw), arName(arName), cvName(cvName)
 {
 
 	if (this->showRaw()){
@@ -26,6 +26,9 @@ std::string Source::getName(){
 	return name;
 }
 
+std::string Source::getDevice(){
+	return device;
+}
 std::string Source::getARName(){
 	return arName;
 }

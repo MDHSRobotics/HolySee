@@ -6,10 +6,13 @@
 #include <memory>
 #include <string>
 
+#include "VideoSource.h"
+#include "LidarSource.h"
+
 void trim(std::string& s) {
-	while (s.compare(0, 1, " ") == 0)
+	while (s.compare(0, 1, " ") == 0 || s.compare(0, 1, "\t") == 0 )
 		s.erase(s.begin()); // remove leading whitespaces
-	while (s.size()>0 && s.compare(s.size() - 1, 1, " ") == 0)
+	while (s.size()>0 && (s.compare(s.size() - 1, 1, " ")==0 || s.compare(0, 1, "\t")== 0))
 		s.erase(s.end() - 1); // remove trailing whitespaces
 }
 
@@ -34,6 +37,7 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 {
 	std::string identifiyerToken("identifier");
 	printf("config: %s\nname: %s\n", configFileName.c_str(), configRoot.c_str());
+	devices.clear();
 
 	try{
 
@@ -41,10 +45,10 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 		for (std::string node : getNodes()){
 			printf("node: %s\n", node.c_str());
 			std::vector<std::string> keys;
-			pConf->keys(node, keys);
+			pConf->keys((configRoot+std::string(".")+node), keys);
 			//build identifier map
 			for (std::string paramKey : keys){
-				std::string theKey(node+std::string(".")+paramKey);
+				std::string theKey((configRoot+std::string(".")+node)+std::string(".")+paramKey);
 				//printf("param: %s\n", theKey.c_str());
 				if (paramKey == identifiyerToken){
 					std::string identifier = get(theKey);
@@ -63,6 +67,11 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 		std::string camerasText;
 		discover(cameraCommand, camerasText);
 		discoverCameras(camerasText);
+
+		//printf("%d devices\n",devices.size());
+
+		printf("pipelineDefinition:\n\t%s\n",getPipelineDefinition().c_str());
+
 
 	}
 	catch (const std::exception& e){
@@ -83,7 +92,8 @@ void Config::parseNodes(){
 	std::vector<std::string> keys;
 	pConf->keys(configRoot,keys);
 	for (std::string key : keys){
-		nodes.push_back(configRoot+std::string(".")+key);
+//		nodes.push_back(configRoot+std::string(".")+key);
+		nodes.push_back(key);
 	}
 }
 
@@ -125,11 +135,15 @@ void Config::discoverUSB(std::string& usbText){
 			trim(device);
 			std::string description = tokens.at(1).c_str();
 			trim(description);
+			std::string arFilter;
+			std::string cvFilter;
 			for (auto const& entry : identifierMap) {
 				//printf("checking conf entry :-->%s<--: -->%s<-- against -->%s<--\n", entry.first.c_str(), entry.second.c_str(),description.c_str());
 				if (entry.second == description){
-					printf("usb device[path:%s, description:%s]\n", device.c_str(), description.c_str());
-					//TODO:  create lidar - match found between what's in the config and what was discovered through the system
+					std::string name = entry.first;
+					//printf("usb device[name: %s,path:%s, description:%s]\n",name.c_str(), device.c_str(), description.c_str());
+					std::shared_ptr<Source> dev(new LidarSource(name,device,arFilter,cvFilter));
+					devices[name]=dev;
 					break;
 				}
 			}
@@ -152,43 +166,6 @@ void Config::discoverCameras(std::string& camerasText){
 	// HD Pro Webcam C920(usb - musb - hdrc.1.auto - 1) :
 	//         / dev / video2
 
-
-	/*   Java code
-	StringTokenizer st = new StringTokenizer(camerasText,"\n"); //get each line 1 at a time
-	while(st.hasMoreTokens()){
-	String line1 = st.nextToken().trim();
-	String line2 = st.nextToken().trim();
-	if(line1 == null || line2 == null){
-	System.err.printf("Invalid camera definition.  line1  = %s.  line 2 = %s\n",line1,line2);
-	}
-	String id= null;
-	String name= null;
-	String path = null;
-	if(line2!=null && line2.length()>0){
-	id = line2;
-	}
-	//			if(id!=null) System.out.printf("id -->%s<--\n",id);
-
-	if(line1!=null && line1.length()>0){
-	if(line1.lastIndexOf(" (")>=0){
-	name = line1.substring(0,line1.lastIndexOf(" (")).trim();
-	}
-	}
-	//			if(name!=null) System.out.printf("name -->%s<--\n",name);
-
-	if(line1!=null && line1.length()>0){
-	if(line1.lastIndexOf(" (")>=0 && line1.indexOf("):",line1.lastIndexOf(" ("))>=0){
-	path = line1.substring(line1.lastIndexOf(" (")+" (".length(),line1.indexOf("):",line1.lastIndexOf(" ("))).trim();
-	}
-	}
-	//			if(path!=null) System.out.printf("path -->%s<--\n",path);
-	if(id!=null && name!=null && path!=null && sources.containsKey(name)){
-	VideoDevice dev = new VideoDevice(id,name,path);
-	cameras.add(dev);
-	}
-	}
-	}
-	*/
 	char lineDelimiter = '\n';
 	char fieldDelimiter = '-';
 	std::vector<std::string> lines = split(camerasText.c_str(), lineDelimiter);
@@ -218,14 +195,18 @@ void Config::discoverCameras(std::string& camerasText){
 				//valid line, ignore others
 				std::string id = line1.substr(0, posDelim1-1);
 				trim(id);
-				std::string name = line1.substr(posDelim1 + 1, posDelim2 - posDelim1-1);
-				trim(name);
+				std::string busInfo = line1.substr(posDelim1 + 1, posDelim2 - posDelim1-1);
+				trim(busInfo);
 				std::string path = line2;
 				trim(path);
+				std::string arFilter;
+				std::string cvFilter;
 				for (auto const& entry : identifierMap) {
 					if (entry.second == id){
-						printf("camera[id:%s, name:%s, path:%s]\n", id.c_str(), name.c_str(), path.c_str());
-						//TODO:  create lidar - match found between what's in the config and what was discovered through the system
+						std::string name = entry.first;
+						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
+						std::shared_ptr<Source> dev(new VideoSource(name,path,true,arFilter,cvFilter));
+						devices[name]=dev;
 						break;
 					}
 				}
@@ -234,3 +215,83 @@ void Config::discoverCameras(std::string& camerasText){
 	}
 
 }
+
+std::map<std::string, std::shared_ptr<Source>> Config::getDevices(){
+	return devices;
+}
+
+std::string Config::getPipelineDefinition(){
+	if(pipelineDefinition.empty()){
+		createPipelineDefinition();
+	}
+	return pipelineDefinition;
+}
+
+void Config::createPipelineDefinition(){
+	std::string streamName("stream");
+	int countChannels=0;
+	int channelIndex=1;
+	std::vector<std::string> channelNames;
+
+	for (auto const& entry : devices) {
+		Source* dev = entry.second.get();
+		printf("found %s @ %s\n",dev->getName().c_str(),dev->getDevice().c_str());
+		if (dev->countChannels()>0){
+			printf("dev %s has %d connections and %d channels.\n", dev->getName().c_str(), dev->countConnections(), dev->countChannels());
+			for (int c = 0; c < dev->getChannelNames().size(); c++){
+				std::string channelName = std::string(std::to_string(channelIndex) + "." + (dev->getChannelNames()[c]));
+				channelNames.push_back(channelName);
+				channelIndex++;
+			}
+		}
+	}
+
+
+	printf("streamer has: %d channels\n", channelNames.size());
+	for (int i = 0; i < channelNames.size(); i++){
+		printf("channel: %s\n", channelNames[i].c_str());
+	}
+
+
+	//start by defining the end of the pipeline
+	if ( channelNames.size() > 1){
+		pipelineDefinition.append("input-selector name=");
+		pipelineDefinition.append(streamName);
+		pipelineDefinition.append(" ! autovideosink "); //include the trailing space to create a separator that we know we will need
+	}
+	else if ( channelNames.size() > 0){
+		pipelineDefinition.append("autovideosink name="); //include the trailing space to create a separator that we know we will need
+		pipelineDefinition.append(streamName);
+		pipelineDefinition.append(" ");
+	}
+
+	//next add the definition to each source.  they will need to tie into the specified output, which in our case is called stream
+	for (auto const& entry : devices) {
+		Source* dev = entry.second.get();
+		if (dev->countConnections()>0){
+			//source will need to be added to pipeline
+			std::string base = dev->getPipelineSegment();
+			if (dev->countConnections() > 1){
+				//tee needed
+				pipelineDefinition.append(base);
+				pipelineDefinition.append(" ! ");
+				pipelineDefinition.append("tee name=");
+				pipelineDefinition.append(dev->getName());
+				pipelineDefinition.append(" ");
+				for (int c = 0; c<dev->countChannels(); c++){
+					pipelineDefinition.append(dev->getName());
+					pipelineDefinition.append(". ! queue ! ");
+					pipelineDefinition.append(streamName);
+					pipelineDefinition.append(". ");
+				}
+			}
+			else if (dev->countConnections() > 0){
+				pipelineDefinition.append(base);
+				pipelineDefinition.append(" ! queue ! ");
+				pipelineDefinition.append(streamName);
+				pipelineDefinition.append(". ");
+			}
+		}
+	}
+}
+

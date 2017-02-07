@@ -1,7 +1,7 @@
 #include "VideoSource.h"
 
 
-VideoSource::VideoSource(std::string& name, std::string& deviceName, bool showRaw, std::string& arName, std::string& cvName) : Source(name, device, showRaw, arName, cvName)
+VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string cvName) : Source(name, deviceName, showRaw, arName, cvName)
 {
 }
 
