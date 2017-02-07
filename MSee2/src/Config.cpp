@@ -135,12 +135,27 @@ void Config::discoverUSB(std::string& usbText){
 			trim(device);
 			std::string description = tokens.at(1).c_str();
 			trim(description);
-			std::string arFilter;
-			std::string cvFilter;
 			for (auto const& entry : identifierMap) {
 				//printf("checking conf entry :-->%s<--: -->%s<-- against -->%s<--\n", entry.first.c_str(), entry.second.c_str(),description.c_str());
 				if (entry.second == description){
 					std::string name = entry.first;
+					std::vector<std::string> keys;
+					pConf->keys((configRoot+std::string(".")+name), keys);
+					std::string arFilter;
+					std::string cvFilter;
+					if(keys.size()>0){
+						for(std::string key : keys){
+							std::string paramName = configRoot+std::string(".")+name+std::string(".")+key;
+							printf("retrieving %s\n",paramName.c_str());
+							if(key == AR_TOKEN){
+								arFilter=get(paramName);
+							}
+							if(key == CV_TOKEN){
+								cvFilter=get(paramName);
+							}
+						}
+					}
+
 					//printf("usb device[name: %s,path:%s, description:%s]\n",name.c_str(), device.c_str(), description.c_str());
 					std::shared_ptr<Source> dev(new LidarSource(name,device,arFilter,cvFilter));
 					devices[name]=dev;
@@ -199,11 +214,25 @@ void Config::discoverCameras(std::string& camerasText){
 				trim(busInfo);
 				std::string path = line2;
 				trim(path);
-				std::string arFilter;
-				std::string cvFilter;
 				for (auto const& entry : identifierMap) {
 					if (entry.second == id){
 						std::string name = entry.first;
+						std::vector<std::string> keys;
+						pConf->keys((configRoot+std::string(".")+name), keys);
+
+						std::string arFilter;
+						std::string cvFilter;
+						if(keys.size()>0){
+							for(std::string key : keys){
+								std::string paramName = configRoot+std::string(".")+name+std::string(".")+key;
+								if(key == AR_TOKEN){
+									arFilter=get(paramName);
+								}
+								if(key == CV_TOKEN){
+									cvFilter=get(paramName);
+								}
+							}
+						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
 						std::shared_ptr<Source> dev(new VideoSource(name,path,true,arFilter,cvFilter));
 						devices[name]=dev;
