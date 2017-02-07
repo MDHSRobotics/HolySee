@@ -9,14 +9,14 @@ For background information, see [Robot Vision Concepts](https://github.com/MDHSR
 
 This repository contains the following projects:
 
-1. __MSee__ a Java application which is the orchestrator of the vision system.  
+1. __MSee__ a C++ application which is the orchestrator of the vision system.  
    * MSee manages system configuration
    * MSee discovers connected input devices (cameras and lidar)
    * MSee discovers Roborio presence and established a communication channel with RoboRio (WebSockets)
-   * MSee encapsulates CSee, the native implementation of the vision processing and streaming pipeline
+   * MSee uses CSee, a library of custom gsteamer plugins for computer vision and augmented reality
    * MSee enables control over which channel is streamed to the operator console
    
-1. __CSee__  a c++ shared library which contains C++ (native) image processing (OpenCV) and video streaming (gstreamer) libraries and custom code required for computer vision and augmented reality.
+1. __CSee__  a c++ shared library which contains custom gstreamer image processing (OpenCV) plugins required for computer vision and augmented reality.
 
 1. __ISee__  UI components running on the operator console.
    * ISee enables the operator to select which channel is streamed from the robot to the console
