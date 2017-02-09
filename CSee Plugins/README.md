@@ -38,4 +38,37 @@ void FilterManager::initialize(){
 	//-------------------------------------
 }
 ```
+####Deploying Updated libraries
+When new components are added, it is necessary to recompile the library and to deploy it to the system where it will be used.  Deployment simply entails copying the built library to the appropriate gstreamer folder in the system where it will be used.
    
+####Using your Image Processing component
+To use your component in an HolySee implemented pipeline, simply update the MSee configuration file with which filter to use for which input source. 
+```
+# MSee Configuration
+# Use this file to define how to identify cameras and other related devices, e.g. lidars
+# Also specify image processing components
+# AR stands for Augmented Reality filters
+# CV stands for Computer Vision sinks
+# the argument specifies the name of the component to use
+
+# The format is:
+# <instance name>.<device name>.<field> = <value>
+#
+# intance name - each instance of MSee is given a name.  In this case, this instance is called Tegra.  This is to enable multiple CV co-processors to be added concurrently into a robot.
+# device name - each device is given a name.  In this case, three device are identified for this instance.  
+# fields - each device can have multiple configuration entries. Each device should have 
+#           1) identifier entry.  The identifier entry is used to identify the specific device.  V4l2--ctl is used to identify video devices.  a custom script is used to identify USB devices
+#           2) AR entries specify are used to specify which Augmented Reality filter component to use for the specified device
+#           3) CV entries specify are used to specify which Computer Vision sink component to use for the specified device
+
+Tegra.tegraCam.identifier = USB2.0 HD UVC WebCam
+Tegra.tegraCam.AR = circleAR
+Tegra.tegraCam.CV = tegraCamCV
+
+Tegra.zed.identifier = Zebra CAMERA
+Tegra.zed.AR = squareAR
+Tegra.zed.CV = zedCV
+
+Tegra.lidar.identifier = Chicony_Electronics_Co._Ltd._USB2.0_HD_UVC_WebCam_0x0001
+Tegra.lidar.AR = lidarAR
+Tegra.lidar.CV = lidarCV```
