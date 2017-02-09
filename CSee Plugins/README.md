@@ -74,7 +74,7 @@ Tegra.lidar.identifier = Chicony_Electronics_Co._Ltd._USB2.0_HD_UVC_WebCam_0x000
 Tegra.lidar.AR = lidarAR
 Tegra.lidar.CV = lidarCV
 ```
-* To use your component in a generic gstreamer pipeline, include it as a pipeline element and specify the name of the image processing coponent to use.
+* To use your component in a generic gstreamer pipeline, include it as a pipeline element and specify the name of the image processing coponent to use.  This is useful for rapir development and testing of image processing components.
 ```
 gst-launch-1.0 -e --gst-plugin-path=/projects/ARFilter/x64/Release autovideosrc ! video/x-raw ! videoconvert ! video/x-raw,format=BGRx ! arfilter filter=squareAR ! autovideosink
 ```
