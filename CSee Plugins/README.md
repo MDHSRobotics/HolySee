@@ -42,7 +42,8 @@ void FilterManager::initialize(){
 When new components are added, it is necessary to recompile the library and to deploy it to the system where it will be used.  Deployment simply entails copying the built library to the appropriate gstreamer folder in the system where it will be used.
    
 ####Using your Image Processing component
-To use your component in an HolySee implemented pipeline, simply update the MSee configuration file with which filter to use for which input source. 
+
+* To use your component in an HolySee implemented pipeline, simply update the MSee configuration file with which filter to use for which input source. 
 ```
 # MSee Configuration
 # Use this file to define how to identify cameras and other related devices, e.g. lidars
@@ -71,4 +72,9 @@ Tegra.zed.CV = zedCV
 
 Tegra.lidar.identifier = Chicony_Electronics_Co._Ltd._USB2.0_HD_UVC_WebCam_0x0001
 Tegra.lidar.AR = lidarAR
-Tegra.lidar.CV = lidarCV```
+Tegra.lidar.CV = lidarCV
+```
+* To use your component in a generic gstreamer pipeline, include it as a pipeline element and specify the name of the image processing coponent to use.
+```
+gst-launch-1.0 -e --gst-plugin-path=/projects/ARFilter/x64/Release autovideosrc ! video/x-raw ! videoconvert ! video/x-raw,format=BGRx ! arfilter filter=squareAR ! autovideosink
+```
