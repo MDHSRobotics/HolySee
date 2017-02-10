@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FilterManager.h"
 
 //add includes for your filters here ----------
@@ -24,7 +23,7 @@ FilterManager::FilterManager()
 }
 
 
-void FilterManager::add(std::string& name, Filter* filter){
+void FilterManager::add(std::string& name, Filter*& filter){
 	std::shared_ptr<Filter*> pFilter = std::make_shared<Filter*>(filter);
 	filters[name]=pFilter;
 }

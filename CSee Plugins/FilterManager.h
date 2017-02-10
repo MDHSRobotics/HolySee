@@ -17,7 +17,7 @@ private:
 public:
 	FilterManager(FilterManager const&) = delete;
 	void operator=(FilterManager const&) = delete;
-	void add(std::string&, Filter*);
+	void add(std::string&, Filter*&);
 	bool contains(std::string&);
 	Filter* get(std::string&);
 	static FilterManager& getInstance();

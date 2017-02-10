@@ -11,7 +11,7 @@ private:
 public:
 	Filter(std::string&);
 	virtual void process(cv::Mat&) = 0;
-	std::string getName();
+	std::string& getName();
 };
 
 #endif /* __GST_ARFILTER_FILTER__ */

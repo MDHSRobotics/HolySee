@@ -55,7 +55,6 @@
 * ]|
 * </refsect2>
 */
-#include "stdafx.h"
 #include <stdio.h>
 
 #include "opencv2/opencv.hpp"
@@ -142,11 +141,11 @@ gst_ar_filter_class_init(GstArFilterClass * klass)
 
 	g_object_class_install_property(gobject_class, PROP_SILENT,
 		g_param_spec_boolean("silent", "Silent", "Produce verbose output ?",
-		FALSE, G_PARAM_READWRITE));
+		FALSE, (GParamFlags)G_PARAM_READWRITE));
 
 	g_object_class_install_property(gobject_class, PROP_FILTER,
 		g_param_spec_string("filter", "Filter", "Specify filter to apply",
-		NULL, G_PARAM_READWRITE));
+		NULL, (GParamFlags)G_PARAM_READWRITE));
 
 	gst_element_class_set_details_simple(gstelement_class,
 		"ArFilter - an OpenCV filter plugin",
@@ -200,18 +199,21 @@ const GValue * value, GParamSpec * pspec)
 	case PROP_SILENT:
 		filter->silent = g_value_get_boolean(value);
 		break;
-	case PROP_FILTER:
+	case PROP_FILTER:{
 		/* load correct filter
 		*/
 		filter->filterName = g_string_new(g_value_get_string(value));  //gives us the filter name
 		printf("filter: %s\n", filter->filterName->str);
 
-		if (FilterManager::getInstance().contains(std::string(filter->filterName->str))){
+
+
+		std::string fName(filter->filterName->str);
+		if (FilterManager::getInstance().contains(fName)){
 			printf("have a match for: %s\n", filter->filterName->str);
 			//load the right filter implementation
-			filter->pFilter = FilterManager::getInstance().get(std::string(filter->filterName->str));
+			filter->pFilter = FilterManager::getInstance().get(fName);
 		}
-
+	}
 		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
@@ -330,7 +332,7 @@ gst_ar_filter_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 			int pixelSize = bufferSize / filter->width / filter->height;
 			if (filter->silent == FALSE && !announced){
 				announced = true;
-				g_print("image[width:%d, height:%d, format:%s], buffer:%d, pixel depth:%d\n", filter->width, filter->height, filter->format, bufferSize, pixelSize);
+				g_print("image[width:%d, height:%d, format:%s], buffer:%d, pixel depth:%d\n", filter->width, filter->height, filter->format.c_str(), bufferSize, pixelSize);
 			}
 			GstMapInfo map;
 			gst_buffer_map(buffer, &map, GST_MAP_READ);
