@@ -47,7 +47,11 @@ void Streamer::play(){
 
 void Streamer::setChannel(int channelId){
 	 printf("setting channel to %d\n",channelId );
-	 //TODO: implement
+		GstElement* switchEl = gst_bin_get_by_name((GstBin*)pipeline,"stream");
+		if(switchEl!=NULL){
+			printf("found switchEL\n");
+			 //TODO: implement
+		}
 }
 
 void Streamer::initialize(){
