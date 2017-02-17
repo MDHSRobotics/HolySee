@@ -5,15 +5,15 @@ Source::Source(std::string name, std::string device, bool showRaw, std::string a
 {
 
 	if (this->showRaw()){
-		connectionNames.push_back(std::string(name + ".raw"));
-		channelNames.push_back(std::string(name + ".raw"));
+		connectionNames.push_back(std::string(name + "_raw"));
+		channelNames.push_back(std::string(name + "_raw"));
 	}
 	if (this->hasAR()){
-		connectionNames.push_back(std::string(name + "." + arName));
-		channelNames.push_back(std::string(name + "." + arName));
+		connectionNames.push_back(std::string(name + "_" + arName));
+		channelNames.push_back(std::string(name + "_" + arName));
 	}
 	if (this->hasCV()){
-		connectionNames.push_back(std::string(name + "." + cvName));
+		connectionNames.push_back(std::string(name + "_" + cvName));
 	}
 
 }

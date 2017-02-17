@@ -234,7 +234,7 @@ void Config::discoverCameras(std::string& camerasText){
 							}
 						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
-						std::shared_ptr<Source> dev(new VideoSource(name,path,false,arFilter,cvFilter));
+						std::shared_ptr<Source> dev(new VideoSource(name,path,true,arFilter,cvFilter));
 						devices[name]=dev;
 						break;
 					}
@@ -261,7 +261,7 @@ void Config::createPipelineDefinition(){
 	int countChannels=0;
 	int channelIndex=1;
 	std::vector<std::string> channelNames;
-	std::string tokenRaw(".raw");
+	std::string tokenRaw("_raw");
 	std::string tokenAR("AR");
 
 	for (auto const& entry : devices) {
@@ -296,6 +296,7 @@ void Config::createPipelineDefinition(){
 		pipelineDefinition.append(" ! videoconvert ! autovideosink ");
 	}
 
+
 	//next add the definition to each source.  they will need to tie into the specified output, which in our case is called stream
 	for (auto const& entry : devices) {
 		Source* dev = entry.second.get();
@@ -304,41 +305,45 @@ void Config::createPipelineDefinition(){
 			std::string base = dev->getPipelineSegment();
 			pipelineDefinition.append(base);
 			pipelineDefinition.append(" ! ");
+
 			if (dev->countConnections() > 1){
 				//tee needed
 				pipelineDefinition.append("tee name=");
 				pipelineDefinition.append(dev->getName());
 				pipelineDefinition.append(" ");
-				for(std::string &channelName : dev->getChannelNames()){
-					int pos = channelName.find(tokenRaw);
-					printf("channelName: %s, pos:%d, npos:%d\n",channelName.c_str(),pos,channelName.npos);
-					if (pos!=std::string::npos){
-						printf("found a raw channel\n");
-							pipelineDefinition.append(dev->getName());
-							pipelineDefinition.append(". ! queue ! ");
-							pipelineDefinition.append(streamName);
-							pipelineDefinition.append(". ");
+			}
+			else{
+				//tee needed
+				pipelineDefinition.append("queue name=");
+				pipelineDefinition.append(dev->getName());
+				pipelineDefinition.append(" ");
+			}
+			for(std::string &channelName : dev->getChannelNames()){
+					printf("channel: %s\n",channelName.c_str());
+					pipelineDefinition.append(dev->getName());
+					pipelineDefinition.append(". ");
+					if(dev->countConnections() > 1){
+						pipelineDefinition.append("! queue name=");
+						pipelineDefinition.append(channelName);
+						pipelineDefinition.append("   ");
+						pipelineDefinition.append(channelName);
+						pipelineDefinition.append(".  !  ");
 					}
-					pos = channelName.find(tokenAR);
+					else{
+						pipelineDefinition.append("  !  ");
+					}
+					int pos = channelName.find(tokenAR);
+					printf("(AR)channelName: %s, pos:%d, npos:%d\n",channelName.c_str(),pos,channelName.npos);
 					if (pos!=std::string::npos){
-						//get the filterName
-						pos = channelName.find_last_of(std::string("."));
-						std::string& filterName = channelName;
-						if(pos!=std::string::npos){
-							filterName = channelName.substr(pos+1);
-						}
-						pipelineDefinition.append(dev->getName());
-						pipelineDefinition.append(". ! queue ! arfilter filter=");
+						printf("AR  channelName found\n");
+						pos = channelName.find_last_of(std::string("_"));
+						std::string filterName = channelName.substr(pos+1);
+						pipelineDefinition.append("arfilter filter=");
 						pipelineDefinition.append(filterName);
 						pipelineDefinition.append(" ! ");
-						pipelineDefinition.append(streamName);
-						pipelineDefinition.append(". ");
 					}
-				}
-			}
-			else if (dev->countConnections() > 0){
-				pipelineDefinition.append(streamName);
-				pipelineDefinition.append(". ");
+					pipelineDefinition.append(streamName);
+					pipelineDefinition.append(". ");
 			}
 		}
 	}

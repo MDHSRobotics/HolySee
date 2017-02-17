@@ -21,7 +21,7 @@ template<> struct BaseType<CV_32S> { using base_type = int32_t; };
 template<> struct BaseType<CV_32F> { using base_type = float; };
 template<> struct BaseType<CV_64F> { using base_type = double; };
 
-LidarSource::LidarSource(std::string name, std::string device, std::string arName, std::string cvName) : Source(name,device,false,arName,cvName)
+LidarSource::LidarSource(std::string name, std::string device, std::string arName, std::string cvName) : Source(name,device,true,arName,cvName)
 {
 	isSimulation = false;
 	//opt_com_baudrate = 115200;
@@ -506,5 +506,5 @@ void LidarSource::simulate()
 }
 
 std::string LidarSource::getPipelineSegment(){
-	return std::string("videotestsrc pattern=ball foreground-color=0x00FF0000 is-live=true ! video/x-raw,width=1280,height=720,framerate=15/1,format=GRAY8 ! videoconvert");
+	return std::string("videotestsrc pattern=ball ! video/x-raw,width=640,framerate=15/1,format=BGR ! videoconvert");
 }
