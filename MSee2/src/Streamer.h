@@ -1,10 +1,13 @@
 #pragma once
+
 #include <string>
 #include <vector>
 #include <memory>
+#include <map>
+
 #include <gst/gst.h>
-#include "Source.h"
 #include "Config.h"
+#include "Source.h"
 
 class Streamer
 {
@@ -16,6 +19,7 @@ private:
 	GstElement *pipeline;
 	GstBus *bus;
 	bool stopped=false;
+	void createPipeline();
 public:
 	Streamer(int, char**,Config&);
 	void initialize();

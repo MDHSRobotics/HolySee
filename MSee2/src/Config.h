@@ -26,7 +26,6 @@ private:
 	std::map<std::string, std::shared_ptr<Source>> devices;
 	AutoPtr<PropertyFileConfiguration> pConf;
 	void parseNodes();
-	void discover(std::string&, std::string&);
 	void discoverUSB(std::string&);
 	void discoverCameras(std::string&);
 	std::string pipelineDefinition;
@@ -38,6 +37,8 @@ public:
 	std::vector<std::string> getNodes();
 	std::map<std::string, std::shared_ptr<Source>> getDevices();
 	std::string getPipelineDefinition();
+	static void discover(std::string&, std::string&);
+	static std::vector<std::string> split(const char *, char&);
 };
 
 #endif /*__TEAM4141_MSEE_CONFIG_*/

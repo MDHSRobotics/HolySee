@@ -240,9 +240,9 @@ GValue * value, GParamSpec * pspec)
 	}
 }
 
-std::string FIELD_WIDTH_TOKEN("width");
-std::string FIELD_HEIGHT_TOKEN("height");
-std::string FIELD_FORMAT_TOKEN("format");
+GString * FIELD_WIDTH_TOKEN = g_string_new("width");
+GString * FIELD_HEIGHT_TOKEN = g_string_new("height");
+GString * FIELD_FORMAT_TOKEN = g_string_new("format");
 
 gboolean
 inspectField(GQuark field_id,
@@ -250,16 +250,16 @@ const GValue *value,
 gpointer user_data){
 	GstArFilter *filter = (GstArFilter *)user_data;
 
-	std::string fieldName = std::string(g_quark_to_string(field_id));
-	std::string fieldValue = std::string(gst_value_serialize(value));
+	GString * fieldName = g_string_new(g_quark_to_string(field_id));
+	GString * fieldValue = g_string_new(gst_value_serialize(value));
 
-	if (fieldName == "width"){
-		filter->width = std::stoi(fieldValue);
+	if (g_strcmp0(fieldName->str,FIELD_WIDTH_TOKEN->str)    == 0){
+		filter->width = atoi(fieldValue->str);
 	}
-	else if (fieldName == "height"){
-		filter->height = std::stoi(fieldValue);
+	else if (g_strcmp0(fieldName->str,FIELD_HEIGHT_TOKEN->str)    == 0){
+		filter->height = atoi(fieldValue->str);
 	}
-	else if (fieldName == "format"){
+	else if (g_strcmp0(fieldName->str,FIELD_FORMAT_TOKEN->str)    == 0){
 		filter->format = fieldValue;
 	}
 	return true;
@@ -328,11 +328,11 @@ gst_ar_filter_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 		gst_buffer_is_writable(buffer);
 
 		//check that we have the required info to build a valid CV::Mat of the frame
-		if (filter->width > 0 && filter->height > 0 && bufferSize > 0 && filter->format.size() > 0){
+		if (filter->width > 0 && filter->height > 0 && bufferSize > 0 && filter->format->len > 0){
 			int pixelSize = bufferSize / filter->width / filter->height;
 			if (filter->silent == FALSE && !announced){
 				announced = true;
-				g_print("image[width:%d, height:%d, format:%s], buffer:%d, pixel depth:%d\n", filter->width, filter->height, filter->format.c_str(), bufferSize, pixelSize);
+				g_print("image[width:%d, height:%d, format:%s], buffer:%d, pixel depth:%d\n", filter->width, filter->height, filter->format->str, bufferSize, pixelSize);
 			}
 			GstMapInfo map;
 			gst_buffer_map(buffer, &map, GST_MAP_READ);

@@ -13,6 +13,6 @@ std::string VideoSource::getPipelineSegment(){
 	std::string segment;
 	segment.append("autovideosrc ");
 	//segment.append(device);
-	segment.append(" ! videoconvert ! video/x-raw,width=640,framerate=15/1,format=GRAY8 ! videoconvert");
+	segment.append(" ! video/x-raw,width=640,framerate=15/1,format=BGR");
 	return segment;
 }

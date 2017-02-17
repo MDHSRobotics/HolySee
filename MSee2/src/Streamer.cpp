@@ -1,6 +1,7 @@
 #include "Streamer.h"
 #include <stdio.h>
-
+#include <stdlib.h>
+#include <string.h>
 
 Streamer::Streamer(int argc, char** argv,Config& config) : argc(argc), argv(argv),config(config)
 {
@@ -29,7 +30,7 @@ void Streamer::play(){
 	while(bus!=NULL && !done && !stopped){
 		msg = gst_bus_timed_pop_filtered(bus,200,(GstMessageType)(GST_MESSAGE_ERROR | GST_MESSAGE_EOS | GST_MESSAGE_ANY));  //TODO: refactor remove message any
 		if(msg != NULL){
-			printf("message received: 0x%08x: ",msg->type);
+			//printf("message received: 0x%08x:\n ",msg->type);
 			if(msg->type == GST_MESSAGE_ERROR){
 				 printf("%s\n","bus sent an error message" );
 			}
@@ -37,7 +38,7 @@ void Streamer::play(){
 				 printf("%s\n","bus sent an EOS message" );
 			}
 			else{
-				 printf("%s\n","bus sent some other message" );
+				 //printf("%s\n","bus sent some other message" );
 			}
 			gst_message_unref(msg);
 		}
@@ -47,12 +48,29 @@ void Streamer::play(){
 
 void Streamer::setChannel(int channelId){
 	 printf("setting channel to %d\n",channelId );
+	 std::string desiredChannel = std::string("sink_")+std::to_string(channelId);
 		GstElement* switchEl = gst_bin_get_by_name((GstBin*)pipeline,"stream");
 		if(switchEl!=NULL){
 			printf("found switchEL\n");
-			 //TODO: implement
+			//GstPad* pad = channels.at(channelId);
+			//g_object_set(G_OBJECT(switchEl),"active-pad",pad,NULL);
+			GstIterator* iter = gst_element_iterate_sink_pads(switchEl);
+			GValue vPad = G_VALUE_INIT;
+			while(gst_iterator_next(iter,&vPad)==GST_ITERATOR_OK){
+				GstPad* pad = GST_PAD(g_value_get_object(&vPad));
+				const gchar* _pad_name = gst_pad_get_name(pad);
+				std::string pad_name ( _pad_name);
+				printf("padName: %s, desired %s\n",pad_name.c_str(),desiredChannel.c_str());
+				if(pad_name==desiredChannel){
+					printf("found the pad I want...\n");
+					g_object_set(G_OBJECT(switchEl),"active-pad",pad,NULL);
+				}
+				g_free(const_cast<gchar*>(_pad_name));
+			}
 		}
 }
+
+
 
 void Streamer::initialize(){
 	std::vector<std::string> channelNames;
@@ -63,8 +81,10 @@ void Streamer::initialize(){
 	/* build the pipeline */
 	GError* error =  NULL;
 	pipeline = gst_parse_launch(config.getPipelineDefinition().c_str(),&error);
+
 	if(pipeline ==NULL || error !=NULL){
 		printf("Parse error %s\n",error->message);
+		exit(0);
 	}
 
 	//map channels to our channel dictionary
@@ -80,7 +100,6 @@ void Streamer::initialize(){
 			GstPad* pad = GST_PAD(g_value_get_object(&vPad));
 			const gchar* pad_name = gst_pad_get_name(pad);
 			channelNames.push_back(std::string(pad_name));
-			printf("padName: %s\n",pad_name);
     		channels.push_back(pad);
 			printf("padName: %s\n",pad_name);
 			g_free(const_cast<gchar*>(pad_name));

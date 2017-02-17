@@ -16,7 +16,7 @@ void trim(std::string& s) {
 		s.erase(s.end() - 1); // remove trailing whitespaces
 }
 
-std::vector<std::string> split(const char *str, char& delimiter)
+std::vector<std::string> Config::split(const char *str, char& delimiter)
 {
 	std::vector<std::string> result;
 
@@ -234,7 +234,7 @@ void Config::discoverCameras(std::string& camerasText){
 							}
 						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
-						std::shared_ptr<Source> dev(new VideoSource(name,path,true,arFilter,cvFilter));
+						std::shared_ptr<Source> dev(new VideoSource(name,path,false,arFilter,cvFilter));
 						devices[name]=dev;
 						break;
 					}
@@ -261,6 +261,8 @@ void Config::createPipelineDefinition(){
 	int countChannels=0;
 	int channelIndex=1;
 	std::vector<std::string> channelNames;
+	std::string tokenRaw(".raw");
+	std::string tokenAR("AR");
 
 	for (auto const& entry : devices) {
 		Source* dev = entry.second.get();
@@ -286,12 +288,12 @@ void Config::createPipelineDefinition(){
 	if ( channelNames.size() > 1){
 		pipelineDefinition.append("input-selector name=");
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! autovideosink "); //include the trailing space to create a separator that we know we will need
+		pipelineDefinition.append(" ! videoconvert ! autovideosink "); //include the trailing space to create a separator that we know we will need
 	}
 	else if ( channelNames.size() > 0){
-		pipelineDefinition.append("autovideosink name="); //include the trailing space to create a separator that we know we will need
+		pipelineDefinition.append("queue name="); //include the trailing space to create a separator that we know we will need
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ");
+		pipelineDefinition.append(" ! videoconvert ! autovideosink ");
 	}
 
 	//next add the definition to each source.  they will need to tie into the specified output, which in our case is called stream
@@ -300,23 +302,41 @@ void Config::createPipelineDefinition(){
 		if (dev->countConnections()>0){
 			//source will need to be added to pipeline
 			std::string base = dev->getPipelineSegment();
+			pipelineDefinition.append(base);
+			pipelineDefinition.append(" ! ");
 			if (dev->countConnections() > 1){
 				//tee needed
-				pipelineDefinition.append(base);
-				pipelineDefinition.append(" ! ");
 				pipelineDefinition.append("tee name=");
 				pipelineDefinition.append(dev->getName());
 				pipelineDefinition.append(" ");
-				for (int c = 0; c<dev->countChannels(); c++){
-					pipelineDefinition.append(dev->getName());
-					pipelineDefinition.append(". ! queue ! ");
-					pipelineDefinition.append(streamName);
-					pipelineDefinition.append(". ");
+				for(std::string &channelName : dev->getChannelNames()){
+					int pos = channelName.find(tokenRaw);
+					printf("channelName: %s, pos:%d, npos:%d\n",channelName.c_str(),pos,channelName.npos);
+					if (pos!=std::string::npos){
+						printf("found a raw channel\n");
+							pipelineDefinition.append(dev->getName());
+							pipelineDefinition.append(". ! queue ! ");
+							pipelineDefinition.append(streamName);
+							pipelineDefinition.append(". ");
+					}
+					pos = channelName.find(tokenAR);
+					if (pos!=std::string::npos){
+						//get the filterName
+						pos = channelName.find_last_of(std::string("."));
+						std::string& filterName = channelName;
+						if(pos!=std::string::npos){
+							filterName = channelName.substr(pos+1);
+						}
+						pipelineDefinition.append(dev->getName());
+						pipelineDefinition.append(". ! queue ! arfilter filter=");
+						pipelineDefinition.append(filterName);
+						pipelineDefinition.append(" ! ");
+						pipelineDefinition.append(streamName);
+						pipelineDefinition.append(". ");
+					}
 				}
 			}
 			else if (dev->countConnections() > 0){
-				pipelineDefinition.append(base);
-				pipelineDefinition.append(" ! queue ! ");
 				pipelineDefinition.append(streamName);
 				pipelineDefinition.append(". ");
 			}

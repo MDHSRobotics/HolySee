@@ -8,6 +8,8 @@
 #include <termios.h>
 #include <unistd.h>
 
+#include"DNSSDBrowser.h"
+
 //MSee is the orchestrator
 //It is responsible for 
 //  * discovering devices
@@ -62,7 +64,11 @@ int main(int argc,char *argv[])
 	std::string instanceName("Tegra");
 	std::string configFile("src/msee.conf");
 
-	MSee* msee = new MSee(instanceName,configFile);
+	MSee* msee = new MSee(argc,argv,instanceName,configFile);
+
+	//start a dnssd browser - find the robot!
+	std::thread browser(&DNSSDBrowser::scan,msee);
+	browser.detach();
 
 	//start a keyboard listener
 	std::thread keyboardListener(processKeys,msee);
