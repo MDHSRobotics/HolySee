@@ -59,23 +59,56 @@ void Grip2::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::P
 //loop through contours
 	arImage = original;
 
-    cv::Scalar colors[2]={
-    		cv::Scalar (0,0,255),
-			cv::Scalar (0,255,0)
-    };
+    cv::Scalar color_bad(0,0,255);  //red
+    cv::Scalar color_good(0,255,0); //green
+
+    bool IAmGood= true;
+    printf(("testing bb in targets\n"));
+
+    for(int c=0;c<contours.size();c++){
+        printf("testing bb %d\n",c);
+		std::vector<cv::Point> contour =contours.at(c);
+	    bool IAmInTarget= false;
+	    cv::Rect bb = cv::boundingRect(contour);
+		for (cv::Rect t : targets){
+	        printf("testing target bbx1:%d,tx1:%d, bby1:%d,ty1:%d, bbx2:%d,tx2:%d, bby2:%d,ty2:%d, fit:%s\n",
+	        		bb.x,t.x,bb.y,t.y,bb.x+bb.width,t.width+t.x,bb.y+bb.height,t.height+t.y,
+					((
+							bb.x>=t.x &&
+							bb.y>=t.y &&
+							bb.x+bb.width <= t.width+t.x &&
+							bb.y+bb.height <= t.height+t.y)?"true":"false")
+					);
+		    if (
+				bb.x>=t.x &&
+				bb.y>=t.y &&
+				bb.x+bb.width <= t.width+t.x &&
+				bb.y+bb.height <= t.height+t.y)
+			{
+				IAmInTarget=true;
+                break;
+			}
+		}
+		if (!IAmInTarget){
+			IAmGood=false;
+		    break;
+		}
+	}
+    printf((IAmGood?"IAmGood\n":"bummer ...\n"));
+
 	for(int c=0;c<contours.size();c++){
 		std::vector<cv::Point> contour =contours.at(c);
 
 		//loop through points
 		for(int p=0;p<contour.size();p++){
 				cv::Point point=contour.at(p);
-				cv::circle(arImage,point,2,colors[c%2],2,CV_AA,0);
+				cv::circle(arImage,point,2,(IAmGood?color_good:color_bad),2,CV_AA,0);
 		}
 
 		//for each contour draw boundingRect
 		cv::Rect bb = cv::boundingRect(contour);
 		printf("contour %d Rect(%d,%d,%d,%d)\n",c,bb.x,bb.y,bb.width,bb.height);
-		cv::rectangle(arImage,bb,colors[c%2],2,CV_AA,0);
+		cv::rectangle(arImage,bb,(IAmGood?color_good:color_bad),2,CV_AA,0);
 	}
 
 
@@ -84,9 +117,6 @@ void Grip2::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::P
 	for (cv::Rect t : targets){
 		cv::rectangle(arImage,t,cv::Scalar(255,255,255),2,CV_AA,0);
 	}
-
-
-
 
 
 }
