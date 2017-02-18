@@ -3,6 +3,7 @@
 //add includes for your filters here ----------
 #include "SquareAR.h"
 #include "CircleAR.h"
+#include "SteamAR.h"
 //---------------------------------------------
 
 void FilterManager::initialize(){
@@ -14,7 +15,10 @@ void FilterManager::initialize(){
 
 	filter = new CircleAR();
 	add(filter->getName(), filter);
-	//-------------------------------------
+
+	filter = new SteamAR();
+	add(filter->getName(), filter);
+//-------------------------------------
 }
 
 FilterManager::FilterManager()

@@ -1,30 +1,24 @@
 /*
- * Grip2.cpp
+ * SteamAR.cpp
  *
- *  Created on: Feb 2, 2017
- *      Author: x
+ *  Created on: Feb 18, 2017
+ *      Author: team4141
  */
 
-#include "Grip2.h"
-#include <stdio.h>
+#include "SteamAR.h"
 
-
-
-
-
-Grip2::Grip2(std::vector<cv::Rect>& targets): targets(targets) {
-	// TODO Auto-generated constructor stub
-
+SteamAR::SteamAR() : Filter(name){
+     targets.push_back(cv::Rect(360,70,60,40));
+	 targets.push_back(cv::Rect(360,40,80,50));
 }
 
-Grip2::~Grip2() {
-	// TODO Auto-generated destructor stub
+SteamAR::~SteamAR() {
 }
 
-void Grip2::process(cv::Mat& source0){
+void SteamAR::process(cv::Mat& frame){
 	//Step HSV_Threshold0:
 	//input
-	cv::Mat hsvThresholdInput = source0;
+	cv::Mat hsvThresholdInput = frame;
 	double hsvThresholdHue[] = {17.805755395683452, 90.92150170648463};
 	double hsvThresholdSaturation[] = {185.74640287769785, 255.0};
 	double hsvThresholdValue[] = {27.51798561151079, 150.5631399317406};
@@ -51,16 +45,13 @@ void Grip2::process(cv::Mat& source0){
 	filterContours(filterContoursContours, filterContoursMinArea, filterContoursMinPerimeter, filterContoursMinWidth, filterContoursMaxWidth, filterContoursMinHeight, filterContoursMaxHeight, filterContoursSolidity, filterContoursMaxVertices, filterContoursMinVertices, filterContoursMinRatio, filterContoursMaxRatio, this->filterContoursOutput);
 
 	//wew have our desired countours
-	makeMatFromContours(source0,this->filterContoursOutput,this->AROutput);
+	makeMatFromContours(frame,this->filterContoursOutput,this->AROutput);
 }
 
-
-void Grip2::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::Point> > & contours,cv::Mat &arImage){
+void SteamAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::Point> > & contours,cv::Mat &arImage){
 //loop through contours
 	arImage = original;
 
-    cv::Scalar color_bad(0,0,255);  //red
-    cv::Scalar color_good(0,255,0); //green
 
     bool IAmGood= true;
     printf(("testing bb in targets\n"));
@@ -102,34 +93,30 @@ void Grip2::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::P
 		//loop through points
 		for(int p=0;p<contour.size();p++){
 				cv::Point point=contour.at(p);
-				cv::circle(arImage,point,2,(IAmGood?color_good:color_bad),2,CV_AA,0);
+				cv::circle(arImage,point,2,(IAmGood?GREEN:RED),2,CV_AA,0);
 		}
 
 		//for each contour draw boundingRect
 		cv::Rect bb = cv::boundingRect(contour);
 		printf("contour %d Rect(%d,%d,%d,%d)\n",c,bb.x,bb.y,bb.width,bb.height);
-		cv::rectangle(arImage,bb,(IAmGood?color_good:color_bad),2,CV_AA,0);
+		cv::rectangle(arImage,bb,(IAmGood?GREEN:RED),2,CV_AA,0);
 	}
 
 
 
 
 	for (cv::Rect t : targets){
-		cv::rectangle(arImage,t,cv::Scalar(255,255,255),2,CV_AA,0);
+		cv::rectangle(arImage,t,WHITE,2,CV_AA,0);
 	}
 
 
 }
 
-
-void Grip2::setsource(cv::Mat &source0){
-	source0.copyTo(this->source0);
-}
 /**
  * This method is a generated getter for the output of a HSV_Threshold.
  * @return Mat output from HSV_Threshold.
  */
-cv::Mat* Grip2::gethsvThresholdOutput(){
+cv::Mat* SteamAR::gethsvThresholdOutput(){
 	return &(this->hsvThresholdOutput);
 }
 
@@ -138,7 +125,7 @@ cv::Mat* Grip2::gethsvThresholdOutput(){
  * This method is a generated getter for the output of AR Image.
  * @return Mat output from AROutput.
  */
-cv::Mat* Grip2::getARImage(){
+cv::Mat* SteamAR::getARImage(){
 	return &(this->AROutput);
 }
 /**
@@ -146,14 +133,14 @@ cv::Mat* Grip2::getARImage(){
  * @return ContoursReport output from Find_Contours.
  */
 
-std::vector<std::vector<cv::Point> >* Grip2::getfindContoursOutput(){
+std::vector<std::vector<cv::Point> >* SteamAR::getfindContoursOutput(){
 	return &(this->findContoursOutput);
 }
 /**
  * This method is a generated getter for the output of a Filter_Contours.
  * @return ContoursReport output from Filter_Contours.
  */
-std::vector<std::vector<cv::Point> >* Grip2::getfilterContoursOutput(){
+std::vector<std::vector<cv::Point> >* SteamAR::getfilterContoursOutput(){
 	return &(this->filterContoursOutput);
 }
 	/**
@@ -165,7 +152,7 @@ std::vector<std::vector<cv::Point> >* Grip2::getfilterContoursOutput(){
 	 * @param val The min and max value.
 	 * @param output The image in which to store the output.
 	 */
-	void Grip2::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
+	void SteamAR::hsvThreshold(cv::Mat &input, double hue[], double sat[], double val[], cv::Mat &out) {
 		cv::cvtColor(input, out, cv::COLOR_BGR2HSV);
 		cv::inRange(out,cv::Scalar(hue[0], sat[0], val[0]), cv::Scalar(hue[1], sat[1], val[1]), out);
 	}
@@ -177,7 +164,7 @@ std::vector<std::vector<cv::Point> >* Grip2::getfilterContoursOutput(){
 	 * @param externalOnly if only external contours are to be found.
 	 * @param contours vector of contours to put contours in.
 	 */
-	void Grip2::findContours(cv::Mat &input, bool externalOnly, std::vector<std::vector<cv::Point> > &contours) {
+	void SteamAR::findContours(cv::Mat &input, bool externalOnly, std::vector<std::vector<cv::Point> > &contours) {
 		std::vector<cv::Vec4i> hierarchy;
 		contours.clear();
 		int mode = externalOnly ? cv::RETR_EXTERNAL : cv::RETR_LIST;
@@ -203,7 +190,7 @@ std::vector<std::vector<cv::Point> >* Grip2::getfilterContoursOutput(){
 	 * @param output vector of filtered contours.
 	 */
 
-	void Grip2::filterContours(std::vector<std::vector<cv::Point> > &inputContours, double minArea, double minPerimeter, double minWidth, double maxWidth, double minHeight, double maxHeight, double solidity[], double maxVertexCount, double minVertexCount, double minRatio, double maxRatio, std::vector<std::vector<cv::Point> > &filterContoursOutput){
+	void SteamAR::filterContours(std::vector<std::vector<cv::Point> > &inputContours, double minArea, double minPerimeter, double minWidth, double maxWidth, double minHeight, double maxHeight, double solidity[], double maxVertexCount, double minVertexCount, double minRatio, double maxRatio, std::vector<std::vector<cv::Point> > &filterContoursOutput){
 			std::vector<cv::Point> hull;
 			filterContoursOutput.clear();
 			{
@@ -236,6 +223,7 @@ std::vector<std::vector<cv::Point> >* Grip2::getfilterContoursOutput(){
 
 			}
 	}
+
 
 
 
