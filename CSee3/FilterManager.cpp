@@ -4,6 +4,7 @@
 #include "SquareAR.h"
 #include "CircleAR.h"
 #include "SteamAR.h"
+#include "GearAR.h"
 //---------------------------------------------
 
 void FilterManager::initialize(){
@@ -18,7 +19,11 @@ void FilterManager::initialize(){
 
 	filter = new SteamAR();
 	add(filter->getName(), filter);
+
+	filter = new GearAR();
+	add(filter->getName(), filter);
 //-------------------------------------
+	printf("filters: %d\n",filters.size());
 }
 
 FilterManager::FilterManager()
