@@ -1,6 +1,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <iostream>
+#include "Grip2.h"
 
 using namespace cv;
 using namespace std;
@@ -28,7 +29,7 @@ int main( int argc, char** argv )
       targets.push_back(cv::Rect(175,235,60,115));
 	  targets.push_back(cv::Rect(310,240,60,115));
 
-	  filter(targets);
+	  Grip2 filter(targets);
 
 	  filter.process(image);
 	  imshow (" Display window", *(filter.getARImage()));
