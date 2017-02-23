@@ -14,7 +14,7 @@ class GearAR :
 		public  Filter
 {
 	private:
-	std::string name = std::string("GearAR");
+	std::string name = std::string("gearAR");
 		std::vector<cv::Rect> targets;
 	    cv::Scalar RED = cv::Scalar(0,0,255);  //red
 	    cv::Scalar GREEN = cv::Scalar(0,255,0); //green
