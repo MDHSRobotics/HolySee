@@ -4,6 +4,7 @@ Debug
 /Debug/*
 *.class
 *.avi
+*.swp
 /bin/*
 /build/*
 /bin/
