@@ -3,6 +3,7 @@ Debug
 /Release/*
 /Debug/*
 *.class
+*.mk
 *.avi
 *.swp
 /bin/*
