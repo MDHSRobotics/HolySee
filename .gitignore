@@ -1,7 +1,11 @@
+Release
+Debug
 /Release/*
 /Debug/*
 *.class
+*.mk
 *.avi
+*.swp
 /bin/*
 /build/*
 /bin/
