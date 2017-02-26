@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="MSee" InternalType="Console">
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="src">
+    <File Name="Config.cpp"/>
+    <File Name="Config.h"/>
+    <File Name="DNSSDBrowser.cpp"/>
+    <File Name="DNSSDBrowser.h"/>
+    <File Name="easywsclient.cpp"/>
+    <File Name="easywsclient.hpp"/>
+    <File Name="LidarSource.cpp"/>
+    <File Name="LidarSource.h"/>
+    <File Name="Main.cpp"/>
+    <File Name="MSee.cpp"/>
+    <File Name="MSee.h"/>
+    <File Name="Reading.cpp"/>
+    <File Name="Reading.h"/>
+    <File Name="Source.cpp"/>
+    <File Name="Source.h"/>
+    <File Name="Streamer.cpp"/>
+    <File Name="Streamer.h"/>
+    <File Name="VideoSource.cpp"/>
+    <File Name="VideoSource.h"/>
+    <File Name="msee.conf"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="Cross GCC ( aarch64-linux-gnu )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="Cross GCC ( aarch64-linux-gnu )" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-std=c++11;-pthread" C_Options="-O2" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" PCHFlags="" PCHFlagsPolicy="0">
+        <IncludePath Value="."/>
+        <IncludePath Value="/usr/include/gstreamer-1.0"/>
+        <IncludePath Value="/usr/lib/aarch64-linux-gnu/gstreamer-1.0/include"/>
+        <IncludePath Value="/usr/include/glib-2.0"/>
+        <IncludePath Value="/usr/lib/aarch64-linux-gnu/glib-2.0/include"/>
+        <Preprocessor Value="NDEBUG"/>
+      </Compiler>
+      <Linker Options="" Required="yes">
+        <LibraryPath Value="/usr/local/cuda-8.0/lib64"/>
+        <LibraryPath Value="/usr/local/lib"/>
+        <Library Value="opencv_calib3d"/>
+        <Library Value="opencv_contrib"/>
+        <Library Value="opencv_core"/>
+        <Library Value="opencv_features2d"/>
+        <Library Value="opencv_flann"/>
+        <Library Value="opencv_gpu"/>
+        <Library Value="opencv_highgui"/>
+        <Library Value="opencv_imgproc"/>
+        <Library Value="opencv_legacy"/>
+        <Library Value="opencv_ml"/>
+        <Library Value="opencv_objdetect"/>
+        <Library Value="opencv_photo"/>
+        <Library Value="opencv_stitching"/>
+        <Library Value="opencv_superres"/>
+        <Library Value="opencv_ts"/>
+        <Library Value="opencv_video"/>
+        <Library Value="opencv_videostab"/>
+        <Library Value="opencv_detection_based_tracker"/>
+        <Library Value="opencv_esm_panorama"/>
+        <Library Value="opencv_facedetect"/>
+        <Library Value="opencv_imuvstab"/>
+        <Library Value="opencv_tegra"/>
+        <Library Value="opencv_vstab"/>
+        <Library Value="cufft"/>
+        <Library Value="npps"/>
+        <Library Value="nppi"/>
+        <Library Value="nppc"/>
+        <Library Value="cudart"/>
+        <Library Value="atomic"/>
+        <Library Value="tbb"/>
+        <Library Value="rt"/>
+        <Library Value="pthread"/>
+        <Library Value="m"/>
+        <Library Value="dl"/>
+        <Library Value="gstreamer-1.0"/>
+        <Library Value="gobject-2.0"/>
+        <Library Value="glib-2.0"/>
+        <Library Value="PocoFoundation"/>
+        <Library Value="PocoUtil"/>
+        <Library Value="pthread"/>
+      </Linker>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes" IsGUIProgram="no" IsEnabled="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="" IsExtended="no">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no" EnableCpp14="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+  <Dependencies Name="Debug"/>
+  <Dependencies Name="Release"/>
+</CodeLite_Project>
