@@ -16,7 +16,7 @@
       <Environment/>
       <Project Name="CSee" ConfigName="Release"/>
       <Project Name="MSee" ConfigName="Release"/>
-      <Project Name="MSeeScripts" ConfigName="Debug"/>
+      <Project Name="MSeeScripts" ConfigName="Release"/>
       <Project Name="LidarSource" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
