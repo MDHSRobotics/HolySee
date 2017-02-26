@@ -7,7 +7,10 @@ build/
 .git/
 *.mk
 *.txt
+*.workspace
 *.project
 *.avi
 *.swp
+*~
+*.*~
 Makefile
