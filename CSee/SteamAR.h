@@ -29,7 +29,7 @@ private:
 	void makeMatFromContours(cv::Mat & source0);
 	void filterContours(std::vector<std::vector<cv::Point> > &, double , double , double , double , double , double , double [], double , double , double , double , std::vector<std::vector<cv::Point> > &);
 	void makeMatFromContours(cv::Mat &,std::vector<std::vector<cv::Point> > &,cv::Mat &);
-	bool targetAcquired = false;
+	bool isTargetAcquired = false;
 	void targetAcquired();
 	void targetLost();
 
