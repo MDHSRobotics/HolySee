@@ -8,6 +8,7 @@ class CircleAR :
 {
 private:
 	std::string name = std::string("circleAR");
+	bool first = true;
 public:
 	CircleAR();
 	~CircleAR();
