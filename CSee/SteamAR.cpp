@@ -236,11 +236,13 @@ std::vector<std::vector<cv::Point> >* SteamAR::getfilterContoursOutput(){
 void SteamAR::targetAcquired(){
 	printf("target acquired\n");
 	isTargetAcquired = true;
+	postBooleanEvent("targetAcquired", isTargetAcquired); //event sent to notify of new isTargetAcquiredState
 }
 
 void SteamAR::targetLost(){
 	printf("target lost\n");
 	isTargetAcquired = false;
+	postBooleanEvent("targetAcquired", isTargetAcquired); //event sent to notify of new isTargetAcquiredState
 }
 
 
