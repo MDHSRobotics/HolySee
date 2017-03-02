@@ -87,6 +87,12 @@ void SteamAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv:
 	}
     printf((IAmGood?"IAmGood\n":"bummer ...\n"));
 
+	if(IAmGood && !isTargetAcquired){
+		targetAcquired();
+	}
+	else if(!IAmGood && isTargetAcquired){
+		targetLost();
+	}
 
 	for(int c=0;c<contours.size();c++){
 		std::vector<cv::Point> contour =contours.at(c);
@@ -229,11 +235,12 @@ std::vector<std::vector<cv::Point> >* SteamAR::getfilterContoursOutput(){
 
 void SteamAR::targetAcquired(){
 	printf("target acquired\n");
-	
+	isTargetAcquired = true;
 }
 
 void SteamAR::targetLost(){
 	printf("target lost\n");
+	isTargetAcquired = false;
 }
 
 
