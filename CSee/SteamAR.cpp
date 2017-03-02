@@ -227,6 +227,13 @@ std::vector<std::vector<cv::Point> >* SteamAR::getfilterContoursOutput(){
 
 
 
+void SteamAR::targetAcquired(){
+	printf("target acquired\n");
+	
+}
 
+void SteamAR::targetLost(){
+	printf("target lost\n");
+}
 
 
