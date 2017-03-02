@@ -153,6 +153,7 @@ void Config::discoverUSB(std::string& usbText){
 							if(key == CV_TOKEN){
 								cvFilter=get(paramName);
 							}
+
 						}
 					}
 
@@ -184,16 +185,15 @@ void Config::discoverCameras(std::string& camerasText){
 	char lineDelimiter = '\n';
 	char fieldDelimiter = '-';
 	std::vector<std::string> lines = split(camerasText.c_str(), lineDelimiter);
-	//printf("%d camera lines\n", lines.size());
+	printf("%d camera lines\n", lines.size());
 	if (lines.size() > 0){
 		for (int i = 0; i < lines.size()-1; i++){
 			std::string line1 = lines.at(i);
 			trim(line1);
-			//printf("camera line %d - %s\n", i, line1.c_str());
-			i++;
-			std::string line2 = lines.at(i);
+//			printf("camera line %d - %s\n", i, line1.c_str());
+			std::string line2 = lines.at(i+1);
 			trim(line2);
-			//printf("camera line %d - %s\n", i, line2.c_str());
+//			printf("camera line %d - %s\n", i+1, line2.c_str());
 
 			//parse line1
 			//bus info is in between parenthesis
@@ -222,6 +222,8 @@ void Config::discoverCameras(std::string& camerasText){
 
 						std::string arFilter;
 						std::string cvFilter;
+						std::string source;
+
 						if(keys.size()>0){
 							for(std::string key : keys){
 								std::string paramName = configRoot+std::string(".")+name+std::string(".")+key;
@@ -231,14 +233,20 @@ void Config::discoverCameras(std::string& camerasText){
 								if(key == CV_TOKEN){
 									cvFilter=get(paramName);
 								}
+								if(key == source_TOKEN){
+									source = get(paramName);
+								}
 							}
 						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
-						std::shared_ptr<Source> dev(new VideoSource(name,path,true,arFilter,cvFilter));
+						std::shared_ptr<Source> dev;
+						if(source.empty()) dev = std::shared_ptr<Source>(new VideoSource(name,path,true,arFilter,cvFilter));
+						else dev = std::shared_ptr<Source>(new VideoSource(name,path,true,arFilter,cvFilter,source));
 						devices[name]=dev;
 						break;
 					}
 				}
+				i++;
 			}
 		}
 	}
@@ -288,12 +296,12 @@ void Config::createPipelineDefinition(){
 	if ( channelNames.size() > 1){
 		pipelineDefinition.append("input-selector name=");
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! autovideosink "); //include the trailing space to create a separator that we know we will need
+		pipelineDefinition.append(" ! videoconvert ! xvimagesink "); //include the trailing space to create a separator that we know we will need
 	}
 	else if ( channelNames.size() > 0){
 		pipelineDefinition.append("queue name="); //include the trailing space to create a separator that we know we will need
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! autovideosink ");
+		pipelineDefinition.append(" ! videoconvert ! xvimagesink ");
 	}
 
 

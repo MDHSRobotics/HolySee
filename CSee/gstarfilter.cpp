@@ -160,6 +160,13 @@ gst_ar_filter_class_init(GstArFilterClass * klass)
 		gst_static_pad_template_get(&sink_factory));
 }
 
+static void arfilter_post(GstArFilter * filter,std::string& message){
+	GstMessage * gstMessage;
+	gstMessage = gst_message_new_application(GST_OBJECT(filter),
+			gst_structure_new(message.c_str(), NULL));
+	gst_element_post_message (GST_ELEMENT(filter),gstMessage);
+}
+
 /* initialize the new element
 * instantiate pads and add them to element
 * set pad calback functions
@@ -186,7 +193,6 @@ gst_ar_filter_init(GstArFilter * filter)
 
 	filter->silent = FALSE;
 
-	//cv::namedWindow("opencv", 1);
 
 }
 

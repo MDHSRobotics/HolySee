@@ -6,7 +6,7 @@
 #include "Config.h"
 #include "Streamer.h"
 #include "easywsclient.hpp"
-
+#include "Poco/JSON/Parser.h"
 
 class MSee
 {
@@ -15,16 +15,17 @@ private:
 	std::string& configFileName;
 	std::string robotURI;
 	Config* config = NULL;
-	Streamer* streamer = NULL;
-
-
+	
 public:
+	static Streamer* streamer;
+	static unsigned char currentChannel;
+	static unsigned char channelCount;
 	MSee(int argc,char**argv,std::string& instanceName, std::string& configFileName);
 	void start();
 	void stop();
-	void switchTo(int);
+	static void switchTo(int);
 	int getChannelCount();
-	void robotDIscovered(std::string&);
+	void robotDiscovered(std::string&);
 	std::string& getRobotURI();
 	void setRobotURI(std::string&);
 };

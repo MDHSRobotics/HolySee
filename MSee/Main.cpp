@@ -47,7 +47,7 @@ void processKeys( MSee*  handler){
 	   			printf("%s\n","switching..." );
 	   			currentChannel ++;
 	   			currentChannel = currentChannel%channels;
-	   			handler->switchTo(currentChannel);
+	   			MSee::switchTo(currentChannel);
 	   	    }
 	   	    else if(c==0x78){
 	   			printf("%s\n","quitting..." );

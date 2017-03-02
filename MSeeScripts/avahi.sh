@@ -1,1 +1,1 @@
-avahi-browse -r -t _ws._tcp
+avahi-browse -r -t _ni._tcp

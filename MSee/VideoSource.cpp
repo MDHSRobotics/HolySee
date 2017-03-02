@@ -4,15 +4,20 @@
 VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string cvName) : Source(name, deviceName, showRaw, arName, cvName)
 {
 }
-
-VideoSource::~VideoSource()
+VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string cvName,std::string sourceElement) : Source(name, deviceName, showRaw, arName, cvName),sourceElement(sourceElement)
 {
 }
 
+
 std::string VideoSource::getPipelineSegment(){
 	std::string segment;
-	segment.append("v4l2src ");
+	segment.append(sourceElement);
+	segment.append(" ");
 	//segment.append(device);
-	segment.append(" ! video/x-raw,width=640,framerate=15/1,format=BGR");
+	segment.append(" ! video/x-raw,width=640,height=480,framerate=15/1,format=BGR");
 	return segment;
+}
+
+VideoSource::~VideoSource()
+{
 }

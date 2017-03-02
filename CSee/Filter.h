@@ -8,6 +8,7 @@ class Filter
 {
 private:
 	std::string &name;
+	
 public:
 	Filter(std::string&);
 	virtual void process(cv::Mat&) = 0;

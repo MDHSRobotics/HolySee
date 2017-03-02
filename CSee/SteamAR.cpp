@@ -87,6 +87,7 @@ void SteamAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv:
 	}
     printf((IAmGood?"IAmGood\n":"bummer ...\n"));
 
+
 	for(int c=0;c<contours.size();c++){
 		std::vector<cv::Point> contour =contours.at(c);
 

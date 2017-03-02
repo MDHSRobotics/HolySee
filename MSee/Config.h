@@ -12,6 +12,7 @@
 
 #define AR_TOKEN std::string("AR")
 #define CV_TOKEN std::string("CV")
+#define source_TOKEN std::string("source")
 
 using Poco::AutoPtr;
 using Poco::Util::PropertyFileConfiguration;
