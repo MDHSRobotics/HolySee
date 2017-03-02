@@ -16,6 +16,7 @@ void CircleAR::process(cv::Mat& frame){
 		printf("processing cirle\n");
 		first = false;
 		GstStructure *msgStruct = gst_structure_new("filterpostevent", "filter", G_TYPE_STRING, getName().c_str(), "eventData", G_TYPE_STRING , "circling ...", NULL);
-		post(msgStruct);
+		post(msgStruct);  //test posting capability 
+		postBooleanEvent("targetAcquired", true); //test posting capability
 	}
 }
