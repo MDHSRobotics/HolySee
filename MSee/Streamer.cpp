@@ -50,6 +50,17 @@ void Streamer::play(){
 						std::string filter(g_value_get_string(gst_structure_get_value(gst_message_get_structure(msg), "filter")));
 						printf("filter: %s\n", filter.c_str());
 					}
+					if (msgType == std::string("filterpostevent")){
+						printf("struct name: %s\n", msgType.c_str());
+						if (gst_structure_has_field(gst_message_get_structure(msg), "filter")){
+							std::string filter(g_value_get_string(gst_structure_get_value(gst_message_get_structure(msg), "filter")));
+							printf("filter: %s\n", filter.c_str());
+						}
+						if (gst_structure_has_field(gst_message_get_structure(msg), "eventData")){
+							std::string eventData(g_value_get_string(gst_structure_get_value(gst_message_get_structure(msg), "eventData")));
+							printf("element: %s\n", eventData.c_str());
+						}
+					}					
 				}
 			}			
 			else{
