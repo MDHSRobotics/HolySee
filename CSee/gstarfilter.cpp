@@ -306,6 +306,15 @@ gst_ar_filter_sink_event(GstPad * pad, GstObject * parent, GstEvent * event)
 		gst_ar_filter_stop_processing(parent);
 		ret = gst_pad_event_default(pad, parent, event);
 		break;
+	case GST_EVENT_STREAM_START:
+		printf("steam start event ... \n");
+		if (filter->filterName != NULL && filter->filterName->len > 0){
+			GstBus *bus = GST_ELEMENT_BUS(filter);
+			GstStructure *structure = gst_structure_new("initevent", "element", G_TYPE_STRING, "arfilter", "filter", G_TYPE_STRING, filter->filterName->str, NULL);
+			GstMessage *msg = gst_message_new_application(GST_OBJECT(filter), structure);
+			gst_bus_post(bus, msg);
+		}
+		break;			
 	default:
 		ret = gst_pad_event_default(pad, parent, event);
 		break;
