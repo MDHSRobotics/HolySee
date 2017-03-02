@@ -37,6 +37,21 @@ void Streamer::play(){
 			else if(msg->type == GST_MESSAGE_EOS){
 				 printf("%s\n","bus sent an EOS message" );
 			}
+			if (msg->type == GST_MESSAGE_APPLICATION){
+				printf("bus sent an application message, type:%s\n", GST_MESSAGE_TYPE_NAME(msg));
+				std::string msgType(gst_structure_get_name(gst_message_get_structure(msg)));
+				if (msgType == std::string("initevent")){
+					printf("struct name: %s\n", msgType.c_str());
+					if (gst_structure_has_field(gst_message_get_structure(msg),"element")){
+						std::string element(g_value_get_string(gst_structure_get_value(gst_message_get_structure(msg), "element")));
+						printf("element: %s\n", element.c_str());
+					}
+					if (gst_structure_has_field(gst_message_get_structure(msg), "filter")){
+						std::string filter(g_value_get_string(gst_structure_get_value(gst_message_get_structure(msg), "filter")));
+						printf("filter: %s\n", filter.c_str());
+					}
+				}
+			}			
 			else{
 				 //printf("%s\n","bus sent some other message" );
 			}
