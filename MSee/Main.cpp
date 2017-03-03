@@ -75,7 +75,7 @@ int main(int argc,char *argv[])
 	std::thread keyboardListener(processKeys,msee);
 	keyboardListener.detach();
 	
-	while(!msee->isReady()){
+	while(!MSee::streamer->isReady()){
 		std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
 	}
 	
