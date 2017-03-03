@@ -24,6 +24,7 @@ private:
 	MSee* msee;
 	bool stopped=false;
 	void createPipeline();
+	int consolePort = 0;
 public:
 	Streamer(int, char**,Config&, MSee* msee);
 	void initialize();
@@ -35,6 +36,7 @@ public:
 	void stop();
 	bool done();
 	void setChannel(int channelId);
+	void setConsole(int port);
 };
 
 #endif /* __TEAM4141_STREAMER__ */
