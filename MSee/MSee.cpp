@@ -12,13 +12,12 @@ MSee::MSee(int argc, char**argv, std::string& instanceName, std::string& configF
 {
 	config = new Config(instanceName, configFileName);
 	MSee::streamer = new Streamer(argc,argv,*config, this);
-	MSee::streamer->initialize();
-	MSee::channelCount = MSee::streamer->countChannels();	
 }
 
 void MSee::start(){
 	MSee::streamer->play();
 }
+
 void MSee::stop(){
 	MSee::streamer->stop();
 }
