@@ -69,5 +69,6 @@ public:
 	static int calculateX(Reading&,double,int,int);
 	static int calculateY(Reading&,double,int,int);
 	static unsigned char calculateColor(Reading&);
+	void initialize();
 };
 	
