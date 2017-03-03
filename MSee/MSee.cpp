@@ -6,14 +6,14 @@
 #include <Poco/Dynamic/Var.h>
 
 #define SWITH_CHANNEL_NOTIFICATION_TOKEN std::string("SwitchChannelNotification")
+#define CONSOLE_CONNECTION_NOTIFICATION_TOKEN std::string("ConsoleConnectionNotification")
 
 MSee::MSee(int argc, char**argv, std::string& instanceName, std::string& configFileName) : instanceName(instanceName), configFileName(configFileName)
 {
 	config = new Config(instanceName, configFileName);
 	MSee::streamer = new Streamer(argc,argv,*config, this);
 	MSee::streamer->initialize();
-	MSee::channelCount = MSee::streamer->countChannels();
-	
+	MSee::channelCount = MSee::streamer->countChannels();	
 }
 
 void MSee::start(){
@@ -51,6 +51,12 @@ void handle_message(const std::string & message)
 		MSee::currentChannel = MSee::currentChannel%MSee::channelCount;
 		MSee::switchTo(MSee::currentChannel);		
 	}
+	else if(type == CONSOLE_CONNECTION_NOTIFICATION_TOKEN){
+		printf("getting console connection infomraiton: \n");
+		printf("\t%s\n",message);
+		int port = 8508;  // parse dialog from notification
+		MSee::streamer->setConsole(port);		
+	}	
 }
 
 
