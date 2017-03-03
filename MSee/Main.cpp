@@ -73,8 +73,12 @@ int main(int argc,char *argv[])
 
 	//start a keyboard listener
 	std::thread keyboardListener(processKeys,msee);
-   keyboardListener.detach();
-
+	keyboardListener.detach();
+	
+	while(!msee->isReady()){
+		std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
+	}
+	
 	msee->start();
 
 	delete msee;
