@@ -24,7 +24,7 @@ Frame LidarDevice::read(){
 		simulateFrame(frame);
 	}
 	else{
-		
+		deviceRead(frame);
 	}
 	//printf("\n");
 	return frame;
@@ -418,4 +418,35 @@ unsigned char LidarDevice::calculateColor(Reading& reading){
 		color = (unsigned char)((int)(reading.distance*255.0f / LidarDevice::Range));
 	}
 	return color;
+}
+
+unsigned char LidarDevice::deviceRead(Frame& frame){
+	frame.readings.push_back(createReading(352.718750f, 1706.000000f, 0x47, 0x01));
+	
+	//grab the next set of data
+        rplidar_response_measurement_node_t nodes[360*2];
+        size_t   count = _countof(nodes);
+
+        op_result = drv->grabScanData(nodes, count);
+
+        if (IS_OK(op_result)) {
+//            drv->ascendScanData(nodes, count);
+
+        	for (int pos = 0; pos < (int)count ; ++pos) {
+			bool isSynch = nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT;
+			float angle = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
+			float distance = nodes[pos].distance_q2/4.0f;
+			char quality = nodes[pos].sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;
+
+	//            	printf("readings.push_back({%d,%f,%f,%d});\n",isSynch,angle,distance,quality);
+
+			printf("%s theta: %03.2f Dist: %08.2f Q: %d \n",
+			    (isSynch) ?"S ":"  ",
+			    angle,
+			    distance,
+			    quality);
+			Reading reading(isSynch,angle,distance,quality);
+			scan.push_back(reading);
+        	}
+	}	
 }
