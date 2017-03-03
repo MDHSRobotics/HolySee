@@ -23,6 +23,9 @@ Frame LidarDevice::read(){
 		//printf("simulate frame");
 		simulateFrame(frame);
 	}
+	else{
+		
+	}
 	//printf("\n");
 	return frame;
 }
