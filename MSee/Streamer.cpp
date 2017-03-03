@@ -132,34 +132,34 @@ void Streamer::initialize(){
 
 	//map channels to our channel dictionary
 	try{
-	GstElement* switchEl = gst_bin_get_by_name((GstBin*)pipeline,"stream");
-	if(switchEl!=NULL){
-		printf("switch element has %d input pads\n",switchEl->numsinkpads);
-		int i=0;
-		GstIterator* iter = gst_element_iterate_sink_pads(switchEl);
-		GValue vPad = G_VALUE_INIT;
-		channelNames.clear();
-		while(gst_iterator_next(iter,&vPad)==GST_ITERATOR_OK){
-			GstPad* pad = GST_PAD(g_value_get_object(&vPad));
-			const gchar* pad_name = gst_pad_get_name(pad);
-			channelNames.push_back(std::string(pad_name));
-    		channels.push_back(pad);
-			printf("padName: %s\n",pad_name);
-			g_free(const_cast<gchar*>(pad_name));
-			i++;
+		GstElement* switchEl = gst_bin_get_by_name((GstBin*)pipeline,"stream");
+		if(switchEl!=NULL){
+			printf("switch element has %d input pads\n",switchEl->numsinkpads);
+			int i=0;
+			GstIterator* iter = gst_element_iterate_sink_pads(switchEl);
+			GValue vPad = G_VALUE_INIT;
+			channelNames.clear();
+			while(gst_iterator_next(iter,&vPad)==GST_ITERATOR_OK){
+				GstPad* pad = GST_PAD(g_value_get_object(&vPad));
+				const gchar* pad_name = gst_pad_get_name(pad);
+				channelNames.push_back(std::string(pad_name));
+				channels.push_back(pad);
+				printf("padName: %s\n",pad_name);
+				g_free(const_cast<gchar*>(pad_name));
+				i++;
+			}
+			gst_iterator_free(iter);
 		}
-		gst_iterator_free(iter);
-	}
-	printf("%s\n", "Streamer initialized");
-	for(int c=0;c<channels.size();c++){
-		printf("channel %s %s\n", channelNames[c].c_str(),(channels[c]!=NULL?" is defined":" is NULL"));
-	}
+		printf("%s\n", "Streamer initialized");
+		for(int c=0;c<channels.size();c++){
+			printf("channel %s %s\n", channelNames[c].c_str(),(channels[c]!=NULL?" is defined":" is NULL"));
+		}
 	}
 	catch(std::exception e){
 		printf("ERROR: %s\n",e.what());
 	}
+	MSee::channelCount = countChannels();	
 	printf("%s\n", "Streamer initialized");
-
 }
 
 void Streamer::free(){
