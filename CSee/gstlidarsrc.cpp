@@ -224,6 +224,7 @@ gst_lidar_src_start_reading(GstLidarSrc * self)
 		return FALSE;
 	}
 	self->lidar = new LidarDevice(self->device, self->isSimulation);
+	self->lidar->initialize();
 	return TRUE;
 }
 
