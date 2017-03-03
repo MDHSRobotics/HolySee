@@ -51,7 +51,7 @@ void handle_message(const std::string & message)
 		MSee::switchTo(MSee::currentChannel);		
 	}
 	else if(type == CONSOLE_CONNECTION_NOTIFICATION_TOKEN){
-		printf("getting console connection infomraiton: \n");
+		printf("getting console connection infomration: \n");
 		printf("\t%s\n",message);
 		std::string address("10.41.41.43");  // parse dialog from notification
 		MSee::streamer->setConsole(address);		
