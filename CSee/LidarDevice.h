@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-
+#include "rplidar/rplidar.h" //RPLIDAR standard sdk, all-in-one header
 
 //   The data buffer is set to 4k, which is 4096 bytes
 //   the header indicates how many readings were provided in the frame, it is 6 bytes in size
