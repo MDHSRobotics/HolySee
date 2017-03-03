@@ -7,25 +7,23 @@
 
 #include "DNSSDBrowser.h"
 #include "stdio.h"
-
-DNSSDBrowser::DNSSDBrowser(MSee* msee): msee(msee) {
-
-}
-
-DNSSDBrowser::~DNSSDBrowser() {
-}
+#include <chrono>
+#include <thread>
 
 void DNSSDBrowser::scan(MSee* msee){
 	std::string result;
 	std::string command("/usr/local/msee/avahi.sh");
 	bool foundRobot = false;
 	int attempts = 0;
-	int limit = 20;
+	int limit = 200;
 	std::string robotURI;
 	while(! foundRobot && attempts < limit){
 		Config::discover(command,result);
 		if(result.length()>0){
 			foundRobot = discoverDNSSD(result,robotURI);
+		}
+		else{
+			std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
 		}
 		attempts++;
 	}
