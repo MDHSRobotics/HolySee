@@ -18,6 +18,7 @@ bool Streamer::done(){
 
 
 void Streamer::play(){
+	initialize();
 	 printf("%s\n","playing" );
 	/* start playing */
 	gst_element_set_state(pipeline,GST_STATE_PLAYING);
@@ -183,5 +184,5 @@ void Streamer::setConsole(std::string& address){
 }
 
 bool Streamer::isReady(){
-	return !consoleAddress.empty()>0 && pipeline!=NULL; 
+	return !consoleAddress.empty()>0; 
 }
