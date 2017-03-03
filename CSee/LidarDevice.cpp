@@ -8,12 +8,20 @@
 
 void simulateFrame(Frame& frame);
 
-LidarDevice::LidarDevice(char * device,bool isSimulation) : device(std::string(device)),isSimulation(isSimulation)
+LidarDevice::LidarDevice(char * device,bool isSimulation) : device(std::string(device)),isSimulation(isSimulation),drv(NULL)
 {
+	opt_com_baudrate = 115200;
+	opt_com_path = device;
+	printf("path: %s\n",device);
 }
 
 LidarDevice::~LidarDevice()
 {
+	if(isSimulation) return;
+	if(drv==NULL) return;
+	drv->stop();
+	drv->stopMotor();
+	RPlidarDriver::DisposeDriver(drv);
 }
 
 Frame LidarDevice::read(){
@@ -439,12 +447,11 @@ unsigned char LidarDevice::calculateColor(Reading& reading){
 }
 
 unsigned char LidarDevice::deviceRead(Frame& frame){
-	frame.readings.push_back(createReading(352.718750f, 1706.000000f, 0x47, 0x01));
+	if(drv==NULL) return;
 	
 	//grab the next set of data
         rplidar_response_measurement_node_t nodes[360*2];
         size_t   count = _countof(nodes);
-
         op_result = drv->grabScanData(nodes, count);
 
         if (IS_OK(op_result)) {
@@ -455,16 +462,12 @@ unsigned char LidarDevice::deviceRead(Frame& frame){
 			float angle = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
 			float distance = nodes[pos].distance_q2/4.0f;
 			char quality = nodes[pos].sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;
-
-	//            	printf("readings.push_back({%d,%f,%f,%d});\n",isSynch,angle,distance,quality);
-
-			printf("%s theta: %03.2f Dist: %08.2f Q: %d \n",
+			frame.readings.push_back(createReading(352.718750f, 1706.000000f, 0x47, 0x01));
+			printf("%s angle: %03.2f distance: %08.2f Q: %02x \n",
 			    (isSynch) ?"S ":"  ",
 			    angle,
 			    distance,
 			    quality);
-			Reading reading(isSynch,angle,distance,quality);
-			scan.push_back(reading);
         	}
 	}	
 }
