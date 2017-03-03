@@ -4,6 +4,7 @@
 #include <thread>
 #include <iostream>
 #include "MSee.h"
+#include "Streamer.h"
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>

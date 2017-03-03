@@ -1,4 +1,4 @@
-﻿/* GStreamer
+/* GStreamer
 * Copyright (C) <2017> Martin Smith <msmith92663@gmail.com>
 *  @author: Martin Smith <msmith92663@gmail.com>
 *
@@ -40,7 +40,7 @@ G_BEGIN_DECLS
 	(G_TYPE_CHECK_CLASS_TYPE((klass), GST_TYPE_LIDAR_SRC))
 typedef struct _GstLidarSrc GstLidarSrc;
 typedef struct _GstLidarSrcClass GstLidarSrcClass;
-
+ 
 struct _GstLidarSrc
 {
 	GstPushSrc element;

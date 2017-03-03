@@ -2,8 +2,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "MSee.h"
 
-Streamer::Streamer(int argc, char** argv,Config& config) : argc(argc), argv(argv),config(config)
+
+Streamer::Streamer(int argc, char** argv,Config& config, MSee* msee) : argc(argc), argv(argv),config(config),msee(msee)
 {
 }
 
@@ -74,6 +76,7 @@ void Streamer::play(){
 						printf("eventData: %s\n", (eventData ? "true" : "false"));
 					}
 					printf("targetAcquiredEvent: %s %s\n", filter.c_str(), (eventData?"true":"false"));
+					msee->targetAcquiredUpdate(filter,eventData);
 				}				
 			}			
 			else{

@@ -3,10 +3,11 @@
 
 #include <string>
 #include <stdio.h>
+#include <queue>
 #include "Config.h"
-#include "Streamer.h"
 #include "easywsclient.hpp"
 #include "Poco/JSON/Parser.h"
+class Streamer;
 
 class MSee
 {
@@ -15,7 +16,8 @@ private:
 	std::string& configFileName;
 	std::string robotURI;
 	Config* config = NULL;
-	
+	std::queue<std::string> outqueue;
+
 public:
 	static Streamer* streamer;
 	static unsigned char currentChannel;
@@ -28,6 +30,10 @@ public:
 	void robotDiscovered(std::string&);
 	std::string& getRobotURI();
 	void setRobotURI(std::string&);
+	void targetAcquiredUpdate(std::string filter, bool targetAcquired);
+	void post(std::string message);
+	bool hasMessages();
+	std::string nextMessage();
 };
 
 #endif /* __TEAM4141_MSEE__ */

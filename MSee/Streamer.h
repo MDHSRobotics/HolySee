@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __TEAM4141_STREAMER__
+#define __TEAM4141_STREAMER__
 
 #include <string>
 #include <vector>
@@ -9,6 +10,8 @@
 #include "Config.h"
 #include "Source.h"
 
+class MSee;
+
 class Streamer
 {
 private:
@@ -18,10 +21,11 @@ private:
 	std::vector<GstPad*> channels;
 	GstElement *pipeline;
 	GstBus *bus;
+	MSee* msee;
 	bool stopped=false;
 	void createPipeline();
 public:
-	Streamer(int, char**,Config&);
+	Streamer(int, char**,Config&, MSee* msee);
 	void initialize();
 	std::string getPipelineDefinition();
 	int countChannels();
@@ -33,3 +37,4 @@ public:
 	void setChannel(int channelId);
 };
 
+#endif /* __TEAM4141_STREAMER__ */

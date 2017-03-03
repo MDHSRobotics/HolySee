@@ -1,6 +1,7 @@
 #include "MSee.h"
 #include <thread>
 #include <assert.h>
+#include "Streamer.h"
 
 #include <Poco/Dynamic/Var.h>
 
@@ -9,7 +10,7 @@
 MSee::MSee(int argc, char**argv, std::string& instanceName, std::string& configFileName) : instanceName(instanceName), configFileName(configFileName)
 {
 	config = new Config(instanceName, configFileName);
-	MSee::streamer = new Streamer(argc,argv,*config);
+	MSee::streamer = new Streamer(argc,argv,*config, this);
 	MSee::streamer->initialize();
 	MSee::channelCount = MSee::streamer->countChannels();
 	
@@ -58,12 +59,17 @@ void handleCommunications(MSee * msee){
 	ws = easywsclient::WebSocket::from_url(msee->getRobotURI());
 	assert(ws);
 	std::string message = "{\"type\":\"remoteIdentification\", \"id\":\"tegra\"}";
-    ws->send(message);
-	printf("sent \"%s\"\n",message.c_str());
+	msee->post(message);
     bool done = false;
     while(!done){
-    	        ws->poll();
+    	        ws->poll(50);
     	        ws->dispatch(handle_message);
+				while(msee->hasMessages()){
+					const std::string& messageSent = msee->nextMessage(); 
+					ws->send(messageSent);
+					printf("sent \"%s\"\n",messageSent.c_str());
+				}
+
     }
     delete ws; //
 }
@@ -81,4 +87,28 @@ std::string& MSee::getRobotURI(){
 
 void MSee::setRobotURI(std::string& uri){
 	robotURI = uri;
+}
+
+void MSee::targetAcquiredUpdate(std::string filter, bool targetAcquired){
+	std::string message = "{\"type\":\"targetAcquiredNotification\", \"filter\":\"";
+	message.append(filter);
+	message.append("\", \"targetAcquired\":");
+	message.append((targetAcquired?"true":"false"));
+	message.append("}");
+    post(message);
+}
+
+void MSee::post(std::string message){
+	outqueue.push(message);
+	printf("queueing \"%s\"\n",message.c_str());
+}
+
+bool MSee::hasMessages(){
+	return !outqueue.empty();
+}
+
+std::string MSee::nextMessage(){
+	std::string message = outqueue.front();
+	outqueue.pop();
+	return message;
 }
