@@ -24,7 +24,7 @@ private:
 	MSee* msee;
 	bool stopped=false;
 	void createPipeline();
-	int consolePort = 0;
+	std::string consoleAddress;
 public:
 	Streamer(int, char**,Config&, MSee* msee);
 	void initialize();
