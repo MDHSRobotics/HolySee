@@ -178,10 +178,10 @@ int Streamer::countChannels(){
 	return channels.size();
 }
 
-void Streamer::setConsole(int port){
-	consolePort = port;
+void Streamer::setConsole(std::string& address){
+	consoleAddress = address;
 }
 
 bool Streamer::isReady(){
-	return consolePort>0 && pipeline!=NULL; 
+	return !consoleAddress.empty()>0 && pipeline!=NULL; 
 }
