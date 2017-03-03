@@ -70,7 +70,7 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 
 		//printf("%d devices\n",devices.size());
 
-		printf("pipelineDefinition:\n\t%s\n",getPipelineDefinition().c_str());
+		//printf("pipelineDefinition:\n\t%s\n",getPipelineDefinition().c_str());
 
 
 	}
