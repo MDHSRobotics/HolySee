@@ -54,8 +54,8 @@ void handle_message(const std::string & message)
 	else if(type == CONSOLE_CONNECTION_NOTIFICATION_TOKEN){
 		printf("getting console connection infomraiton: \n");
 		printf("\t%s\n",message);
-		int port = 8508;  // parse dialog from notification
-		MSee::streamer->setConsole(port);		
+		std::string address("10.41.41.43");  // parse dialog from notification
+		MSee::streamer->setConsole(address);		
 	}	
 }
 
