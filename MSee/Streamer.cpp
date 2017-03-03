@@ -5,7 +5,7 @@
 #include "MSee.h"
 
 
-Streamer::Streamer(int argc, char** argv,Config& config, MSee* msee) : argc(argc), argv(argv),config(config),msee(msee)
+Streamer::Streamer(int argc, char** argv,Config& config, MSee* msee) : argc(argc), argv(argv),config(config),msee(msee),pipeline(NULL)
 {
 }
 
@@ -176,4 +176,12 @@ void Streamer::free(){
 
 int Streamer::countChannels(){
 	return channels.size();
+}
+
+void Streamer::setConsole(int port){
+	consolePort = port;
+}
+
+bool Streamer::isReady(){
+	return consolePort>0 && pipeline!=NULL; 
 }
