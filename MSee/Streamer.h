@@ -36,7 +36,7 @@ public:
 	void stop();
 	bool done();
 	void setChannel(int channelId);
-	void setConsole(std::striong address);
+	void setConsole(std::string address);
 	bool isReady();
 };
 
