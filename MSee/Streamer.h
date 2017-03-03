@@ -37,6 +37,7 @@ public:
 	bool done();
 	void setChannel(int channelId);
 	void setConsole(int port);
+	bool isReady();
 };
 
 #endif /* __TEAM4141_STREAMER__ */
