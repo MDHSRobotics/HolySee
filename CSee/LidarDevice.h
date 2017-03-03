@@ -70,5 +70,6 @@ public:
 	static int calculateY(Reading&,double,int,int);
 	static unsigned char calculateColor(Reading&);
 	void initialize();
+	void shutdown();
 };
 	
