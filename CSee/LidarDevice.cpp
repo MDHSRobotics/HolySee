@@ -40,6 +40,24 @@ Reading createReading(float angle, float distance, unsigned char qualityFlag, un
 	return reading;
 }
 
+void LidarSource::initialize(){
+	if(isSimulation) return;
+	drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+
+	if (!drv) {
+		fprintf(stderr, "insufficent memory, exit\n");
+		return;
+	}
+	// make connection...
+	if (IS_FAIL(drv->connect(opt_com_path, opt_com_baudrate))) {
+		fprintf(stderr, "Error, cannot bind to the specified serial port %s.\n" , opt_com_path);
+		RPlidarDriver::DisposeDriver(drv);
+		return;
+	}
+	printf("Connected!\n");
+	drv->startMotor();
+	drv->startScanExpress(false);
+}
 
 void simulateFrame(Frame& frame)
 {
