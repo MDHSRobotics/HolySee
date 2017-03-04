@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<!-- saved from url=(0071)http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#GstVideoMixerPad -->
+<html lang="en" dir="ltr" class="client-js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script async="" src="./Gstreamer cheat sheet - MyLabWiki_files/load.php"></script>
+
+<title>Gstreamer cheat sheet - MyLabWiki</title>
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+<meta name="generator" content="MediaWiki 1.23.14">
+<link rel="shortcut icon" href="http://wiki.oz9aec.net/favicon.ico">
+<link rel="search" type="application/opensearchdescription+xml" href="http://wiki.oz9aec.net/opensearch_desc.php" title="MyLabWiki (en)">
+<link rel="EditURI" type="application/rsd+xml" href="http://wiki.oz9aec.net/api.php?action=rsd">
+<link rel="copyright" href="http://creativecommons.org/licenses/by-sa/3.0/">
+<link rel="alternate" type="application/atom+xml" title="MyLabWiki Atom feed" href="http://wiki.oz9aec.net/index.php?title=Special:RecentChanges&amp;feed=atom">
+<link rel="stylesheet" href="./Gstreamer cheat sheet - MyLabWiki_files/load(1).php">
+<style>
+.cite-accessibility-label{position:absolute !important; top:-99999px;clip:rect(1px 1px 1px 1px); clip:rect(1px,1px,1px,1px);padding:0 !important;border:0 !important;height:1px !important;width:1px !important;overflow:hidden}.mw-cite-backlink,.cite-accessibility-label{-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:a59b70abe6ecaa39388bb79ebc509cb0 */
+.mw-collapsible-toggle{float:right;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;user-select:none} caption .mw-collapsible-toggle{float:none} li .mw-collapsible-toggle{float:none} .mw-collapsible-toggle-li{list-style:none}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:6c1d24e90626cec584f0869483f983e7 */
+.suggestions{overflow:hidden;position:absolute;top:0;left:0;width:0;border:none;z-index:1099;padding:0;margin:-1px -1px 0 0} html > body .suggestions{margin:-1px 0 0 0}.suggestions-special{position:relative;background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0;margin-top:-2px;display:none;padding:0.25em 0.25em;line-height:1.25em}.suggestions-results{background-color:white;cursor:pointer;border:solid 1px #aaaaaa;padding:0;margin:0}.suggestions-result{color:black;margin:0;line-height:1.5em;padding:0.01em 0.25em;text-align:left; overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}.suggestions-result-current{background-color:#4C59A6;color:white}.suggestions-special .special-label{color:gray;text-align:left}.suggestions-special .special-query{color:black;font-style:italic;text-align:left}.suggestions-special .special-hover{background-color:silver}.suggestions-result-current .special-label,.suggestions-result-current .special-query{color:white}.highlight{font-weight:bold}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:9f9511aa4ef920d34591113e825e6a1e */
+.postedit-container{margin:0 auto;position:fixed;top:0;height:0;left:50%;z-index:1000;font-size:13px}.postedit-container:hover{cursor:pointer}.postedit{position:relative;top:0.6em;left:-50%;padding:.6em 3.6em .6em 1.1em;line-height:1.5625em;color:#626465;background-color:#f4f4f4;border:1px solid #dcd9d9;text-shadow:0 0.0625em 0 rgba(255,255,255,0.5);border-radius:5px;-webkit-box-shadow:0 2px 5px 0 #ccc;box-shadow:0 2px 5px 0 #ccc;-webkit-transition:all 0.25s ease-in-out;-moz-transition:all 0.25s ease-in-out;-ms-transition:all 0.25s ease-in-out;-o-transition:all 0.25s ease-in-out;transition:all 0.25s ease-in-out}.skin-monobook .postedit{top:6em !important}.postedit-faded{opacity:0}.postedit-icon{padding-left:41px;  line-height:25px;background-repeat:no-repeat;background-position:8px 50%}.postedit-icon-checkmark{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAABblBMVEUAAAD///////9PfTf///80aRdTgjn///9Feij///////////9Rfzf///////////9PfjZRgDh1o1xOfTb///////+bwYqLtnj///////9PfTa82K////9WhT6YxIL///9QgDdTgzr////////j7uDl7eLq8efi693k7OH///////9UhjuBr2rp9uRUhjr///9YljVKgir///9WiTlYjT3////9/v57vFlbkT5PjC9dlD/5/fhuq09stUTs9uhxuElctCpfnT1huDFloEZloUZmpENmvDZpvDxpvTxqvjxrvT5rvT9rwTxsqktswD5uwkBvuUdxw0NztFBztU9ztVBzwkp0tlJ1xkd2t1R3uVR4w1F4xk54x014yE15uVZ5v1R5xVB6v1R7yFJ8wVh9xVl9yFR9yVd9ylN+xVh+yFd/x1l/yFeAylmEx1+Ny2uY0Hqe04Wj1Ymv3Ze33qLD47TJ5L3O6cPU7Mrq9eb2+/Q4j37OAAAAQHRSTlMAAQIEBAUFBQwPFB4fJCUoKiosQEhJS01RUlZZXmdydXaChYuSlJSWmJmoq6uur8LExcvM19fg5ejt8fX2+Pr7SljgewAAAKpJREFUGBkFwQNCAwAAAMDLtl3LtrG4rWXbtvX77gAgZ6grFwC0bhwNVgKgdPZx8b0dgLi+s7Wn0VoAqpfOI9+BNADZI7fLrz2pSEwGHZuH+78lSK8ZLkLezF3ooyUG3VPXq2USei9WngeyoG195yBYWDF3E/2pAhl1e9Gr8bGT+bfOFCC2fnvh4X7rcqIAQNNu+HT6sxkAjceTL/2ZAIhv+PorBwBJxfkA//dFHSCBy/UTAAAAAElFTkSuQmCC);background-image:url(/resources/src/mediawiki.action/images/green-checkmark.png?2016-08-15T19:15:00Z)!ie;background-position:left}.postedit-close{position:absolute;padding:0 .8em;right:0;top:0;font-size:1.25em;font-weight:bold;line-height:2.3em;color:black;text-shadow:0 0.0625em 0 white;text-decoration:none;opacity:0.2;filter:alpha(opacity=20)}.postedit-close:hover{color:black;text-decoration:none;opacity:0.4;filter:alpha(opacity=40)}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:3b42438a636e411d951b8b3340404b5e */</style><style>
+.suggestions a.mw-searchSuggest-link,.suggestions a.mw-searchSuggest-link:hover,.suggestions a.mw-searchSuggest-link:active,.suggestions a.mw-searchSuggest-link:focus{color:black;text-decoration:none}.suggestions-result-current a.mw-searchSuggest-link,.suggestions-result-current a.mw-searchSuggest-link:hover,.suggestions-result-current a.mw-searchSuggest-link:active,.suggestions-result-current a.mw-searchSuggest-link:focus{color:white}.suggestions a.mw-searchSuggest-link .special-query{ overflow:hidden;-o-text-overflow:ellipsis; text-overflow:ellipsis;white-space:nowrap}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:ae3fa4570b5ac0c6cf7b3776c8ae4d6f */</style><meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="./Gstreamer cheat sheet - MyLabWiki_files/load(2).php">
+<style>a:lang(ar),a:lang(kk-arab),a:lang(mzn),a:lang(ps),a:lang(ur){text-decoration:none}
+/* cache key: U6415905:resourceloader:filter:minify-css:7:0bab14ecfeb95a4f1167c83038c30275 */</style>
+<script src="./Gstreamer cheat sheet - MyLabWiki_files/load(3).php"></script><script src="./Gstreamer cheat sheet - MyLabWiki_files/load(4).php"></script>
+<script>if(window.mw){
+mw.config.set({"wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"Gstreamer_cheat_sheet","wgTitle":"Gstreamer cheat sheet","wgCurRevisionId":2124,"wgRevisionId":2124,"wgArticleId":228,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Gstreamer"],"wgBreakFrames":true,"wgPageContentLanguage":"en","wgPageContentModel":"wikitext","wgSeparatorTransformTable":["",""],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","January","February","March","April","May","June","July","August","September","October","November","December"],"wgMonthNamesShort":["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"wgRelevantPageName":"Gstreamer_cheat_sheet","wgIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgCategoryTreePageCategoryOptions":"{\"mode\":0,\"hideprefix\":20,\"showcount\":true,\"namespaces\":false}"});
+}</script><script>if(window.mw){
+mw.loader.implement("user.options",function($,jQuery){mw.user.options.set({"ccmeonemails":0,"cols":80,"date":"default","diffonly":0,"disablemail":0,"editfont":"default","editondblclick":0,"editsectiononrightclick":0,"enotifminoredits":0,"enotifrevealaddr":0,"enotifusertalkpages":1,"enotifwatchlistpages":1,"extendwatchlist":0,"fancysig":0,"forceeditsummary":0,"gender":"unknown","hideminor":0,"hidepatrolled":0,"imagesize":2,"math":1,"minordefault":0,"newpageshidepatrolled":0,"nickname":"","norollbackdiff":0,"numberheadings":0,"previewonfirst":0,"previewontop":1,"rcdays":7,"rclimit":50,"rows":25,"showhiddencats":0,"shownumberswatching":1,"showtoolbar":1,"skin":"vector","stubthreshold":0,"thumbsize":2,"underline":2,"uselivepreview":0,"usenewrc":0,"watchcreations":1,"watchdefault":1,"watchdeletion":0,"watchlistdays":3,"watchlisthideanons":0,"watchlisthidebots":0,"watchlisthideliu":0,"watchlisthideminor":0,"watchlisthideown":0,"watchlisthidepatrolled":0,"watchmoves":0,"wllimit":250,
+"useeditwarning":1,"prefershttps":1,"language":"en","variant-gan":"gan","variant-iu":"iu","variant-kk":"kk","variant-ku":"ku","variant-shi":"shi","variant-sr":"sr","variant-tg":"tg","variant-uz":"uz","variant-zh":"zh","searchNs0":true,"searchNs1":false,"searchNs2":false,"searchNs3":false,"searchNs4":false,"searchNs5":false,"searchNs6":false,"searchNs7":false,"searchNs8":false,"searchNs9":false,"searchNs10":false,"searchNs11":false,"searchNs12":false,"searchNs13":false,"searchNs14":false,"searchNs15":false,"variant":"en"});},{},{});mw.loader.implement("user.tokens",function($,jQuery){mw.user.tokens.set({"editToken":"+\\","patrolToken":false,"watchToken":false});},{},{});
+/* cache key: U6415905:resourceloader:filter:minify-js:7:8d7e903275f4fc5a5ad6387c1fbe7337 */
+}</script>
+<script>if(window.mw){
+mw.loader.load(["mediawiki.page.startup","mediawiki.legacy.wikibits","mediawiki.legacy.ajax","skins.vector.js"]);
+}</script><script src="./Gstreamer cheat sheet - MyLabWiki_files/load(5).php"></script>
+<!--[if lt IE 7]><style type="text/css">body{behavior:url("/skins/vector/csshover.min.htc")}</style><![endif]--></head>
+<body class="mediawiki ltr sitedir-ltr ns-0 ns-subject page-Gstreamer_cheat_sheet skin-vector action-view vector-animateLayout">
+		<div id="mw-page-base" class="noprint"></div>
+		<div id="mw-head-base" class="noprint"></div>
+		<div id="content" class="mw-body" role="main">
+			<a id="top"></a>
+			<div id="mw-js-message" style="display:none;"></div>
+						<h1 id="firstHeading" class="firstHeading" lang="en"><span dir="auto">Gstreamer cheat sheet</span></h1>
+						<div id="bodyContent">
+								<div id="siteSub">From MyLabWiki</div>
+								<div id="contentSub"></div>
+												<div id="jump-to-nav" class="mw-jump">
+					Jump to:					<a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#mw-navigation">navigation</a>, 					<a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#p-search">search</a>
+				</div>
+				<div id="mw-content-text" lang="en" dir="ltr" class="mw-content-ltr"><p>This page contains various shortcuts to achieving specific functionality using Gstreamer. These functionalities are mostly related to my <a href="http://wiki.oz9aec.net/index.php/Digital_Video_Transmission" title="Digital Video Transmission">Digital Video Transmission</a> experiments. There is no easy to read "user manual" for gstreamer but the online the plugin documentation<sup id="cite_ref-gst-doc_1-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-gst-doc-1">[1]</a></sup> often contains command line examples in addition to the API docs. Other sources of documentation:
+</p>
+<ul>
+<li> The manual page for gst-launch
+</li>
+<li> The gst-inspect tool
+</li>
+<li> Online tutorials
+</li>
+</ul>
+<p>The Gstreamer documentation is also available in Devhelp.
+</p>
+<div id="toc" class="toc"><div id="toctitle"><h2>Contents</h2><span class="toctoggle">&nbsp;[<a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#" class="internal" id="togglelink">hide</a>]&nbsp;</span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Video_Test_Source"><span class="tocnumber">1</span> <span class="toctext">Video Test Source</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Webcam_Capture"><span class="tocnumber">2</span> <span class="toctext">Webcam Capture</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Resizing_and_Cropping"><span class="tocnumber">3</span> <span class="toctext">Resizing and Cropping</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Filtering"><span class="tocnumber">4</span> <span class="toctext">Filtering</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Encoding_and_Muxing"><span class="tocnumber">5</span> <span class="toctext">Encoding and Muxing</span></a>
+<ul>
+<li class="toclevel-2 tocsection-6"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Single_Stream"><span class="tocnumber">5.1</span> <span class="toctext">Single Stream</span></a>
+<ul>
+<li class="toclevel-3 tocsection-7"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Test_Pattern"><span class="tocnumber">5.1.1</span> <span class="toctext">Test Pattern</span></a></li>
+<li class="toclevel-3 tocsection-8"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Webcam"><span class="tocnumber">5.1.2</span> <span class="toctext">Webcam</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-9"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Multiple_Streams"><span class="tocnumber">5.2</span> <span class="toctext">Multiple Streams</span></a></li>
+<li class="toclevel-2 tocsection-10"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Adding_Audio"><span class="tocnumber">5.3</span> <span class="toctext">Adding Audio</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-11"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Decoding_and_Demuxing"><span class="tocnumber">6</span> <span class="toctext">Decoding and Demuxing</span></a></li>
+<li class="toclevel-1 tocsection-12"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Network_Streaming"><span class="tocnumber">7</span> <span class="toctext">Network Streaming</span></a></li>
+<li class="toclevel-1 tocsection-13"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Compositing"><span class="tocnumber">8</span> <span class="toctext">Compositing</span></a>
+<ul>
+<li class="toclevel-2 tocsection-14"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Picture_in_Picture"><span class="tocnumber">8.1</span> <span class="toctext">Picture in Picture</span></a>
+<ul>
+<li class="toclevel-3 tocsection-15"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#GstVideoMixerPad"><span class="tocnumber">8.1.1</span> <span class="toctext">GstVideoMixerPad</span></a></li>
+<li class="toclevel-3 tocsection-16"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#VideoBox"><span class="tocnumber">8.1.2</span> <span class="toctext">VideoBox</span></a></li>
+<li class="toclevel-3 tocsection-17"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Video_Wall"><span class="tocnumber">8.1.3</span> <span class="toctext">Video Wall</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-18"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Text_Overlay"><span class="tocnumber">8.2</span> <span class="toctext">Text Overlay</span></a></li>
+<li class="toclevel-2 tocsection-19"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Time_Overlay"><span class="tocnumber">8.3</span> <span class="toctext">Time Overlay</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-20"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Complete_Examples"><span class="tocnumber">9</span> <span class="toctext">Complete Examples</span></a>
+<ul>
+<li class="toclevel-2 tocsection-21"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Time-Lapse_Video"><span class="tocnumber">9.1</span> <span class="toctext">Time-Lapse Video</span></a>
+<ul>
+<li class="toclevel-3 tocsection-22"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#From_recorded_video"><span class="tocnumber">9.1.1</span> <span class="toctext">From recorded video</span></a></li>
+<li class="toclevel-3 tocsection-23"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Single_frame_capture"><span class="tocnumber">9.1.2</span> <span class="toctext">Single frame capture</span></a></li>
+</ul>
+</li>
+<li class="toclevel-2 tocsection-24"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Video_Wall:_Live_from_Pluto"><span class="tocnumber">9.2</span> <span class="toctext">Video Wall: Live from Pluto</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-25"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#References"><span class="tocnumber">10</span> <span class="toctext">References</span></a></li>
+</ul>
+</div>
+
+<h2><span class="mw-headline" id="Video_Test_Source">Video Test Source</span></h2>
+<p>To generate a test video stream use <code>videotestsrc</code><sup id="cite_ref-2" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-2">[2]</a></sup>:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! ximagesink
+</pre>
+<p>Use the <code>pattern</code> property to select a specific pattern:
+</p>
+<pre> gst-launch videotestsrc pattern=snow&nbsp;! ximagesink
+</pre>
+<p><code>pattern</code> can be both numeric [0,16] and symbolic. Some patterns can be adjusted using additional parameters.
+</p><p>To generate a test pattern of a given size and at a given rate a "caps filter" can be used:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! video/x-raw-rgb, framerate=25/1, width=640, height=360&nbsp;! ximagesink
+</pre>
+<p><b>TODO:</b> I'd like to add more about "caps filter" but I can not find any comprehensive documentation.
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstTestPattern.png" class="image"><img alt="GstTestPattern.png" src="./Gstreamer cheat sheet - MyLabWiki_files/350px-GstTestPattern.png" width="350" height="210" srcset="/images/thumb/9/9f/GstTestPattern.png/525px-GstTestPattern.png 1.5x, /images/9/9f/GstTestPattern.png 2x"></a>
+</p>
+<h2><span class="mw-headline" id="Webcam_Capture">Webcam Capture</span></h2>
+<p>In its simplest form a <code>v4l2src</code><sup id="cite_ref-gst-v4l2src_3-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-gst-v4l2src-3">[3]</a></sup> can be connected directly to a video display sink:
+</p>
+<pre> gst-launch v4l2src&nbsp;! xvimagesink
+</pre>
+<p>This will grab the images at the highest possible resolution, which for my <a href="http://wiki.oz9aec.net/index.php/Logitech_QuickCam_Pro_9000" title="Logitech QuickCam Pro 9000">Logitech QuickCam Pro 9000</a> is 1600x1200. Adding a "caps filter" in between we can select the size and the desired frametrate:
+</p>
+<pre> gst-launch v4l2src&nbsp;! <b>video/x-raw-yuv,width=320,height=240,framerate=20/1</b>&nbsp;! xvimagesink
+</pre>
+<p>If the supported framerates are not good use <code>videorate</code><sup id="cite_ref-4" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-4">[4]</a></sup> to either insert or drop frames. This can also be used to deliver a fixed framerate in case the framerate from the camera varies.
+</p><p>The "caps filter" is also used to select a specific pixel format. The <a href="http://wiki.oz9aec.net/index.php/Logitech_QuickCam_Pro_9000" title="Logitech QuickCam Pro 9000">Logitech QuickCam Pro 9000</a> supports MJPG, YUYV, RGB3, BGR3, YU12 and YV12. The pixel format in the "caps filter" can be specified using fourcc<sup id="cite_ref-fourcc_5-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-fourcc-5">[5]</a></sup> labels:
+</p>
+<pre> gst-launch v4l2src&nbsp;! video/x-raw-yuv,<b>format=\(fourcc\)YUY2</b>,width=320,height=240&nbsp;! xvimagesink
+</pre>
+<p>YUY2 is the standard YUYV 4:2:2 pixel format and corresponds to the YUYV format on the <a href="http://wiki.oz9aec.net/index.php/Logitech_QuickCam_Pro_9000" title="Logitech QuickCam Pro 9000">Logitech QuickCam Pro 9000</a>. For the other formats supported by the Logitech <a href="http://wiki.oz9aec.net/index.php/Category:Cameras" title="Category:Cameras">cameras</a> see <a href="http://wiki.oz9aec.net/index.php/Pixel_formats" title="Pixel formats">Pixel formats</a>.
+</p><p>The camera settings can be controlled using Guvcview<sup id="cite_ref-6" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-6">[6]</a></sup> while the image is captured using gstremer. This requires guvcview to be executed using the <code>-o</code> or <code>--control_only</code> command line option.
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstWebcamGuvcview.png" class="image"><img alt="GstWebcamGuvcview.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstWebcamGuvcview.png" width="600" height="480" srcset="/images/thumb/6/6d/GstWebcamGuvcview.png/900px-GstWebcamGuvcview.png 1.5x, /images/thumb/6/6d/GstWebcamGuvcview.png/1200px-GstWebcamGuvcview.png 2x"></a>
+</p>
+<h2><span class="mw-headline" id="Resizing_and_Cropping">Resizing and Cropping</span></h2>
+<p><code>videocrop</code>
+</p><p>For quick cropping from 4:3 to 16:9, the <code>aspectratiocrop</code><sup id="cite_ref-7" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-7">[7]</a></sup> plugin can be used:
+</p>
+<pre> gst-launch v4l2src&nbsp;! video/x-raw-yuv,width=640,height=480,framerate=15/1&nbsp;! aspectratiocrop aspect-ratio=16/9&nbsp;! \
+            ffmpegcolorspace&nbsp;! xvimagesink
+</pre>
+<p><br>
+<code>videobox</code>
+</p><p><code>videoscale</code>
+</p>
+<h2><span class="mw-headline" id="Filtering">Filtering</span></h2>
+<p><code>ffmpegcolorspace</code>
+</p><p><code>gamma</code>
+</p><p><code>videobalance</code>
+</p><p><code>smpte</code> - transitions
+</p><p><code>smptealpha</code> - PiP transparency using SMPTE transition patterns.
+</p>
+<h2><span class="mw-headline" id="Encoding_and_Muxing">Encoding and Muxing</span></h2>
+<h3><span class="mw-headline" id="Single_Stream">Single Stream</span></h3>
+<h4><span class="mw-headline" id="Test_Pattern">Test Pattern</span></h4>
+<p>Encode video to H.264 using x264 and put it into MPEG-TS transport stream:
+</p>
+<pre> gst-launch -e videotestsrc&nbsp;! video/x-raw-yuv, framerate=25/1, width=640, height=360&nbsp;! x264enc&nbsp;! \
+               mpegtsmux&nbsp;! filesink location=test.ts
+</pre>
+<p>Note that it requires the Fluendo TS Muxer gst-fluendo-mpegmux for muxing and gst-fluendo-mpegdemux for demuxing. The <code>-e</code> option forces EOS on sources before shutting the pipeline down. This is useful when we write to files and want to shut down by killing gst-launch using CTRL+C or with the kill command<sup id="cite_ref-8" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-8">[8]</a></sup>. Alternatively, we could use the <code>num-buffers</code> parameter to specify that we only want to record a certain number of frames. The following graph will record 500 frames and then stop:
+</p>
+<pre> gst-launch videotestsrc num-buffers=500&nbsp;! video/x-raw-yuv, framerate=25/1, width=640, height=360&nbsp;! x264enc \
+         &nbsp;! mpegtsmux&nbsp;! filesink location=test.ts
+</pre>
+<p>We can use the <code>playbin</code> plugin to play the recorded video:
+</p>
+<pre> gst-launch -v playbin uri=file:///path/to/test.ts
+</pre>
+<p>The <code>-v</code> option allows us to see which blocks gstreamer decides to use. In this case it will automatically select <code>flutsdemux</code> for demuxing the MPEG-TS and <code>ffdec_h264</code> for decoding the H.264 video. Note that there appears to be no <code>x264dec</code> and no <code>ffenc_h264</code>.
+</p><p>By default <code>x264enc</code> will use 2048 kbps but this can be set to a different value:
+</p>
+<pre> gst-launch -e videotestsrc&nbsp;! video/x-raw-yuv, framerate=20/1, width=640, height=480&nbsp;! x264enc bitrate=512&nbsp;! \
+               mpegsmux&nbsp;! filesink location=test.ts
+</pre>
+<p><code>bitrate</code> is specified in kbps. Note that I've changed the size to 640x480. For H.264 (and most other modern codecs) it is advantageous to use width and height that is an integer multiple of 16. There are also many other options that can be used to optimize compression, quality and speed.
+</p><p><b>TODO:</b> Find good settings for (1) high quality (2) fast compression (3) etc...
+</p><p><b>TODO:</b> There is also the <code>ffmux_mpegts</code> but I can not make it work; it generates a 564 bytes long file.
+</p>
+<h4><span class="mw-headline" id="Webcam">Webcam</span></h4>
+<p>If we want to encode the webcam we need to include the <code>ffmpegcolorspace</code><sup id="cite_ref-ffmepgcolorspace_9-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-ffmepgcolorspace-9">[9]</a></sup> converter block:
+</p>
+<pre> gst-launch -e v4l2src&nbsp;! video/x-raw-yuv, framerate=10/1, width=320, height=240&nbsp;! ffmpegcolorspace&nbsp;! \
+               x264enc bitrate=256&nbsp;! flutsmux&nbsp;! filesink location=webcam.ts
+</pre>
+<h3><span class="mw-headline" id="Multiple_Streams">Multiple Streams</span></h3>
+<p>We can mux the test pattern and the webcam into one MPEG-TS stream. For this we first declare the muxer element and name it "muxer". The name is then used as reference when we connect to it:
+</p>
+<pre> gst-launch -e mpegtsmux name="muxer"&nbsp;! filesink location=multi.ts \
+   v4l2src&nbsp;! video/x-raw-yuv,format=\(fourcc\)YUY2,framerate=10/1,width=640,height=480&nbsp;! videorate&nbsp;! ffmpegcolorspace&nbsp;! x264enc&nbsp;! muxer. \
+   videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=480&nbsp;! x264enc&nbsp;! muxer.
+</pre>
+<p>We can play the recorded multi.ts file with any MPEG-TS capable player:
+</p>
+<ul>
+<li> VLC will play both channels at the same time in different windows.
+</li>
+<li> Mplayer will show one stream and we can swap between the streams using the "_" key.
+</li>
+<li> <code>gst-launch playbin uri=/path/to/multi.ts</code> will play one stream
+</li>
+</ul>
+<p><b>TODO:</b> Should be able to get both streams in gstreamer but might require some magic.
+</p>
+<h3><span class="mw-headline" id="Adding_Audio">Adding Audio</span></h3>
+<p>Capturing and encoding audio is really easy:
+</p>
+<pre> gst-launch -e pulsesrc&nbsp;! audioconvert&nbsp;! lamemp3enc target=1 bitrate=64 cbr=true&nbsp;! filesink location=audio.mp3
+</pre>
+<p>This will record an MP3 audio using 64kbps CBR. Of course, we would prefer OGG or format, but the MPEG-TS we want to mux into only supports MPEG audio for now (this is a limitation of the <code>flutsmux</code> plugin I believe).
+</p><p>To include the recorded audio in the MUX we simply include it in the pipeline and replace the file sink with the muxer:
+</p>
+<pre> gst-launch -e flutsmux name="muxer"&nbsp;! filesink location=multi.ts \
+   v4l2src&nbsp;! video/x-raw-yuv, format=\(fourcc\)YUY2, framerate=10/1, width=640, height=480&nbsp;! videorate&nbsp;! ffmpegcolorspace&nbsp;! x264enc&nbsp;! muxer. \
+   videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=480&nbsp;! x264enc&nbsp;! muxer. \
+   pulsesrc&nbsp;! audioconvert&nbsp;! lamemp3enc target=1 bitrate=64 cbr=true&nbsp;! muxer.
+</pre>
+<p>The audio input device can be specified using the <code>device</code> property:
+</p>
+<pre> gst-launch -e pulsesrc device="alsa_input.usb-046d_0809_52A63768-02.analog-mono"&nbsp;! audioconvert&nbsp;! \
+   lamemp3enc target=1 bitrate=64 cbr=true&nbsp;! filesink location=audio.mp3
+</pre>
+<p>The list of valid audio device names can be seen in the listing provided by <code>pactl list</code> or using the command<sup id="cite_ref-10" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-10">[10]</a></sup>:
+</p>
+<pre> $ pactl list | grep -A2 'Source #' | grep 'Name: ' | cut -d" " -f2
+</pre>
+<p>Note that this will also list the monitoring pad of the audio output:
+</p>
+<pre> $ pactl list | grep -A2 'Source #' | grep 'Name: ' | cut -d" " -f2
+ <b>alsa_output.pci-0000_80_01.0.analog-stereo.monitor</b>
+ alsa_input.pci-0000_80_01.0.analog-stereo
+ alsa_input.usb-046d_0809_52A63768-02.analog-mono
+</pre>
+<p>To list all monitor source we can use the command<sup id="cite_ref-11" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-11">[11]</a></sup>:
+</p>
+<pre> $ pactl list | grep -A2 'Source #' | grep 'Name: .*\.monitor$' | cut -d" " -f2
+</pre>
+<h2><span class="mw-headline" id="Decoding_and_Demuxing">Decoding and Demuxing</span></h2>
+<p><i>TBD</i>
+</p><p><br>
+</p>
+<h2><span class="mw-headline" id="Network_Streaming">Network Streaming</span></h2>
+<p><i>TBD</i>
+</p><p>MPEG-TS can be streamed over UDP (TBC)
+</p><p>Raw videos, e.g. H.264, can be packed into RTP before sending over UDP (TBC)
+</p>
+<pre> <b>From <code>man gst-launch</code>:</b>
+ Network streaming
+ 
+      Stream video using RTP and network elements.
+ 
+      gst-launch v4l2src&nbsp;! video/x-raw-yuv,width=128,height=96,format='(fourcc)'UYVY&nbsp;! ffmpegcolorspace&nbsp;! ffenc_h263
+     &nbsp;! video/x-h263&nbsp;! rtph263ppay pt=96&nbsp;! udpsink host=192.168.1.1 port=5000 sync=false
+      Use this command on the receiver
+ 
+      gst-launch  udpsrc  port=5000&nbsp;! application/x-rtp, clock-rate=90000,payload=96&nbsp;! rtph263pdepay queue-delay=0&nbsp;!
+      ffdec_h263&nbsp;! xvimagesink
+      This command would be run on the transmitter
+</pre>
+<p><span style="color:red">This example does not work for me!</span> See: <a rel="nofollow" class="external free" href="http://cgit.freedesktop.org/gstreamer/gst-plugins-good/tree/gst/rtp/README#n251">http://cgit.freedesktop.org/gstreamer/gst-plugins-good/tree/gst/rtp/README#n251</a>
+</p>
+<h2><span class="mw-headline" id="Compositing">Compositing</span></h2>
+<h3><span class="mw-headline" id="Picture_in_Picture">Picture in Picture</span></h3>
+<p>The <code>videomixer</code><sup id="cite_ref-videomixer_12-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-videomixer-12">[12]</a></sup> can be used to mix two or more video streams together forming a PiP effect. The following example will put a 200x150 pixels snow test pattern over a 640x360 pixels SMPTE pattern:
+</p>
+<pre> gst-launch -e videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! videomixer name=mix&nbsp;! \
+   ffmpegcolorspace&nbsp;! xvimagesink videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstPipDefault.png" class="image"><img alt="GstPipDefault.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstPipDefault.png" width="600" height="359" srcset="/images/6/6d/GstPipDefault.png 1.5x, /images/6/6d/GstPipDefault.png 2x"></a>
+</p>
+<h4><span class="mw-headline" id="GstVideoMixerPad">GstVideoMixerPad</span></h4>
+<p>According to the online documentation<sup id="cite_ref-videomixer_12-1" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-videomixer-12">[12]</a></sup> the position and Z-order can be adjusted using <code>GstVideoMixerPad</code> properties<sup id="cite_ref-gstvideomixerpad_13-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-gstvideomixerpad-13">[13]</a></sup>. These properties can be accessed using Python or C (see <a rel="nofollow" class="external text" href="http://www.oz9aec.net/index.php/gstreamer/354-gstreamer-compositing-using-the-gstvideomixerpad-properties">this post</a>) or even from <code>gst-launch</code> using references to pads, namely <code>sink_i::xpos, sink_i::ypos, sink_i::alpha and sink_i::zorder</code>, where i is the input stream number starting from 0. The <code>GstVideoMixerPad</code> properties are specified together with the declaration of the <code>videomixer</code>:
+</p>
+<pre> gst-launch videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! \
+   videomixer name=mix sink_1::xpos=20 sink_1::ypos=20 sink_1::alpha=0.5 sink_1::zorder=3 sink_2::xpos=100 sink_2::ypos=100 sink_2::zorder=2&nbsp;! \
+   ffmpegcolorspace&nbsp;! xvimagesink videotestsrc pattern=13&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! mix. \
+   videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstVideoMixerPad.png" class="image"><img alt="GstVideoMixerPad.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstVideoMixerPad.png" width="600" height="359" srcset="/images/2/29/GstVideoMixerPad.png 1.5x, /images/2/29/GstVideoMixerPad.png 2x"></a>
+</p><p>Thanks to Stefan Kost for this very useful tip.
+</p><p>The order by which input streams are connected to <code>videomixer</code> inputs is deterministic though difficult to predict. We can have full control over which video stream is connected to which videomixer input by explicitly specifying the pads when we link:
+</p>
+<pre> gst-launch \
+   videomixer name=mix sink_1::xpos=20 sink_1::ypos=20 sink_1::alpha=0.5 sink_1::zorder=3 sink_2::xpos=100 sink_2::ypos=100 sink_2::zorder=2&nbsp;! \
+   ffmpegcolorspace&nbsp;! xvimagesink \
+   videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! <b>mix.sink_0</b> \
+   videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! <b>mix.sink_1</b> \
+   videotestsrc pattern=13&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! <b>mix.sink_2</b>
+</pre>
+<p>Using this trick we can swap between the two small pictures by simply swapping <code>mix.sink_1</code> with <code>mix.sink_2</code>.
+</p><p><br>
+</p>
+<h4><span class="mw-headline" id="VideoBox">VideoBox</span></h4>
+<p>We can also move the small video around anywhere using the <code>videobox</code><sup id="cite_ref-videobox_14-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-videobox-14">[14]</a></sup> element with a transparent border. The <code>videobox</code> is inserted between the source video and the mixer:
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstVideomixerDia.png" class="image"><img alt="GstVideomixerDia.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstVideomixerDia.png" width="600" height="174" srcset="/images/thumb/9/9b/GstVideomixerDia.png/900px-GstVideomixerDia.png 1.5x, /images/9/9b/GstVideomixerDia.png 2x"></a>
+</p><p>The following pipeline will move the small snow pattern 20 pixels to the right and 25 pixels down:
+</p>
+<pre> gst-launch -e videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! <b>videobox border-alpha=0 top=-20 left=-25</b>&nbsp;! \
+   videomixer name=mix&nbsp;! ffmpegcolorspace&nbsp;! xvimagesink videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstPipPosition.png" class="image"><img alt="GstPipPosition.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstPipPosition.png" width="600" height="359" srcset="/images/e/e8/GstPipPosition.png 1.5x, /images/e/e8/GstPipPosition.png 2x"></a>
+</p><p>Note that the <code>top</code> and <code>left</code> values are negative, which means that pixels will be added. Positive value means that pixels are cropped from the original image. If we'd made <code>border-alpha</code> 1.0 we'd seen a black border on the top and the left of the child image.
+</p><p>Transparency of each input stream can be controlled by passing the stream through an <a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Alpha_Filter">alpha filter</a>. This is useful for the main (background) image. For the child image we do not need to add and additional alpha filter because the <code>videobox</code> can have it's own alpha channel:
+</p>
+<pre> gst-launch -e videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! \
+   videobox border-alpha=0 <b>alpha=0.6</b> top=-20 left=-25&nbsp;! videomixer name=mix&nbsp;! ffmpegcolorspace&nbsp;! xvimagesink \
+   videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstPipAlpha.png" class="image"><img alt="GstPipAlpha.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstPipAlpha.png" width="600" height="359" srcset="/images/0/09/GstPipAlpha.png 1.5x, /images/0/09/GstPipAlpha.png 2x"></a>
+</p><p>A border can be added around the child image by adding an additional <code>videobox</code><sup id="cite_ref-videobox_14-1" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-videobox-14">[14]</a></sup> where the top/left/right/bottom values correspond to the desired border width and <code>border-alpha</code> is set to 1.0 (opaque):
+</p>
+<pre> gst-launch -e videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=10/1, width=200, height=150&nbsp;! \
+   <b>videobox border-alpha=1.0 top=-2 bottom=-2 left=-2 right=-2</b>&nbsp;! videobox border-alpha=0 alpha=0.6 top=-20 left=-25&nbsp;! \
+   videomixer name=mix&nbsp;! ffmpegcolorspace&nbsp;! xvimagesink videotestsrc&nbsp;! video/x-raw-yuv, framerate=10/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstPipBorder.png" class="image"><img alt="GstPipBorder.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstPipBorder.png" width="600" height="359" srcset="/images/4/4e/GstPipBorder.png 1.5x, /images/4/4e/GstPipBorder.png 2x"></a>
+</p>
+<h4><span class="mw-headline" id="Video_Wall">Video Wall</span></h4>
+<p>We can of course combine more than two incoming video streams. The following pipeline will take four incoming streams and mix them into a Video Matrix / Wall:
+</p>
+<pre> gst-launch -e videomixer name=mix&nbsp;! ffmpegcolorspace&nbsp;! xvimagesink \
+   videotestsrc pattern=1&nbsp;! video/x-raw-yuv, framerate=5/1, width=320, height=180&nbsp;! videobox border-alpha=0 top=0 left=0&nbsp;! mix. \
+   videotestsrc pattern=15&nbsp;! video/x-raw-yuv, framerate=5/1, width=320, height=180&nbsp;! videobox border-alpha=0 top=0 left=-320&nbsp;! mix. \
+   videotestsrc pattern=13&nbsp;! video/x-raw-yuv, framerate=5/1, width=320, height=180&nbsp;! videobox border-alpha=0 top=-180 left=0&nbsp;! mix. \
+   videotestsrc pattern=0&nbsp;! video/x-raw-yuv, framerate=5/1, width=320, height=180&nbsp;! videobox border-alpha=0 top=-180 left=-320&nbsp;! mix. \
+   videotestsrc pattern=3&nbsp;! video/x-raw-yuv, framerate=5/1, width=640, height=360&nbsp;! mix.
+</pre>
+<p>We had to use a fifth stream as large background stream.
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstVideoWall.png" class="image"><img alt="GstVideoWall.png" src="./Gstreamer cheat sheet - MyLabWiki_files/GstVideoWall.png" width="648" height="388"></a>
+</p><p>For a more complex example see <a href="http://wiki.oz9aec.net/index.php/Gstreamer_Cheat_Sheet#Video_Wall:_Live_from_Pluto" title="Gstreamer Cheat Sheet" class="mw-redirect">Video Wall: Live from Pluto</a>.
+</p>
+<h3><span class="mw-headline" id="Text_Overlay">Text Overlay</span></h3>
+<p>The <code>texoverlay</code><sup id="cite_ref-15" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-15">[15]</a></sup> plugin can be used to add text to the video stream:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! video/x-raw-yuv,width=640,height=480,framerate=15/1&nbsp;! textoverlay text="Hello"&nbsp;! ffmpegcolorspace&nbsp;! ximagesink
+</pre>
+<p>It has many options for text positioning and alignment. User can also specify font properties as a Pango font description string, e.g. <code>"Sans Italic 24"</code>.
+</p><p><b>TODO:</b> A few font description examples.
+</p>
+<h3><span class="mw-headline" id="Time_Overlay">Time Overlay</span></h3>
+<p>Elapsed time can be added using the <code>timeoverlay</code><sup id="cite_ref-16" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-16">[16]</a></sup> plugin:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! timeoverlay&nbsp;! xvimagesink
+</pre>
+<p><code>Timeoverlay</code> inherits the properties of <code><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Text_Overlay">textoverlay</a></code> so the text properties can be set using the same properties:
+</p>
+<pre> gst-launch -v videotestsrc&nbsp;! video/x-raw-yuv, framerate=25/1, width=640, height=360&nbsp;! \
+   timeoverlay halign=left valign=bottom text="Stream time:" shaded-background=true&nbsp;! xvimagesink
+</pre>
+<p><a href="http://wiki.oz9aec.net/index.php/File:GstTimeOverlay.png" class="image"><img alt="GstTimeOverlay.png" src="./Gstreamer cheat sheet - MyLabWiki_files/GstTimeOverlay.png" width="648" height="388"></a>
+</p><p>Alternatively, <code>cairotimeoverlay</code><sup id="cite_ref-17" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-17">[17]</a></sup> can be used but it doesn't seem to have any properties:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! cairotimeoverlay&nbsp;! xvimagesink
+</pre>
+<p>Instead of elapsed time, the system date and time can be added using the <code>clockoverlay</code><sup id="cite_ref-18" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-18">[18]</a></sup> plugin:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! clockoverlay&nbsp;! xvimagesink
+</pre>
+<p><code>Clockloverlay</code> also inherits the properties of <code><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#Text_Overlay">textoverlay</a></code>. In addition to that <code>clockoverlay</code> also allows setting the time format:
+</p>
+<pre> gst-launch videotestsrc&nbsp;! clockoverlay halign=right valign=bottom shaded-background=true time-format="%Y.%m.%D"&nbsp;! ffmpegcolorspace&nbsp;! ximagesink
+</pre>
+<h2><span class="mw-headline" id="Complete_Examples">Complete Examples</span></h2>
+<h3><span class="mw-headline" id="Time-Lapse_Video">Time-Lapse Video</span></h3>
+<h4><span class="mw-headline" id="From_recorded_video">From recorded video</span></h4>
+<p>A simple "surveillance camera" implementation using the <a href="http://wiki.oz9aec.net/index.php/Logitech_QuickCam_Vision_Pro_9000" title="Logitech QuickCam Vision Pro 9000">Logitech QuickCam Vision Pro 9000</a> and Gstreamer. Frames from the camera are captured at 5 fps. The date, time and elapsed time are added. The stream is displayed on the screen at the captured rate and resolution and saved to an OGG file at 1 fps:
+</p>
+<pre> gst-launch -e v4l2src&nbsp;! video/x-raw-yuv,format=\(fourcc\)YUY2,width=1280,height=720,framerate=5/1&nbsp;! \
+   ffmpegcolorspace&nbsp;! \
+   timeoverlay halign=right valign=top&nbsp;! clockoverlay halign=left valign=top time-format="%Y/%m/%d&nbsp;%H:%M:%S"&nbsp;! \
+   tee name="splitter"&nbsp;! queue&nbsp;! xvimagesink sync=false splitter.&nbsp;! \
+   queue&nbsp;! videorate&nbsp;! video/x-raw-yuv,framerate=1/1&nbsp;! \
+   theoraenc bitrate=256&nbsp;! oggmux&nbsp;! filesink location=webcam.ogg
+</pre>
+<p><i>Note: We can replace theoraenc+oggmux with x264enc+someothermuxer but then the pipeline will freeze unless we make the <code>queue</code></i>
+<sup id="cite_ref-gst-queue_19-0" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-gst-queue-19">[19]</a></sup> element in front of the <code>xvimagesink</code> leaky, i.e. "<code>queue leaky=1</code>".
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstSurveilance.png" class="image"><img alt="GstSurveilance.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-GstSurveilance.png" width="600" height="351" srcset="/images/thumb/6/66/GstSurveilance.png/900px-GstSurveilance.png 1.5x, /images/thumb/6/66/GstSurveilance.png/1200px-GstSurveilance.png 2x"></a>
+</p><p>To create a time-lapse video we have to extract the individual frames from the recorded ogg file then assemble them to a new video using the new framerate.
+</p><p>Extract the individual frames:
+</p>
+<pre> ffmpeg -i webcam.ogg -r 1 -sameq -f image2 img/webcam-%05d.jpg
+</pre>
+<p>Assemble frames to new video:
+</p>
+<pre> ffmpeg -r 50 -i img/webcam-%05d.jpg -vcodec libx264 -b 5000k -r 25 timelapse.mov
+</pre>
+<p>See the <a rel="nofollow" class="external text" href="http://www.youtube.com/watch?v=6tQ1ewhGiwk">time-lapse video on YouTube</a>.
+</p><p>The "time-lapse factor" can be controlled by setting the input rate. Since we recorded 1 fps and specified and input rate of 50 fps while assembling the time-lapse videos the effective time-lapse factor will be 0.5 fps corresponding to 2 seconds per frame. If we reduce the input framerate to 25, the time-lapse speed will be half, i.e. 1 second per frame:
+</p>
+<pre> ffmpeg <b>-r 25</b> -i img/webcam-%05d.jpg -vcodec libx264 -b 5000k -r 25 timelapse.mov
+</pre>
+<p>See the half-speed <a rel="nofollow" class="external text" href="http://www.youtube.com/watch?v=0SoehDNd008">time-lapse on YouTube</a>.
+</p>
+<h4><span class="mw-headline" id="Single_frame_capture">Single frame capture</span></h4>
+<p>In the first example we recorded the captured frames to a theora encoded video file. In order to change the frame rate we had to convert the recorded video to single frames, then re-encode using ffmpeg. A better method is to omit the first video and capture directly to single frames. We can do this using the <code>multifilesink</code><sup id="cite_ref-20" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-20">[20]</a></sup> and <code>multifilesrc</code><sup id="cite_ref-21" class="reference"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_note-21">[21]</a></sup>.
+</p><p>This will record the camera stream to PNG files:
+</p>
+<pre> gst-launch -e v4l2src&nbsp;! video/x-raw-yuv,format=\(fourcc\)YUY2,width=1280,height=720,framerate=5/1&nbsp;! ffmpegcolorspace&nbsp;! \
+   timeoverlay halign=right valign=bottom&nbsp;! clockoverlay halign=left valign=bottom time-format="%Y/%m/%d&nbsp;%H:%M:%S"&nbsp;! \
+   videorate&nbsp;! video/x-raw-rgb,framerate=1/1&nbsp;! ffmpegcolorspace&nbsp;! pngenc snapshot=false&nbsp;! multifilesink location="frame%05d.png"
+</pre>
+<p>It was a quick hack and it might have been possible to avoid the two <code>ffmpegcolorspace</code> converters. We can convert to time-lapse video as before (this time I used different codec and framerate:
+</p>
+<pre> ffmpeg -i timelapse.mp3 -r 100 -i img/frame%05d.png -sameq -r 50 -ab 320k timelapse.mp4
+</pre>
+<p>Note that this time I generated an MP4 video with 50 fps. You can watch the <a rel="nofollow" class="external text" href="http://www.youtube.com/watch?v=GE3rrjgHe98">result on YouTube</a> or download the MP4 file here.
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:QCVP9kSample.png" class="image"><img alt="QCVP9kSample.png" src="./Gstreamer cheat sheet - MyLabWiki_files/600px-QCVP9kSample.png" width="600" height="338" srcset="/images/thumb/9/9f/QCVP9kSample.png/900px-QCVP9kSample.png 1.5x, /images/thumb/9/9f/QCVP9kSample.png/1200px-QCVP9kSample.png 2x"></a>
+</p><p><br>
+</p>
+<h3><span class="mw-headline" id="Video_Wall:_Live_from_Pluto">Video Wall: Live from Pluto</span></h3>
+<p>Our robotic spaceship has landed on Pluto and is ready to transmit awesome video from the three onboard cameras CAM1, CAM2 and CAM3. We want to show the images on a video wall with a nice background, something like this:
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstPipExample.png" class="image"><img alt="GstPipExample.png" src="./Gstreamer cheat sheet - MyLabWiki_files/800px-GstPipExample.png" width="800" height="468" srcset="/images/thumb/2/2d/GstPipExample.png/1200px-GstPipExample.png 1.5x, /images/2/2d/GstPipExample.png 2x"></a>
+</p><p>We can accomplish this using <a href="http://wiki.oz9aec.net/index.php/Gstreamer_Cheat_Sheet#Picture_in_Picture" title="Gstreamer Cheat Sheet" class="mw-redirect">picture-in-picture</a> compositing but it is now a little more complicated than the simple examples shown earlier. We have:
+</p>
+<ul>
+<li> Three small video feeds of size 350x250 pixels
+</li>
+<li> Each small video feed has a <code>textoverlay</code> showing CAMx
+</li>
+<li> A large background 1280x720 pixels coming from a still image (JPG file)
+</li>
+<li> A <code>textoverlay</code> saying "Live from Pluto" at the bottom left of the main screen
+</li>
+<li> The three video feeds, CAM1, CAM2 and CAM3 are put on top of the main screen.
+</li>
+</ul>
+<p>The diagram for the pipeline is shown below. The text above the arrows specifies the pixel formats for a given video stream in the pipeline. If the pipeline fails to launch due to an error that says something about <i>streaming task paused, reason not-negotiated (-4)</i>, it is very often due to incompatible connection between two blocks. Gstreamer is not always very good at telling that.
+</p><p><a href="http://wiki.oz9aec.net/index.php/File:GstVideoWallDia.png" class="image"><img alt="GstVideoWallDia.png" src="./Gstreamer cheat sheet - MyLabWiki_files/800px-GstVideoWallDia.png" width="800" height="381" srcset="/images/thumb/5/5d/GstVideoWallDia.png/1200px-GstVideoWallDia.png 1.5x, /images/5/5d/GstVideoWallDia.png 2x"></a>
+</p><p>And here is the complete pipeline as entered on the command line:
+</p>
+<pre> gst-launch -e videomixer name=mix&nbsp;! ffmpegcolorspace&nbsp;! xvimagesink \
+   videotestsrc pattern=0&nbsp;! video/x-raw-yuv, framerate=1/1, width=350, height=250&nbsp;! \
+     textoverlay font-desc="Sans 24" text="CAM1" valign=top halign=left shaded-background=true&nbsp;! \
+     videobox border-alpha=0 top=-200 left=-50&nbsp;! mix. \
+   videotestsrc pattern="snow"&nbsp;! video/x-raw-yuv, framerate=1/1, width=350, height=250&nbsp;! \
+     textoverlay font-desc="Sans 24" text="CAM2" valign=top halign=left shaded-background=true&nbsp;! \
+     videobox border-alpha=0 top=-200 left=-450&nbsp;! mix. \
+   videotestsrc pattern=13&nbsp;! video/x-raw-yuv, framerate=1/1, width=350, height=250&nbsp;! \
+     textoverlay font-desc="Sans 24" text="CAM3" valign=top halign=left shaded-background=true&nbsp;! \
+     videobox border-alpha=0 top=-200 left=-850&nbsp;! mix. \
+   multifilesrc location="pluto.jpg" caps="image/jpeg,framerate=1/1"&nbsp;! jpegdec&nbsp;! \
+     textoverlay font-desc="Sans 26" text="Live from Pluto" halign=left shaded-background=true auto-resize=false&nbsp;! \
+     ffmpegcolorspace&nbsp;! video/x-raw-yuv,format=\(fourcc\)AYUV&nbsp;! mix.
+</pre>
+<p>A few notes on the pipeline:
+</p>
+<ul>
+<li> For the large background image, which is a still frame I wanted to use the <code>imagefreeze</code> block which generates a video stream from a single image file. Unfortunately, it seems that this block is very new and not in the gstreamer package that comes with Ubuntu 10.04. Thereofre, I had to do the trick with <code>multifilesrc</code> making it read the same file over and over again.
+</li>
+<li> I had a hard time getting this pipeline work. Eventually I found out that my problems were due to incompatible caps in the <code>multifilesrc</code> part of the pipeline. That's why there is an extra color conversion block between the <code>textoverlay</code> and the <code>videomixer</code>.
+</li>
+<li> The <code>videobox</code> elements are used to add a transparent border to the small video feed causing the real video to "move"
+</li>
+</ul>
+<p>You can watch the Live from Pluto GStreamer video wall <a rel="nofollow" class="external text" href="http://www.youtube.com/watch?v=Uqx_26IOxs4">in action on YouTube</a>.
+</p>
+<h2><span class="mw-headline" id="References">References</span></h2>
+<ol class="references">
+<li id="cite_note-gst-doc-1"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-gst-doc_1-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">Gstreamer documentation <a rel="nofollow" class="external free" href="http://gstreamer.freedesktop.org/documentation/">http://gstreamer.freedesktop.org/documentation/</a></span>
+</li>
+<li id="cite_note-2"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-2"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-videotestsrc.html#GstVideoTestSrcColorSpec">videotestsrc</a></span>
+</li>
+<li id="cite_note-gst-v4l2src-3"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-gst-v4l2src_3-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-v4l2src.html">v4l2src</a></span>
+</li>
+<li id="cite_note-4"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-4"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-videorate.html">videorate</a></span>
+</li>
+<li id="cite_note-fourcc-5"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-fourcc_5-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text"><a rel="nofollow" class="external text" href="http://www.fourcc.org/">FOURCC website</a> – <a rel="nofollow" class="external text" href="http://www.fourcc.org/yuv.php">YUV formats</a></span>
+</li>
+<li id="cite_note-6"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-6"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">Gtk+ UVC Viewer: <a rel="nofollow" class="external free" href="http://guvcview.berlios.de/">http://guvcview.berlios.de/</a></span>
+</li>
+<li id="cite_note-7"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-7"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-aspectratiocrop.html">aspectratiocrop</a></span>
+</li>
+<li id="cite_note-8"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-8"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">Elphel Development Blog – <a rel="nofollow" class="external text" href="http://blogs.elphel.com/2009/11/interfacing-elphel-cameras-with-gstreamer-opencv-opengl-and-python-get-profit-of-dsp-or-gpu-based-optimisation-control-camera-settings-from-python-application-or-human-interface-device-hid/">Interfacing Elphel cameras with GStreamer, OpenCV, OpenGL/GLSL and python.</a></span>
+</li>
+<li id="cite_note-ffmepgcolorspace-9"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-ffmepgcolorspace_9-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-ffmpegcolorspace.html">ffmpegcolorspace</a>. The details are available via <code>gst-inspect ffmpegcolorspace</code>.</span>
+</li>
+<li id="cite_note-10"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-10"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">Pulseaudio FAQ – How do I record stuff? <a rel="nofollow" class="external free" href="http://pulseaudio.org/wiki/FAQ#HowdoIrecordstuff">http://pulseaudio.org/wiki/FAQ#HowdoIrecordstuff</a></span>
+</li>
+<li id="cite_note-11"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-11"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">Pulseaudio FAQ – How do I record other programs' output? <a rel="nofollow" class="external free" href="http://pulseaudio.org/wiki/FAQ#HowdoIrecordotherprogramsoutput">http://pulseaudio.org/wiki/FAQ#HowdoIrecordotherprogramsoutput</a></span>
+</li>
+<li id="cite_note-videomixer-12"><span class="mw-cite-backlink">↑ <sup><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-videomixer_12-0"><span class="cite-accessibility-label">Jump up to: </span>12.0</a></sup> <sup><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-videomixer_12-1">12.1</a></sup></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-videomixer.html">videomixer</a></span>
+</li>
+<li id="cite_note-gstvideomixerpad-13"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-gstvideomixerpad_13-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/GstVideoMixerPad.html">GstVideoMixerPad</a></span>
+</li>
+<li id="cite_note-videobox-14"><span class="mw-cite-backlink">↑ <sup><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-videobox_14-0"><span class="cite-accessibility-label">Jump up to: </span>14.0</a></sup> <sup><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-videobox_14-1">14.1</a></sup></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-videobox.html">videobox</a></span>
+</li>
+<li id="cite_note-15"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-15"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-textoverlay.html">textoverlay</a></span>
+</li>
+<li id="cite_note-16"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-16"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-timeoverlay.html">timeoverlay</a></span>
+</li>
+<li id="cite_note-17"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-17"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-cairotimeoverlay.html">cairotimeoverlay</a></span>
+</li>
+<li id="cite_note-18"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-18"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Base Plugins 0.10 Plugins Reference Manual - <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-base-plugins/html/gst-plugins-base-plugins-clockoverlay.html">clockoverlay</a></span>
+</li>
+<li id="cite_note-gst-queue-19"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-gst-queue_19-0"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Core Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gstreamer-plugins/html/gstreamer-plugins-queue.html">queue</a></span>
+</li>
+<li id="cite_note-20"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-20"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-multifilesink.html">multifilesink</a></span>
+</li>
+<li id="cite_note-21"><span class="mw-cite-backlink"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#cite_ref-21"><span class="cite-accessibility-label">Jump up </span>↑</a></span> <span class="reference-text">GStreamer Good Plugins 0.10 Plugins Reference Manual – <a rel="nofollow" class="external text" href="http://gstreamer.freedesktop.org/data/doc/gstreamer/head/gst-plugins-good-plugins/html/gst-plugins-good-plugins-multifilesrc.html">multifilesrc</a></span>
+</li>
+</ol>
+<p>Other useful links:
+</p>
+<ul>
+<li> <b><a rel="nofollow" class="external text" href="http://gitorious.org/cameractls">Camera controls</a> example software</b> 
+</li>
+<li> GStreamer Plugin Writer's Guide: <a rel="nofollow" class="external text" href="http://www.gstreamer.net/data/doc/gstreamer/head/pwg/html/section-types-definitions.html">List of Defined Types</a>
+</li>
+<li> <a rel="nofollow" class="external free" href="http://www.cin.ufpe.br/~cinlug/wiki/index.php/Introducing_GStreamer">http://www.cin.ufpe.br/~cinlug/wiki/index.php/Introducing_GStreamer</a>
+</li>
+<li> <a rel="nofollow" class="external free" href="http://noraisin.net/~jan/diary/?p=40">http://noraisin.net/~jan/diary/?p=40</a>
+</li>
+<li> <a rel="nofollow" class="external free" href="http://code.google.com/p/gst-gengui/">http://code.google.com/p/gst-gengui/</a>
+</li>
+</ul>
+
+<!-- 
+NewPP limit report
+CPU time usage: 0.272 seconds
+Real time usage: 0.457 seconds
+Preprocessor visited node count: 552/1000000
+Preprocessor generated node count: 1752/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 3/40
+Expensive parser function count: 0/100
+-->
+
+<!-- Saved in parser cache with key U6415905:pcache:idhash:228-0!*!0!!en!2!* and timestamp 20170303153105 and revision id 2124
+ -->
+</div>								<div class="printfooter">
+				Retrieved from "<a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;oldid=2124">http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;oldid=2124</a>"				</div>
+												<div id="catlinks" class="catlinks"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="http://wiki.oz9aec.net/index.php/Special:Categories" title="Special:Categories">Category</a>: <ul><li><a href="http://wiki.oz9aec.net/index.php/Category:Gstreamer" title="Category:Gstreamer">Gstreamer</a></li></ul></div></div>												<div class="visualClear"></div>
+							</div>
+		</div>
+		<div id="mw-navigation">
+			<h2>Navigation menu</h2>
+			<div id="mw-head">
+				<div id="p-personal" role="navigation" class="" aria-labelledby="p-personal-label">
+	<h3 id="p-personal-label">Personal tools</h3>
+	<ul>
+<li id="pt-login"><a href="http://wiki.oz9aec.net/index.php?title=Special:UserLogin&amp;returnto=Gstreamer+cheat+sheet" title="You are encouraged to log in; however, it is not mandatory [alt-shift-o]" accesskey="o">Log in</a></li>	</ul>
+</div>
+				<div id="left-navigation">
+					<div id="p-namespaces" role="navigation" class="vectorTabs" aria-labelledby="p-namespaces-label">
+	<h3 id="p-namespaces-label">Namespaces</h3>
+	<ul>
+					<li id="ca-nstab-main" class="selected"><span><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet" title="View the content page [alt-shift-c]" accesskey="c">Page</a></span></li>
+					<li id="ca-talk" class="new"><span><a href="http://wiki.oz9aec.net/index.php?title=Talk:Gstreamer_cheat_sheet&amp;action=edit&amp;redlink=1" title="Discussion about the content page [alt-shift-t]" accesskey="t">Discussion</a></span></li>
+			</ul>
+</div>
+<div id="p-variants" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-variants-label">
+	<h3 id="mw-vector-current-variant">
+		</h3>
+	<h3 id="p-variants-label" tabindex="0"><span>Variants</span><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#" tabindex="-1"></a></h3>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+				</div>
+				<div id="right-navigation">
+					<div id="p-views" role="navigation" class="vectorTabs" aria-labelledby="p-views-label">
+	<h3 id="p-views-label">Views</h3>
+	<ul>
+					<li id="ca-view" class="selected"><span><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet">Read</a></span></li>
+					<li id="ca-viewsource"><span><a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;action=edit" title="This page is protected.
+You can view its source [alt-shift-e]" accesskey="e">View source</a></span></li>
+					<li id="ca-history" class="collapsible"><span><a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;action=history" title="Past revisions of this page [alt-shift-h]" accesskey="h">View history</a></span></li>
+			</ul>
+</div>
+<div id="p-cactions" role="navigation" class="vectorMenu emptyPortlet" aria-labelledby="p-cactions-label">
+	<h3 id="p-cactions-label" tabindex="0"><span>Actions</span><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#" tabindex="-1"></a></h3>
+	<div class="menu">
+		<ul>
+					</ul>
+	</div>
+</div>
+<div id="p-search" role="search">
+	<h3><label for="searchInput">Search</label></h3>
+	<form action="http://wiki.oz9aec.net/index.php" id="searchform">
+					<div id="simpleSearch">
+					<input type="search" name="search" placeholder="Search" title="Search MyLabWiki [alt-shift-f]" accesskey="f" id="searchInput" tabindex="1" autocomplete="off"><input type="hidden" value="Special:Search" name="title"><input type="submit" name="go" value="Go" title="Go to a page with this exact name if exists" id="searchButton" class="searchButton">		</div>
+	</form>
+</div>
+				</div>
+			</div>
+			<div id="mw-panel" class="collapsible-nav">
+					<div id="p-logo" role="banner"><a style="background-image: url(http://wiki.oz9aec.net/images/c/c8/LabLogo.png);" href="http://wiki.oz9aec.net/index.php/Main_Page" title="Visit the main page"></a></div>
+				<div class="portal first persistent" role="navigation" id="p-navigation" aria-labelledby="p-navigation-label">
+	<h3 id="p-navigation-label">Navigation</h3>
+	<div class="body">
+		<ul>
+			<li id="n-mainpage-description"><a href="http://wiki.oz9aec.net/index.php/Main_Page" title="Visit the main page [alt-shift-z]" accesskey="z">Main page</a></li>
+			<li id="n-recentchanges"><a href="http://wiki.oz9aec.net/index.php/Special:RecentChanges" title="A list of recent changes in the wiki [alt-shift-r]" accesskey="r">Recent changes</a></li>
+			<li id="n-randompage"><a href="http://wiki.oz9aec.net/index.php/Special:Random" title="Load a random page [alt-shift-x]" accesskey="x">Random page</a></li>
+			<li id="n-help"><a href="https://www.mediawiki.org/wiki/Special:MyLanguage/Help:Contents" title="The place to find out">Help</a></li>
+		</ul>
+	</div>
+</div>
+<div class="portal expanded" role="navigation" id="p-tb" aria-labelledby="p-tb-label">
+	<h3 id="p-tb-label" tabindex="2"><a href="http://wiki.oz9aec.net/index.php/Gstreamer_cheat_sheet#" aria-haspopup="true" aria-controls="p-tb-list" role="button" aria-pressed="true" aria-expanded="true">Tools</a></h3>
+	<div class="body" style="display: block;">
+		<ul id="p-tb-list">
+			<li id="t-whatlinkshere"><a href="http://wiki.oz9aec.net/index.php/Special:WhatLinksHere/Gstreamer_cheat_sheet" title="A list of all wiki pages that link here [alt-shift-j]" accesskey="j">What links here</a></li>
+			<li id="t-recentchangeslinked"><a href="http://wiki.oz9aec.net/index.php/Special:RecentChangesLinked/Gstreamer_cheat_sheet" title="Recent changes in pages linked from this page [alt-shift-k]" accesskey="k">Related changes</a></li>
+			<li id="t-specialpages"><a href="http://wiki.oz9aec.net/index.php/Special:SpecialPages" title="A list of all special pages [alt-shift-q]" accesskey="q">Special pages</a></li>
+			<li id="t-print"><a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;printable=yes" rel="alternate" title="Printable version of this page [alt-shift-p]" accesskey="p">Printable version</a></li>
+			<li id="t-permalink"><a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;oldid=2124" title="Permanent link to this revision of the page">Permanent link</a></li>
+			<li id="t-info"><a href="http://wiki.oz9aec.net/index.php?title=Gstreamer_cheat_sheet&amp;action=info">Page information</a></li>
+		</ul>
+	</div>
+</div>
+			</div>
+		</div>
+		<div id="footer" role="contentinfo">
+							<ul id="footer-info">
+											<li id="footer-info-lastmod"> This page was last modified on 6 February 2017, at 13:22.</li>
+											<li id="footer-info-viewcount">This page has been accessed 354,627 times.</li>
+											<li id="footer-info-copyright">Content is available under <a class="external" rel="nofollow" href="http://creativecommons.org/licenses/by-sa/3.0/">Attribution-ShareAlike 3.0 Unported</a> unless otherwise noted.</li>
+									</ul>
+							<ul id="footer-places">
+											<li id="footer-places-privacy"><a href="http://wiki.oz9aec.net/index.php/MyLabWiki:Privacy_policy" title="MyLabWiki:Privacy policy">Privacy policy</a></li>
+											<li id="footer-places-about"><a href="http://wiki.oz9aec.net/index.php/MyLabWiki:About" title="MyLabWiki:About">About MyLabWiki</a></li>
+											<li id="footer-places-disclaimer"><a href="http://wiki.oz9aec.net/index.php/MyLabWiki:General_disclaimer" title="MyLabWiki:General disclaimer">Disclaimers</a></li>
+									</ul>
+										<ul id="footer-icons" class="noprint">
+					<li id="footer-copyrightico">
+						<a href="http://creativecommons.org/licenses/by-sa/3.0/"><img src="http://i.creativecommons.org/l/by-sa/3.0/88x31.png" alt="Attribution-ShareAlike 3.0 Unported" width="88" height="31"></a>
+					</li>
+					<li id="footer-poweredbyico">
+						<a href="http://www.mediawiki.org/"><img src="./Gstreamer cheat sheet - MyLabWiki_files/poweredby_mediawiki_88x31.png" alt="Powered by MediaWiki" width="88" height="31"></a>
+					</li>
+				</ul>
+						<div style="clear:both"></div>
+		</div>
+		<script>/*<![CDATA[*/window.jQuery && jQuery.ready();/*]]>*/</script><script>if(window.mw){
+mw.loader.state({"site":"loading","user":"ready","user.groups":"ready"});
+}</script>
+<script>if(window.mw){
+mw.loader.load(["ext.cite","mediawiki.action.view.postEdit","mediawiki.user","mediawiki.hidpi","mediawiki.page.ready","mediawiki.searchSuggest","skins.vector.collapsibleNav"],null,true);
+}</script>
+<script src="./Gstreamer cheat sheet - MyLabWiki_files/load(6).php"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script><script src="./Gstreamer cheat sheet - MyLabWiki_files/ga.js" type="text/javascript"></script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-4736826-5");
+pageTracker._trackPageview();
+} catch(err) {}
+</script><script>if(window.mw){
+mw.config.set({"wgBackendResponseTime":491});
+}</script>
+	
+
+<div class="suggestions" style="display: none; font-size: 13px;"><div class="suggestions-results"></div><div class="suggestions-special"></div></div></body></html>

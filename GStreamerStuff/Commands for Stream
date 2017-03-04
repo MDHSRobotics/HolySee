@@ -1,0 +1,12 @@
+gst-launch-1.0 -vv -e --gst-plugin-path=. v4l2src device=/dev/video0 ! queue ! arfilter filter=steamAR ! video/x-raw,format=BGR ! videoconvert ! x264enc bitrate=1024 speed-preset=superfast qp-min=30 tune=zerolatency ! mpegtsmux alignment=7 ! rndbuffersize max=1316 min=1316 ! udpsink host=239.255.41.41 port=5806
+
+-----------------------------------
+
+gst-launch-1.0 v4l2src device=/dev/video0 num-buffers=-1 ! 'video/x-raw, width=640, height=360, format=I420' ! nvjpegenc ! udpsink host=239.255.41.41 port=5806
+
+-----------------------------------
+
+gst-launch-1.0 v4l2src device=/dev/video0 num-buffers=-1 ! 'video/x-raw, width=640, height=360, format=I420, framerate=15/1' ! videobalance saturation=50.0 ! nvjpegenc quality=60 ! udpsink host=239.255.41.41 port=5806
+
+-----------------------------------
+
