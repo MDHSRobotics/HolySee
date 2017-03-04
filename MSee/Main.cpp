@@ -62,7 +62,7 @@ void processKeys( MSee*  handler){
 int main(int argc,char *argv[])
 {
 	std::string instanceName("Tegra");
-	std::string configFile("../msee.conf");
+	std::string configFile("msee.conf");
 
 	MSee* msee = new MSee(argc,argv,instanceName,configFile);
 

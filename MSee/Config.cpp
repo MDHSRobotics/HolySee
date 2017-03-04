@@ -59,8 +59,8 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 			}
 		}
 
-		std::string usbCommand("/usr/local/msee/lshw.sh");
-		std::string cameraCommand("/usr/local/msee/v4l2.sh");
+		std::string usbCommand("./lshw.sh");
+		std::string cameraCommand("./v4l2.sh");
 		
 		std::string camerasText;
 		discover(cameraCommand, camerasText);
