@@ -53,8 +53,8 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 	arImage = original;
 
 
-    bool IAmGood= true;
-    printf(("testing bb in targets\n"));
+    bool IAmGood= contours.size()>0;
+    //printf(("testing bb in targets\n"));
 
     for(int c=0;c<contours.size();c++){
         printf("testing bb %d\n",c);
@@ -85,7 +85,7 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 		    break;
 		}
 	}
-    printf((IAmGood?"IAmGood\n":"bummer ...\n"));
+//    printf((IAmGood?"IAmGood\n":"bummer ...\n"));
 
 	for(int c=0;c<contours.size();c++){
 		std::vector<cv::Point> contour =contours.at(c);
@@ -190,36 +190,29 @@ std::vector<std::vector<cv::Point> >* GearAR::getfilterContoursOutput(){
 	 * @param output vector of filtered contours.
 	 */
 
-	void GearAR::filterContours(std::vector<std::vector<cv::Point> > &inputContours, double minArea, double minPerimeter, double minWidth, double maxWidth, double minHeight, double maxHeight, double solidity[], double maxVertexCount, double minVertexCount, double minRatio, double maxRatio, std::vector<std::vector<cv::Point> > &filterContoursOutput){
-			std::vector<cv::Point> hull;
-			filterContoursOutput.clear();
-			{
+void GearAR::filterContours(std::vector<std::vector<cv::Point> > &inputContours, double minArea, double minPerimeter, double minWidth, double maxWidth, double minHeight, double maxHeight, double solidity[], double maxVertexCount, double minVertexCount, double minRatio, double maxRatio, std::vector<std::vector<cv::Point> > &filterContoursOutput){
+	std::vector<cv::Point> hull;
+	filterContoursOutput.clear();
+//	printf ("number of contours: %d\n",inputContours.size());
+	for(int i=0;i<inputContours.size();i++){
+		std::vector<cv::Point> contour = inputContours.at(i);
+		cv::Rect bb = boundingRect(contour);
+		if (bb.width < minWidth || bb.width > maxWidth) continue;
+		if (bb.height < minHeight || bb.height > maxHeight) continue;
+		double area = cv::contourArea(contour);
+		if (area < minArea) continue;
+		if (arcLength(contour, true) < minPerimeter) continue;
+		cv::convexHull(cv::Mat(contour, true), hull);
+		double solid = 100 * area / cv::contourArea(hull);
+		if (solid < solidity[0] || solid > solidity[1]) continue;
+		if (contour.size() < minVertexCount || contour.size() > maxVertexCount)	continue;
+		double ratio = bb.width / bb.height;
+		if (ratio < minRatio || ratio > maxRatio) continue;
+
+		filterContoursOutput.push_back(contour );
 
 
 
-				printf ("number of contours: %d\n",inputContours.size());
-							for(int i=0;i<inputContours.size();i++){
-       							std::vector<cv::Point> contour = inputContours.at(i);
-								cv::Rect bb = boundingRect(contour);
-								if (bb.width < minWidth || bb.width > maxWidth) continue;
-								if (bb.height < minHeight || bb.height > maxHeight) continue;
-								double area = cv::contourArea(contour);
-								if (area < minArea) continue;
-								if (arcLength(contour, true) < minPerimeter) continue;
-								cv::convexHull(cv::Mat(contour, true), hull);
-								double solid = 100 * area / cv::contourArea(hull);
-								if (solid < solidity[0] || solid > solidity[1]) continue;
-								if (contour.size() < minVertexCount || contour.size() > maxVertexCount)	continue;
-							    double ratio = bb.width / bb.height;
-								if (ratio < minRatio || ratio > maxRatio) continue;
-
-								filterContoursOutput.push_back(contour );
-
-
-
-							}
-							printf ("number of contours: %d\n",filterContoursOutput.size());
-
-
-			}
 	}
+//	printf ("number of contours: %d\n",filterContoursOutput.size());
+}

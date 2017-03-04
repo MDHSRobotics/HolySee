@@ -57,10 +57,11 @@ class LidarDevice
 private:
 	std::string device;
 	bool isSimulation;
-	RPlidarDriver * drv;
+	rp::standalone::rplidar::RPlidarDriver * drv;
 	const char * opt_com_path;
 	_u32 opt_com_baudrate;
 	u_result   op_result;	
+	void deviceRead(Frame& frame);
 public:
 	LidarDevice(char*,bool);
 	~LidarDevice();

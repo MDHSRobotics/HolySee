@@ -23,7 +23,7 @@ void FilterManager::initialize(){
 	filter = new GearAR();
 	add(filter->getName(), filter);
 //-------------------------------------
-	printf("filters: %d\n",filters.size());
+	//printf("filters: %d\n",filters.size());
 }
 
 FilterManager::FilterManager()

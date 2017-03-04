@@ -58,21 +58,20 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 				}
 			}
 		}
-		std::string usbText;
+
 		std::string usbCommand("/usr/local/msee/lshw.sh");
 		std::string cameraCommand("/usr/local/msee/v4l2.sh");
-		discover(usbCommand,usbText);
-		discoverUSB(usbText);
-
+		
 		std::string camerasText;
 		discover(cameraCommand, camerasText);
 		discoverCameras(camerasText);
+		
+		std::string usbText;
+		discover(usbCommand,usbText);
+		discoverUSB(usbText);
 
 		//printf("%d devices\n",devices.size());
-
 		//printf("pipelineDefinition:\n\t%s\n",getPipelineDefinition().c_str());
-
-
 	}
 	catch (const std::exception& e){
 		printf("Exception: %s\n",e.what());
@@ -146,7 +145,7 @@ void Config::discoverUSB(std::string& usbText){
 					if(keys.size()>0){
 						for(std::string key : keys){
 							std::string paramName = configRoot+std::string(".")+name+std::string(".")+key;
-							printf("retrieving %s\n",paramName.c_str());
+							//printf("retrieving %s\n",paramName.c_str());
 							if(key == AR_TOKEN){
 								arFilter=get(paramName);
 							}
@@ -185,7 +184,7 @@ void Config::discoverCameras(std::string& camerasText){
 	char lineDelimiter = '\n';
 	char fieldDelimiter = '-';
 	std::vector<std::string> lines = split(camerasText.c_str(), lineDelimiter);
-	printf("%d camera lines\n", lines.size());
+	//printf("%d camera lines\n", lines.size());
 	if (lines.size() > 0){
 		for (int i = 0; i < lines.size()-1; i++){
 			std::string line1 = lines.at(i);
@@ -240,8 +239,9 @@ void Config::discoverCameras(std::string& camerasText){
 						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
 						std::shared_ptr<Source> dev;
-						if(source.empty()) dev = std::shared_ptr<Source>(new VideoSource(name,path,true,arFilter,cvFilter));
-						else dev = std::shared_ptr<Source>(new VideoSource(name,path,true,arFilter,cvFilter,source));
+						if(source.empty()) dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,cvFilter));
+						else dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,cvFilter,source));
+						name.insert(0,std::to_string(devices.size())+std::string("_"));
 						devices[name]=dev;
 						break;
 					}
@@ -261,6 +261,7 @@ std::string Config::getPipelineDefinition(){
 	if(pipelineDefinition.empty()){
 		createPipelineDefinition();
 	}
+	printf("pipeline: \n\t%s\n",pipelineDefinition.c_str());
 	return pipelineDefinition;
 }
 
@@ -274,9 +275,9 @@ void Config::createPipelineDefinition(){
 
 	for (auto const& entry : devices) {
 		Source* dev = entry.second.get();
-		printf("found %s @ %s\n",dev->getName().c_str(),dev->getDevice().c_str());
+		//printf("found %s @ %s\n",dev->getName().c_str(),dev->getDevice().c_str());
 		if (dev->countChannels()>0){
-			printf("dev %s has %d connections and %d channels.\n", dev->getName().c_str(), dev->countConnections(), dev->countChannels());
+			//printf("dev %s has %d connections and %d channels.\n", dev->getName().c_str(), dev->countConnections(), dev->countChannels());
 			for (int c = 0; c < dev->getChannelNames().size(); c++){
 				std::string channelName = std::string(std::to_string(channelIndex) + "." + (dev->getChannelNames()[c]));
 				channelNames.push_back(channelName);
@@ -286,7 +287,7 @@ void Config::createPipelineDefinition(){
 	}
 
 
-	printf("streamer has: %d channels\n", channelNames.size());
+	printf("streamer has %d channels:\n", channelNames.size());
 	for (int i = 0; i < channelNames.size(); i++){
 		printf("channel: %s\n", channelNames[i].c_str());
 	}
@@ -294,7 +295,7 @@ void Config::createPipelineDefinition(){
 
 	//start by defining the end of the pipeline
 	if ( channelNames.size() > 1){
-		pipelineDefinition.append("input-selector name=");
+		pipelineDefinition.append("input-selector sync-mode=clock cache-buffers=true name=");
 		pipelineDefinition.append(streamName);
 		pipelineDefinition.append(" ! videoconvert ! xvimagesink "); //include the trailing space to create a separator that we know we will need
 	}
@@ -304,7 +305,7 @@ void Config::createPipelineDefinition(){
 		pipelineDefinition.append(" ! videoconvert ! xvimagesink ");
 	}
 
-
+	int sinkId=0;
 	//next add the definition to each source.  they will need to tie into the specified output, which in our case is called stream
 	for (auto const& entry : devices) {
 		Source* dev = entry.second.get();
@@ -327,7 +328,7 @@ void Config::createPipelineDefinition(){
 				pipelineDefinition.append(" ");
 			}
 			for(std::string &channelName : dev->getChannelNames()){
-					printf("channel: %s\n",channelName.c_str());
+					//printf("channel: %s\n",channelName.c_str());
 					pipelineDefinition.append(dev->getName());
 					pipelineDefinition.append(". ");
 					if(dev->countConnections() > 1){
@@ -341,9 +342,9 @@ void Config::createPipelineDefinition(){
 						pipelineDefinition.append("  !  ");
 					}
 					int pos = channelName.find(tokenAR);
-					printf("(AR)channelName: %s, pos:%d, npos:%d\n",channelName.c_str(),pos,channelName.npos);
+					//printf("(AR)channelName: %s, pos:%d, npos:%d\n",channelName.c_str(),pos,channelName.npos);
 					if (pos!=std::string::npos){
-						printf("AR  channelName found\n");
+						//printf("AR  channelName found\n");
 						pos = channelName.find_last_of(std::string("_"));
 						std::string filterName = channelName.substr(pos+1);
 						pipelineDefinition.append("arfilter filter=");

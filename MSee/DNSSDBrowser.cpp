@@ -69,10 +69,10 @@ bool  DNSSDBrowser::discoverDNSSD(std::string& dnssdText,std::string& serverURI)
 		
 		if(line[0]==serviceResolveIndicator && line.find(serviceToken)!=std::string::npos && line.find(nameToken)!=std::string::npos){
 			//found service resolution header for our robot, matches protocol and name
-			printf("%d - %s\n",i,line.c_str());
+			//printf("%d - %s\n",i,line.c_str());
 			i++;
 			while( i<lines.size()){
-				printf("%d - %s\n",i,line.c_str());
+				//printf("%d - %s\n",i,line.c_str());
 				line = lines[i];
 				if(line[0]==serviceResolveIndicator || line[0]==serviceDiscoverIndicator) break;  //done with resolve block
 				pos = line.find(addressToken);
@@ -92,7 +92,7 @@ bool  DNSSDBrowser::discoverDNSSD(std::string& dnssdText,std::string& serverURI)
 	}
 
 	if(!address.empty() && !port.empty()){
-		printf("address:port = %s:%s\n",address.c_str(),port.c_str());
+		printf("found %s @ %s:%s\n",nameToken.c_str(),address.c_str(),port.c_str());
 		serverURI.append("ws://");
 		serverURI.append(address);
 		serverURI.append(":");

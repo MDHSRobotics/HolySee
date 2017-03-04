@@ -14,10 +14,11 @@ std::string VideoSource::getPipelineSegment(){
 	segment.append(sourceElement);
 	segment.append(" ");
 	//segment.append(device);
-	segment.append(" ! video/x-raw,width=640,height=480,framerate=15/1,format=BGR");
+	segment.append(" ! video/x-raw,width=640,height=480,framerate=30/1,format=RGBA");
 	return segment;
 }
 
 VideoSource::~VideoSource()
 {
 }
+

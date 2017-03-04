@@ -129,7 +129,7 @@ static gboolean gst_ar_filter_src_query(GstPad    *pad,
 static void
 gst_ar_filter_class_init(GstArFilterClass * klass)
 {
-	printf("%s\n", "gst_ar_filter_class_init");
+//	printf("%s\n", "gst_ar_filter_class_init");
 
 	GObjectClass *gobject_class;
 	GstElementClass *gstelement_class;
@@ -175,7 +175,7 @@ static void arfilter_post(GstArFilter * filter,std::string& message){
 static void
 gst_ar_filter_init(GstArFilter * filter)
 {
-	printf("%s\n", "gst_ar_filter_init");
+//	printf("%s\n", "gst_ar_filter_init");
 
 	filter->sinkpad = gst_pad_new_from_static_template(&sink_factory, "sink");
 	gst_pad_set_event_function(filter->sinkpad,
@@ -210,13 +210,13 @@ const GValue * value, GParamSpec * pspec)
 		/* load correct filter
 		*/
 		filter->filterName = g_string_new(g_value_get_string(value));  //gives us the filter name
-		printf("filter: %s\n", filter->filterName->str);
+		//printf("filter: %s\n", filter->filterName->str);
 
 
 
 		std::string fName(filter->filterName->str);
 		if (FilterManager::getInstance().contains(fName)){
-			printf("have a match for: %s\n", filter->filterName->str);
+			//printf("have a match for: %s\n", filter->filterName->str);
 			//load the right filter implementation
 			filter->pFilter = FilterManager::getInstance().get(fName);
 		}
@@ -307,7 +307,7 @@ gst_ar_filter_sink_event(GstPad * pad, GstObject * parent, GstEvent * event)
 		ret = gst_pad_event_default(pad, parent, event);
 		break;
 	case GST_EVENT_STREAM_START:
-		printf("steam start event ... \n");
+		//printf("steam start event ... \n");
 		if (filter->filterName != NULL && filter->filterName->len > 0){
 			GstBus *bus = GST_ELEMENT_BUS(filter);
 			filter->pFilter->setBus(bus);

@@ -5,6 +5,9 @@
 #include <thread>  //for Unix
 //#include <windows.h> //for Windows
 
+#ifndef _countof
+#define _countof(_Array) (int)(sizeof(_Array) / sizeof(_Array[0]))
+#endif
 
 void simulateFrame(Frame& frame);
 
@@ -12,7 +15,7 @@ LidarDevice::LidarDevice(char * device,bool isSimulation) : device(std::string(d
 {
 	opt_com_baudrate = 115200;
 	opt_com_path = device;
-	printf("path: %s\n",device);
+	//printf("path: %s\n",device);
 }
 
 LidarDevice::~LidarDevice()
@@ -21,7 +24,7 @@ LidarDevice::~LidarDevice()
 	if(drv==NULL) return;
 	drv->stop();
 	drv->stopMotor();
-	RPlidarDriver::DisposeDriver(drv);
+	rp::standalone::rplidar::RPlidarDriver::DisposeDriver(drv);
 }
 
 Frame LidarDevice::read(){
@@ -48,9 +51,9 @@ Reading createReading(float angle, float distance, unsigned char qualityFlag, un
 	return reading;
 }
 
-void LidarSource::initialize(){
+void LidarDevice::initialize(){
 	if(isSimulation) return;
-	drv = RPlidarDriver::CreateDriver(RPlidarDriver::DRIVER_TYPE_SERIALPORT);
+	drv = rp::standalone::rplidar::RPlidarDriver::CreateDriver(rp::standalone::rplidar::RPlidarDriver::DRIVER_TYPE_SERIALPORT);
 
 	if (!drv) {
 		fprintf(stderr, "insufficent memory, exit\n");
@@ -59,7 +62,7 @@ void LidarSource::initialize(){
 	// make connection...
 	if (IS_FAIL(drv->connect(opt_com_path, opt_com_baudrate))) {
 		fprintf(stderr, "Error, cannot bind to the specified serial port %s.\n" , opt_com_path);
-		RPlidarDriver::DisposeDriver(drv);
+		rp::standalone::rplidar::RPlidarDriver::DisposeDriver(drv);
 		return;
 	}
 	printf("Connected!\n");
@@ -446,7 +449,7 @@ unsigned char LidarDevice::calculateColor(Reading& reading){
 	return color;
 }
 
-unsigned char LidarDevice::deviceRead(Frame& frame){
+void LidarDevice::deviceRead(Frame& frame){
 	if(drv==NULL) return;
 	
 	//grab the next set of data

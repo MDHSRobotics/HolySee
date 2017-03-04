@@ -22,7 +22,7 @@
 //handler
 int mygetch ( void )
 {
-	printf("%s\n","mygetch.." );
+//	printf("%s\n","mygetch.." );
   int ch;
   struct termios oldt, newt;
 
@@ -37,21 +37,20 @@ int mygetch ( void )
 }
 
 void processKeys( MSee*  handler){
-	int channels = handler->getChannelCount();
 	int currentChannel = 0;
 	bool done = false;
 		printf("%s\n","Press enter to switch channels or X key to exit ..." );
 		while(!done){
 			int c = mygetch();
-	   	    printf("Char: 0x%02x\n", c);
+	//   	    printf("Char: 0x%02x\n", c);
 	   	    if(c==0x0a){
-	   			printf("%s\n","switching..." );
+	   		//	printf("%s\n","switching..." );
 	   			currentChannel ++;
-	   			currentChannel = currentChannel%channels;
+	   			currentChannel = currentChannel%handler->getChannelCount();
 	   			MSee::switchTo(currentChannel);
 	   	    }
 	   	    else if(c==0x78){
-	   			printf("%s\n","quitting..." );
+	   			//printf("%s\n","exitting..." );
 	   			done = true;
 	   			handler->stop();;
 	   			continue;
