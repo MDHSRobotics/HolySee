@@ -10,6 +10,8 @@
 #include <chrono>
 #include <thread>
 
+#define BROWSE_DURATION (20*60*1000)   //20 minutes in milliseconds
+
 void DNSSDBrowser::scan(MSee* msee){
 	std::string result;
 	std::string command("/usr/local/msee/avahi.sh");
