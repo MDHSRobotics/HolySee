@@ -19,7 +19,76 @@
 //  * Instantiating CSee
 //  * configuration
 
-//handler
+#define CONF_TOKEN std::string("-conf")
+
+void moveToEnd(int* argc, char * argv[], int positionToMoveToEnd);  //strip command line arguments
+int mygetch ( void );  //implements a keystroke listener on the msee console, keystrokes are processed by the processKeys method
+void processKeys( MSee*  handler); //method that handles the keystrokes: switch channel (enter key) and exit (x key)
+
+int main(int argc,char *argv[])
+{
+	std::string instanceName("Tegra"); //default name
+	std::string configFile("msee.conf"); //default config file location
+
+	for (int i = 1; i < argc; i++){
+		if (argv[i][0] != '-'){
+			// this argument is the instance name
+			//move this element to the end of the argv char * array and backfill the void by moving up other elements
+			instanceName = std::string(argv[i]);
+			moveToEnd(&argc, argv, i);
+			i--;
+		}
+		else if (strncmp(argv[i], CONF_TOKEN.c_str(), CONF_TOKEN.length()) == 0){
+			// this argument is the location of the config file
+			//move this element to the end of the argv char * array and backfill the void by moving up other elements
+			configFile = std::string(argv[i]);
+			configFile = conf.substr(CONF_TOKEN.length());
+			moveToEnd(&argc, argv, i);
+			i--;
+		}
+	}
+	printf("instance name = %s\n", instanceName.c_str());
+	printf("conf = %s\n", configFile.c_str());
+	printf("%d gstreamer args:\n",argc-1);
+	for (int k = 1; k < argc; k++){
+		printf("\t%d: %s\n", k,argv[k]);
+	}
+
+	MSee* msee = new MSee(argc,argv,instanceName,configFile);
+
+	//start a dnssd browser - find the robot!
+	std::thread browser(&DNSSDBrowser::scan,msee);
+	browser.detach();
+
+	//start a keyboard listener
+	std::thread keyboardListener(processKeys,msee);
+	keyboardListener.detach();
+	
+	while(!MSee::streamer->isReady()){
+		std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
+	}
+	
+	msee->start();
+
+	delete msee;
+    return 0;
+}
+
+void moveToEnd(int* argc, char * argv[], int positionToMoveToEnd){
+	//printf("argc=%d, position=%d \n",*argc, positionToMoveToEnd);
+	char * temp = argv[positionToMoveToEnd];
+	for (int j = positionToMoveToEnd + 1; j < *argc; j++){
+		argv[j - 1] = argv[j];
+	}
+	argv[*argc - 1] = temp;
+	//printf("results of move \n ------------------------\n");
+	//for (int k = 0; k < *argc; k++){
+	//	printf("argv[%d]=%s\n", k, argv[k]);
+	//}
+	//printf("------------------------\n");
+	*argc = *argc-1;
+}
+
 int mygetch ( void )
 {
 //	printf("%s\n","mygetch.." );
@@ -57,31 +126,4 @@ void processKeys( MSee*  handler){
 	   	    }
 		}
 		printf("%s\n","exiting..." );
-}
-
-int main(int argc,char *argv[])
-{
-	std::string instanceName("Tegra");
-	//std::string configFile("../msee.conf");
-	std::string configFile("../msee.conf");
-
-
-	MSee* msee = new MSee(argc,argv,instanceName,configFile);
-
-	//start a dnssd browser - find the robot!
-	std::thread browser(&DNSSDBrowser::scan,msee);
-	browser.detach();
-
-	//start a keyboard listener
-	std::thread keyboardListener(processKeys,msee);
-	keyboardListener.detach();
-	
-	while(!MSee::streamer->isReady()){
-		std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
-	}
-	
-	msee->start();
-
-	delete msee;
-    return 0;
 }
