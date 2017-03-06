@@ -19,15 +19,22 @@ void DNSSDBrowser::scan(MSee* msee){
 	int attempts = 0;
 	int limit = 200;
 	std::string robotURI;
-	while(! foundRobot && attempts < limit){
+	std::chrono::time_point<std::chrono::system_clock> start, end;
+	start = std::chrono::system_clock::now();
+	bool done = false;
+	while(!foundRobot && !done){
 		Config::discover(command,result);
 		if(result.length()>0){
 			foundRobot = discoverDNSSD(result,robotURI);
 		}
+		end = std::chrono::system_clock::now();		
+		long  millis = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		if(millis > BROWSE_DURATION){
+			done = true;
+		}
 		else{
 			std::this_thread::sleep_for(std::chrono::milliseconds(100)); //Unix
 		}
-		attempts++;
 	}
 	if(!foundRobot){
 		throw std::runtime_error("Unable to find robot");
