@@ -53,7 +53,7 @@ void handle_message(const std::string & message)
 			MSee::switchTo(MSee::currentChannel);		
 		}
 		else if(type == CONSOLE_CONNECTION_NOTIFICATION_TOKEN){
-			//printf("getting console connection infomration: \n");
+            //printf("getting console connection infomration: \n");
 			//printf("\t%s\n",message.c_str());
 			if(object->has(std::string("consoleAddress")))
 			{

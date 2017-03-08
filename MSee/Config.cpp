@@ -299,12 +299,14 @@ void Config::createPipelineDefinition(){
 	if ( channelNames.size() > 1){
 		pipelineDefinition.append("input-selector sync-mode=clock cache-buffers=true name=");
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! xvimagesink "); //include the trailing space to create a separator that we know we will need
+		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=10.41.41.20 port=5806 ");
+        //pipelineDefinition.append(" ! videoconvert ! xvimagesink "); //include the trailing space to create a separator that we know we will need
 	}
 	else if ( channelNames.size() > 0){
 		pipelineDefinition.append("queue name="); //include the trailing space to create a separator that we know we will need
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! xvimagesink ");
+		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=10.41.41.20 port=5806 ");
+        //pipelineDefinition.append(" ! videoconvert ! xvimagesink ");
 	}
 
 	int sinkId=0;

@@ -42,7 +42,7 @@ int main(int argc,char *argv[])
 			// this argument is the location of the config file
 			//move this element to the end of the argv char * array and backfill the void by moving up other elements
 			configFile = std::string(argv[i]);
-			configFile = conf.substr(CONF_TOKEN.length());
+			configFile = configFile.substr(CONF_TOKEN.length() + 1);
 			moveToEnd(&argc, argv, i);
 			i--;
 		}
