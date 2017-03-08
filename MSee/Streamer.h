@@ -17,7 +17,7 @@ class Streamer
 private:
 	int argc;
 	char ** argv;
-	Config config;
+	Config& config;
 	std::vector<GstPad*> channels;
 	GstElement *pipeline;
 	GstBus *bus;

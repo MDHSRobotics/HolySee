@@ -61,3 +61,17 @@ std::vector< std::string> Source::getChannelNames(){
 std::vector<std::string> Source::getConnectionNames(){
 	return connectionNames;
 }
+#define DEVICE_TOKEN std::string("/dev/")
+void Source::devSwap(std::string& line, std::string&device){
+	int pos = -1;
+	pos = line.find(DEVICE_TOKEN);
+	if (pos>=0){
+		std::string result;
+		int posEnd = line.find(" ", pos);
+		result.append(line.substr(0, pos));
+		result.append(device);
+		result.append(line.substr(posEnd));
+		line.clear();
+		line.append(result);
+	}
+}

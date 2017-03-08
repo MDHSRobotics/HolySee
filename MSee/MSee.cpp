@@ -85,6 +85,7 @@ void handleCommunications(MSee * msee){
     delete ws; //
 }
 
+
 void MSee::robotDiscovered(std::string& uri){
 	setRobotURI(uri);
 	//start ws_client thread

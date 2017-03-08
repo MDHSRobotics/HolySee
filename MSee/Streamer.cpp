@@ -188,7 +188,8 @@ int Streamer::countChannels(){
 }
 
 void Streamer::setConsole(std::string& address){
-	consoleAddress = address;
+	//consoleAddress = address;
+    this->config.setConsoleAddress(address);
 	printf("console address set to %s\n",consoleAddress.c_str());
 }
 

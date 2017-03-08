@@ -14,6 +14,7 @@ protected:
 	bool _showRaw = false;
 	std::vector<std::string> connectionNames; // a pipeline connection means that a source is streaming something into some part of the pipeline
 	std::vector<std::string> channelNames; // a channel is a connection that is intended to be streamed out, not all connections are streamed out (e.g. app sinks)
+    void devSwap(std::string& line, std::string&device);
 public:
 	Source(std::string name, std::string device, bool showRaw, std::string AR_Name, std::string CV_Name);
 	~Source();

@@ -11,6 +11,7 @@ VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw,
 
 std::string VideoSource::getPipelineSegment(){
 	std::string segment;
+    devSwap(sourceElement, device);
 	segment.append(sourceElement);
 	segment.append(" ");
 	//segment.append(device);

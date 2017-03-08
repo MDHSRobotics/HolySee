@@ -259,6 +259,11 @@ std::map<std::string, std::shared_ptr<Source>> Config::getDevices(){
 	return devices;
 }
 
+void Config::setConsoleAddress(std::string address){
+    this->consoleAddress = address;
+}
+
+
 std::string Config::getPipelineDefinition(){
 	if(pipelineDefinition.empty()){
 		createPipelineDefinition();
@@ -299,13 +304,17 @@ void Config::createPipelineDefinition(){
 	if ( channelNames.size() > 1){
 		pipelineDefinition.append("input-selector sync-mode=clock cache-buffers=true name=");
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=10.41.41.20 port=5806 ");
+		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=");
+		pipelineDefinition.append(consoleAddress);
+		pipelineDefinition.append(" port=5806 ");
         //pipelineDefinition.append(" ! videoconvert ! xvimagesink "); //include the trailing space to create a separator that we know we will need
 	}
 	else if ( channelNames.size() > 0){
 		pipelineDefinition.append("queue name="); //include the trailing space to create a separator that we know we will need
 		pipelineDefinition.append(streamName);
-		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=10.41.41.20 port=5806 ");
+		pipelineDefinition.append(" ! videoconvert ! video/x-raw, format=I420 ! nvjpegenc quality=60 ! udpsink host=");
+		pipelineDefinition.append(consoleAddress);
+		pipelineDefinition.append(" port=5806 ");
         //pipelineDefinition.append(" ! videoconvert ! xvimagesink ");
 	}
 

@@ -31,6 +31,7 @@ private:
 	void discoverCameras(std::string&);
 	std::string pipelineDefinition;
 	void createPipelineDefinition();
+    std::string consoleAddress;
 
 public:
 	Config(std::string&, std::string&);
@@ -40,6 +41,7 @@ public:
 	std::string getPipelineDefinition();
 	static void discover(std::string&, std::string&);
 	static std::vector<std::string> split(const char *, char&);
+    void setConsoleAddress(std::string consoleAddress);
 };
 
 #endif /*__TEAM4141_MSEE_CONFIG_*/
