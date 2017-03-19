@@ -8,7 +8,6 @@ sudo apt-get install gir1.2-gstreamer-1.0
 pkg-config --cflags --libs opencv
 pkg-config --cflags --libs gstreamer-1.0
 pkg-config --cflags --libs gstreamer-plugins-base-1.0
-pkg-config --cflags --libs gstreamer-base-0.10
 ```
 
 
@@ -26,10 +25,8 @@ pkg-config --cflags --libs gstreamer-base-0.10
 /usr/local/include
 /usr/include/gstreamer-1.0 
 /usr/lib/x86_64-linux-gnu/gstreamer-1.0/include 
-/usr/include/gstreamer-0.10 
 /usr/include/glib-2.0 
 /usr/lib/x86_64-linux-gnu/glib-2.0/include 
-/usr/include/libxml2
 ```
 
 
@@ -76,7 +73,6 @@ gmodule-2.0
 pthread 
 gthread-2.0 
 glib-2.0 
-xml2
 PocoFoundation
 PocoUtil
 PocoJSON
