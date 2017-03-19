@@ -1,6 +1,6 @@
-#CSee Build Settings
+# CSee Build Settings
 
-##install commands
+## install commands
 
 ```
 sudo apt-get install libgstreamer-plugins*
@@ -12,14 +12,14 @@ pkg-config --cflags --libs gstreamer-base-0.10
 ```
 
 
-##compile options
+## compile options
 
 ```
 -O2;-std=c++11;-pthread;-fPIC
 ```
 
 
-##include paths
+## include paths
 
 ```
 /usr/local/include/opencv 
@@ -33,14 +33,14 @@ pkg-config --cflags --libs gstreamer-base-0.10
 ```
 
 
-##linker options
+## linker options
 
 ```
 -O2;-pthread
 ```
 
 
-##library search paths
+## library search paths
 
 ```
 /usr/local/lib 
@@ -48,7 +48,7 @@ pkg-config --cflags --libs gstreamer-base-0.10
 ```
 
 
-##libraries
+## libraries
 
 ```
 opencv_shape 
