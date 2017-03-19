@@ -24,10 +24,9 @@ pkg-config --cflags --libs gstreamer-plugins-base-1.0
 /usr/include/opencv
 /usr/local/include
 /usr/include/gstreamer-1.0 
-/usr/lib/aarch64-linux-gnu/gstreamer-1.0/include 
+/usr/lib/x86_64-linux-gnu/gstreamer-1.0/include 
 /usr/include/glib-2.0 
-/usr/lib/aarch64-linux-gnu/glib-2.0/include 
-
+/usr/lib/x86_64-linux-gnu/glib-2.0/include 
 ```
 
 
