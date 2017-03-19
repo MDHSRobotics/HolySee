@@ -1,13 +1,9 @@
-# CSee Build Settings
+# LidarSource Build Settings
 
 ## install commands
 
 ```
-sudo apt-get install libgstreamer-plugins*
-sudo apt-get install gir1.2-gstreamer-1.0 
 pkg-config --cflags --libs opencv
-pkg-config --cflags --libs gstreamer-1.0
-pkg-config --cflags --libs gstreamer-plugins-base-1.0
 ```
 
 
@@ -23,11 +19,6 @@ pkg-config --cflags --libs gstreamer-plugins-base-1.0
 ```
 /usr/include/opencv
 /usr/local/include
-/usr/include/gstreamer-1.0 
-/usr/lib/aarch64-linux-gnu/gstreamer-1.0/include 
-/usr/include/glib-2.0 
-/usr/lib/aarch64-linux-gnu/glib-2.0/include 
-
 ```
 
 
@@ -43,7 +34,6 @@ pkg-config --cflags --libs gstreamer-plugins-base-1.0
 ```
 /usr/local/cuda-8.0/lib64
 /usr/local/lib
-/usr/lib/aarch64-linux-gnu/gstreamer-1.0
 ```
 
 
@@ -84,14 +74,8 @@ rt
 pthread 
 m 
 dl
-gstreamer-1.0
-gstapp-1.0
-gstcoreelements
-gstbase-1.0
-gobject-2.0
-gmodule-2.0 
-pthread 
-gthread-2.0 
-glib-2.0 
 rplidar_sdk
 ```
+
+
+

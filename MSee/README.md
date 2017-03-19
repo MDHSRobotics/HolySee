@@ -1,4 +1,4 @@
-# CSee Build Settings
+# MSee Build Settings
 
 ## install commands
 
@@ -27,7 +27,6 @@ pkg-config --cflags --libs gstreamer-plugins-base-1.0
 /usr/lib/aarch64-linux-gnu/gstreamer-1.0/include 
 /usr/include/glib-2.0 
 /usr/lib/aarch64-linux-gnu/glib-2.0/include 
-
 ```
 
 
@@ -93,5 +92,10 @@ gmodule-2.0
 pthread 
 gthread-2.0 
 glib-2.0 
-rplidar_sdk
+PocoFoundation
+PocoUtil
+PocoJSON
 ```
+
+
+
