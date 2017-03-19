@@ -6,8 +6,9 @@
 int main(int argc,char *argv[]){
 	const char* path = "/dev/ttyUSB0";
 	LidarSource* lidar = new LidarSource(path);
-	lidar->setSimulate(true);
+	lidar->setSimulate(false);
 	lidar->initialize();
+    printf("initialization completed.\n");
 	lidar->showScan();
 	lidar->shutdown();
 	delete lidar;

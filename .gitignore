@@ -3,6 +3,7 @@ Debug/
 bin/
 build/
 .codelite/
+.codelite/*
 .clang/
 .git/
 *.mk
@@ -11,6 +12,7 @@ build/
 *.project
 *.avi
 *.swp
+*.db
 *~
 *.*~
 Makefile

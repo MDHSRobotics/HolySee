@@ -65,7 +65,7 @@ void LidarDevice::initialize(){
 		rp::standalone::rplidar::RPlidarDriver::DisposeDriver(drv);
 		return;
 	}
-	printf("Connected!\n");
+	printf("Lidar Connected!\n");
 	drv->startMotor();
 	drv->startScanExpress(false);
 }
@@ -461,16 +461,22 @@ void LidarDevice::deviceRead(Frame& frame){
 //            drv->ascendScanData(nodes, count);
 
         	for (int pos = 0; pos < (int)count ; ++pos) {
-			bool isSynch = nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT;
-			float angle = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
-			float distance = nodes[pos].distance_q2/4.0f;
-			char quality = nodes[pos].sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;
-			frame.readings.push_back(createReading(352.718750f, 1706.000000f, 0x47, 0x01));
-			printf("%s angle: %03.2f distance: %08.2f Q: %02x \n",
-			    (isSynch) ?"S ":"  ",
-			    angle,
-			    distance,
-			    quality);
+                bool isSynch = nodes[pos].sync_quality & RPLIDAR_RESP_MEASUREMENT_SYNCBIT;
+                float angle = (nodes[pos].angle_q6_checkbit >> RPLIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)/64.0f;
+                float distance = nodes[pos].distance_q2/4.0f;
+                char quality = nodes[pos].sync_quality >> RPLIDAR_RESP_MEASUREMENT_QUALITY_SHIFT;
+                frame.readings.push_back(createReading(angle, distance, quality, isSynch));
+//    			printf("%s angle: %03.2f distance: %08.2f Q: %02x \n",
+//    			    (isSynch) ?"S ":"  ",
+//    			    angle,
+//    			    distance,
+//    			    quality);
         	}
+            Header header;
+            header.U = 0x00;
+            header.size = frame.readings.size() * sizeof frame.readings[0]+ sizeof frame.header;
+            header.count = frame.readings.size();
+
+            frame.header = header;
 	}	
 }

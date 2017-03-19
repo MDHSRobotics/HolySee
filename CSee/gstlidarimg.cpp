@@ -347,14 +347,14 @@ gst_lidar_img_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 
 	GstMapInfo map;
 	gst_buffer_map(buffer, &map, GST_MAP_READ);
-	//g_print("data[size:%d]:\n", map.size);
-	//for (int i = 0; i < map.size; i++){
-	//	guint8 byte = *(map.data + i);
-	//	g_print("%02x", byte);
-	//	if (i % 16 == 0) g_print("\n");
-	//	else if (i % 2 == 0) g_print(" ");
-	//}
-	//g_print("\n");
+//	g_print("data[size:%d]:\n", map.size);
+//	for (int i = 0; i < map.size; i++){
+//		guint8 byte = *(map.data + i);
+//		g_print("%02x", byte);
+//		if (i % 16 == 0) g_print("\n");
+//		else if (i % 2 == 0) g_print(" ");
+//	}
+//	g_print("\n");
 	int bytesRead = 0;
 	int i = 0;
 	Header header;
@@ -388,7 +388,7 @@ gst_lidar_img_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 
 		//if (count == 0){
 			//show the first point for debugging purposes
-		//	g_print("reading:  angle:%f, distance:%f, quality:%02x, synch:%02x\n", reading.angle, reading.distance, reading.qualityFlag, reading.syncFlag);
+			//g_print("reading:  angle:%f, distance:%f, quality:%02x, synch:%02x\n", reading.angle, reading.distance, reading.qualityFlag, reading.syncFlag);
 		//	g_print("pixel:  x:%f, y:%f, color:%d\n", x, y, color);
 		//}
 		if (reading.qualityFlag != 0x00){

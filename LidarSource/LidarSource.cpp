@@ -64,12 +64,14 @@ void LidarSource::shutdown(){
 }
 
 void LidarSource::grabData(){
+    //printf("%s\n","clearing scan");
 	scan.clear();
 	if (isSimulation){
 		simulate();
 		printf("next frame\n");
 	}
 	else{
+        //printf("%s\n","grabbing frame");
 		//grab the next set of data
         rplidar_response_measurement_node_t nodes[360*2];
         size_t   count = _countof(nodes);
@@ -87,11 +89,11 @@ void LidarSource::grabData(){
 
 //            	printf("readings.push_back({%d,%f,%f,%d});\n",isSynch,angle,distance,quality);
 
-                printf("%s theta: %03.2f Dist: %08.2f Q: %d \n",
-                    (isSynch) ?"S ":"  ",
-                    angle,
-                    distance,
-                    quality);
+//                printf("%s theta: %03.2f Dist: %08.2f Q: %d \n",
+//                    (isSynch) ?"S ":"  ",
+//                    angle,
+//                    distance,
+//                    quality);
                 Reading reading(isSynch,angle,distance,quality);
                 scan.push_back(reading);
             }
@@ -104,20 +106,28 @@ void LidarSource::showScan()
 {
 	scan.clear();
 	cv::namedWindow("LIDAR", cv::WINDOW_AUTOSIZE);// Create a window for display.
-	while (cv::waitKey(20) < 0){
+	cv::Mat img(480, 640, CV_8UC1, 255);
+    imshow("LIDAR", img);
+    //printf("%s\n","showScan()");
+    int keyPress = 0;
+    keyPress = cv::waitKey(20);
+    //printf("keyPress: %d\n",keyPress);
+	while (keyPress==255 || keyPress < 0){
 		grabData();
 		if (scan.size() > 0){
-			cv::Mat img(2 * (int)(Reading::range / 10), 2 * ((int)Reading::range / 10), CV_8UC1, 255);
+			cv::Mat img(480, 640, CV_8UC1, 255);
 			for (Reading reading : scan){
 				if (reading.getQuality() != 0){
 					//printf("(%d,%d)=%d\n", reading.getY()/10, reading.getX()/10, reading.getColor());
 					//img.at<uint8_t>(reading.getY()/10, reading.getX()/10) = (unsigned char)reading.getColor();
-					cv::circle(img, cv::Point(reading.getX() / 10, reading.getY() / 10), 2, cv::Scalar(reading.getColor()), 2, CV_AA, 0);
+					cv::circle(img, cv::Point(reading.getX() / 25+(640-480)/2, reading.getY() / 25), 2, cv::Scalar(reading.getColor()), 2, CV_AA, 0);
 				}
 			}
 			cv::imshow("LIDAR", img);
 			scan.clear();
 		}
+        keyPress = cv::waitKey(20);
+        //printf("keyPress: %d\n",keyPress);
 	}
 }
 

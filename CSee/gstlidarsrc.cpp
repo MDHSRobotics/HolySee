@@ -26,7 +26,7 @@
 * <refsect2>
 * <title>Example launch lines</title>
 * |[
-* gst-launch-1.0 --gst-plugin-path=C:\projects\lidarsrc\x64\Release lidarsrc device=/dev/ttyUSB0 ! lidarimg ! video/x-raw, format=GRAY8, framerate=5/1, widht=640, height=480 ! videoconvert ! autovideosink
+* gst-launch-1.0 --gst-plugin-path=. lidarsrc device=/dev/ttyUSB0 ! lidarimg ! video/x-raw, format=GRAY8, framerate=5/1, widht=640, height=480 ! videoconvert ! xvimagesink
 * ]| Stream data from lidar device.
 * </refsect2>
 */
@@ -334,15 +334,15 @@ gst_lidar_src_create(GstPushSrc * psrc, GstBuffer ** outbuf)
 	GstLidarSrc *self = GST_LIDAR_SRC(psrc);
 	struct GstLidarBuffer *glb;
 	glb = g_slice_new0(struct GstLidarBuffer);
-	////g_print("gst_lidar_src_create\n");
+//	g_print("gst_lidar_src_create\n");
 
 	Frame frame = self->lidar->read();
 	int bufferSize = sizeof frame.readings[0] * frame.header.count + sizeof frame.header;
-	////g_print("frame size: %d, header size: %d, readings size: %d, readings count:%d\n", bufferSize, sizeof frame.header, sizeof frame.readings[0], frame.header.count);
+//	g_print("frame size: %d, header size: %d, readings size: %d, readings count:%d\n", bufferSize, sizeof frame.header, sizeof frame.readings[0], frame.header.count);
 	unsigned char * buffer = (unsigned char *)malloc(bufferSize);
 	int bytesWritten = writeFrame(frame, buffer, bufferSize);
 
-	////g_print("Got buffer %p of size %d\n", buffer, bufferSize);
+//	g_print("Got buffer %p of size %d\n", buffer, bufferSize);
 	glb->buf = buffer;
 
 	*outbuf = gst_buffer_new_wrapped_full(GST_MEMORY_FLAG_READONLY,
