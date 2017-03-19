@@ -1,6 +1,7 @@
 #CSee Build Settings
 
 ##install commands
+
 ```
 sudo apt-get install libgstreamer-plugins*
 sudo apt-get install gir1.2-gstreamer-1.0 
@@ -10,12 +11,16 @@ pkg-config --cflags --libs gstreamer-plugins-base-1.0
 pkg-config --cflags --libs gstreamer-base-0.10
 ```
 
+
 ##compile options
+
 ```
 -O2;-std=c++11;-pthread;-fPIC
 ```
 
+
 ##include paths
+
 ```
 /usr/local/include/opencv 
 /usr/local/include
@@ -27,18 +32,24 @@ pkg-config --cflags --libs gstreamer-base-0.10
 /usr/include/libxml2
 ```
 
+
 ##linker options
+
 ```
 -O2;-pthread
 ```
 
+
 ##library search paths
+
 ```
 /usr/local/lib 
 /usr/lib/x86_64-linux-gnu/gstreamer-1.0
 ```
 
+
 ##libraries
+
 ```
 opencv_shape 
 opencv_stitching 
