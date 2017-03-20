@@ -154,12 +154,12 @@ gst_lidar_img_class_init(GstLidarImgClass * klass)
 
 	g_object_class_install_property(gobject_class, PROP_SILENT,
 		g_param_spec_boolean("silent", "Silent", "Produce verbose output ?",
-		FALSE, G_PARAM_READWRITE));
+		FALSE, (GParamFlags)G_PARAM_READWRITE));
 
 	g_object_class_install_property(gobject_class, PROP_WIDTH,
-		g_param_spec_int("width", "Width", "Specify the width of the image to produce, default is 640",160,1280,640,G_PARAM_READWRITE));
+		g_param_spec_int("width", "Width", "Specify the width of the image to produce, default is 640",160,1280,640,(GParamFlags)G_PARAM_READWRITE));
 	g_object_class_install_property(gobject_class, PROP_HEIGHT,
-		g_param_spec_int("height", "Height", "Specify the height of the image to produce, default is 480", 160, 1280, 480, G_PARAM_READWRITE));
+		g_param_spec_int("height", "Height", "Specify the height of the image to produce, default is 480", 160, 1280, 480, (GParamFlags)G_PARAM_READWRITE));
 
 	gst_element_class_set_details_simple(gstelement_class,
 		"LidarImg - an RP Lidar plugin",

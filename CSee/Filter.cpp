@@ -25,7 +25,7 @@ void Filter::postBooleanEvent(std::string eventName, bool eventData){
 }
 
 void Filter::postStringEvent(std::string eventName, std::string eventData){
-	GstStructure* msgStruct = gst_structure_new(eventName.c_str(), "filter", G_TYPE_STRING, getName().c_str(), "eventData", G_TYPE_STRING, eventData, NULL);
+	GstStructure* msgStruct = gst_structure_new(eventName.c_str(), "filter", G_TYPE_STRING, getName().c_str(), "eventData", G_TYPE_STRING, eventData.c_str(), NULL);
 	post(msgStruct);
 }
 
