@@ -47,11 +47,11 @@ struct _GstLidarSrc
 
 	gchar *device = NULL;
 	bool isSimulation;
+	gchar *recordTo = NULL;
+	gchar *readFrom = NULL;
+	
 
 	LidarDevice *lidar = NULL;
-
-//	GstPoll *poll;
-//	GstPollFD pollfd;
 
 	GstFlowReturn flow_return;
 	gboolean unlocked;

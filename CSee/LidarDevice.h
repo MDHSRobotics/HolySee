@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 #include "rplidar/rplidar.h" //RPLIDAR standard sdk, all-in-one header
 
 //   The data buffer is set to 4k, which is 4096 bytes
@@ -62,6 +63,11 @@ private:
 	_u32 opt_com_baudrate;
 	u_result   op_result;	
 	void deviceRead(Frame& frame);
+	std::string recordTo;
+	std::string readFrom;
+	std::fstream ofs;
+	std::fstream ifs;
+	void readFrameFromFile(Frame& frame);
 public:
 	LidarDevice(char*,bool);
 	~LidarDevice();
@@ -71,5 +77,10 @@ public:
 	static int calculateY(Reading&,double,int,int);
 	static unsigned char calculateColor(Reading&);
 	void initialize();
+	void setRecordTo(char * recordTo);
+	std::string& getRecordTo();
+	void setReadFrom(char * readFrom);
+	std::string& getReadFrom();
+	void save(unsigned char * buffer, size_t length);
 };
 	

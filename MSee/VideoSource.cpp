@@ -1,10 +1,10 @@
 #include "VideoSource.h"
 
 
-VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string cvName) : Source(name, deviceName, showRaw, arName, cvName)
+VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string arParameters, std::string cvName) : Source(name, deviceName, showRaw, arName, arParameters, cvName)
 {
 }
-VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string cvName,std::string sourceElement) : Source(name, deviceName, showRaw, arName, cvName),sourceElement(sourceElement)
+VideoSource::VideoSource(std::string name, std::string deviceName, bool showRaw, std::string arName, std::string arParameters, std::string cvName,std::string sourceElement) : Source(name, deviceName, showRaw, arName, arParameters, cvName),sourceElement(sourceElement)
 {
 }
 

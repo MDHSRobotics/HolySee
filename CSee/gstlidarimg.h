@@ -42,6 +42,11 @@ G_BEGIN_DECLS
 typedef struct _GstLidarImg      GstLidarImg;
 typedef struct _GstLidarImgClass GstLidarImgClass;
 
+typedef enum {
+	STYLE_SIMPLE,
+	STYLE_GRADUATED
+}PointStyle;
+
 struct _GstLidarImg
 {
 	GstElement element;
@@ -53,6 +58,7 @@ struct _GstLidarImg
 	int width;
 	int height;
 	std::string format;
+	PointStyle style;
 
 };
 

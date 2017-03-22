@@ -9,8 +9,8 @@ class VideoSource :
 private:
 	std::string sourceElement = std::string("v4l2src");
 public:
-	VideoSource(std::string name, std::string device, bool showRaw, std::string arName, std::string cvName);
-	VideoSource(std::string name, std::string device, bool showRaw, std::string arName, std::string cvName, std::string sourceElement);
+	VideoSource(std::string name, std::string device, bool showRaw, std::string arName, std::string arParameters, std::string cvName);
+	VideoSource(std::string name, std::string device, bool showRaw, std::string arName, std::string arParameters, std::string cvName, std::string sourceElement);
 	~VideoSource();
 	std::string getPipelineSegment();
 };

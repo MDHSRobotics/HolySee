@@ -11,6 +11,7 @@ class Filter
 private:
 	std::string &name;
 	GstBus* bus;
+	std::string parameters;
 public:
 	Filter(std::string&);
 	virtual void process(cv::Mat&) = 0;
@@ -21,7 +22,8 @@ public:
 	void postStringEvent(std::string eventName, std::string eventData);
 	void postIntEvent(std::string eventName, int eventData);
 	void postDoubleEvent(std::string eventName, double eventData);
-	
+	virtual void setParameters(std::string& parameters);
+	std::string getParameters();
 };
 
 #endif /* __GST_ARFILTER_FILTER__ */

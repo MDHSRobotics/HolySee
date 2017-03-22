@@ -99,7 +99,7 @@ enum
 	PROP_SILENT,
 	PROP_WIDTH,
 	PROP_HEIGHT,
-	PROP_FORMAT
+	PROP_STYLE
 };
 
 /* the capabilities of the inputs and outputs.
@@ -160,6 +160,8 @@ gst_lidar_img_class_init(GstLidarImgClass * klass)
 		g_param_spec_int("width", "Width", "Specify the width of the image to produce, default is 640",160,1280,640,(GParamFlags)G_PARAM_READWRITE));
 	g_object_class_install_property(gobject_class, PROP_HEIGHT,
 		g_param_spec_int("height", "Height", "Specify the height of the image to produce, default is 480", 160, 1280, 480, (GParamFlags)G_PARAM_READWRITE));
+	g_object_class_install_property(gobject_class, PROP_STYLE,
+		g_param_spec_string("style", "Style", "Specify the point style used to render the lidar image.  Options are: simple | graduated, default is simple.", "simple", (GParamFlags)G_PARAM_READWRITE));
 
 	gst_element_class_set_details_simple(gstelement_class,
 		"LidarImg - an RP Lidar plugin",
@@ -199,6 +201,7 @@ gst_lidar_img_init(GstLidarImg * filter)
 	filter->silent = FALSE;
 	filter->width = 640;
 	filter->height = 480;
+	filter->style = STYLE_SIMPLE;
 	//g_print("init done\n");
 }
 
@@ -222,6 +225,20 @@ const GValue * value, GParamSpec * pspec)
 		filter->width = g_value_get_int(value);  //gives us the height
 		//g_print("height: %d\n", filter->height);
 		break;
+	case PROP_STYLE:
+	{
+		/* set the desired style		*/
+		std::string styleName(g_value_dup_string(value));
+		if(styleName == std::string("graduated")){
+			filter->style = STYLE_GRADUATED;
+			printf("style set to %s\n","graduated");
+		}
+		else{
+			filter->style = STYLE_SIMPLE;
+			printf("style set to %s\n","simple");
+		}
+	}
+		break;		
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
@@ -244,38 +261,21 @@ GValue * value, GParamSpec * pspec)
 	case PROP_HEIGHT:
 		g_value_set_int(value, filter->height);
 		break;
+	case PROP_STYLE:
+		if(filter->style == STYLE_GRADUATED){
+			g_value_set_string(value, "graduated");
+		}
+		else{
+			g_value_set_string(value, "simple");
+		}
+		break;		
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
 	}
 }
 
-//std::string FIELD_WIDTH_TOKEN("width");
-//std::string FIELD_HEIGHT_TOKEN("height");
-//std::string FIELD_FORMAT_TOKEN("format");
-//
-//gboolean
-//inspectField(GQuark field_id,
-//const GValue *value,
-//gpointer user_data){
-//	GstLidarImg *filter = (GstLidarImg *)user_data;
-//
-//	std::string fieldName = std::string(g_quark_to_string(field_id));
-//	std::string fieldValue = std::string(gst_value_serialize(value));
-//
-//	if (fieldName == "width"){
-//		filter->width = std::stoi(fieldValue);
-//	}
-//	else if (fieldName == "height"){
-//		filter->height = std::stoi(fieldValue);
-//	}
-//	else if (fieldName == "format"){
-//		filter->format = fieldValue;
-//	}
-//	return true;
-//}
 
-/* GstElement vmethod implementations */
 
 /* this function handles sink events */
 static gboolean
@@ -317,8 +317,6 @@ gst_lidar_img_sink_event(GstPad * pad, GstObject * parent, GstEvent * event)
 	}
 	return ret;
 }
-
-//bool announced = false;
 
 /* chain function
 * this function does the actual processing
@@ -369,7 +367,7 @@ gst_lidar_img_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 	int xOffset = (filter->width <= filter->height ? 0 : (filter->width-filter->height) / 2);
 	int yOffset = (filter->width < filter->height ? (filter->height - filter->width) / 2 : 0);
 //	g_print("width:%d, height:%d, range:%f, scale:%f\n", filter->width, filter->height, LidarDevice::Range, scale);
-	cv::Mat frame(cv::Size(filter->width, filter->height), CV_MAKETYPE(CV_8U, 1), cv::Scalar(255));//creates an empty matrix that is intended to be grey scale with defined size
+	cv::Mat frame(cv::Size(filter->width, filter->height), CV_MAKETYPE(CV_8U, 1), cv::Scalar(0));//creates an empty matrix that is intended to be grey scale with defined size
 	
 	int count = 0;
 	while (bytesRead < map.size && count < header.count){
@@ -393,7 +391,12 @@ gst_lidar_img_chain(GstPad * pad, GstObject * parent, GstBuffer * buffer)
 		//}
 		if (reading.qualityFlag != 0x00){
 			//draw the point using the circle function to make it more visible
-			cv::circle(frame, cv::Point(x, y), 2, cv::Scalar(color), 2, CV_AA, 0);
+			if(filter->style == STYLE_GRADUATED){
+				cv::circle(frame, cv::Point(x, y), 2, cv::Scalar(color), 2, CV_AA, 0);
+			}
+			else{
+				frame.at<unsigned char>(cv::Point(x,y)) = 255;
+			}
 		}
 		count++;
 	}

@@ -1,6 +1,5 @@
 #include "Source.h"
 
-
 Source::Source(std::string name, std::string device, bool showRaw, std::string arName, std::string cvName): name(name), device(device), _showRaw(showRaw), arName(arName), cvName(cvName)
 {
 
@@ -18,6 +17,24 @@ Source::Source(std::string name, std::string device, bool showRaw, std::string a
 
 }
 
+Source::Source(std::string name, std::string device, bool showRaw, std::string arName, std::string arParameters, std::string cvName): name(name), device(device), _showRaw(showRaw), arName(arName), cvName(cvName), arParameters(arParameters)
+{
+
+	if (this->showRaw()){
+		connectionNames.push_back(std::string(name + "_raw"));
+		channelNames.push_back(std::string(name + "_raw"));
+	}
+	if (this->hasAR()){
+		connectionNames.push_back(std::string(name + "_" + arName));
+		channelNames.push_back(std::string(name + "_" + arName));
+	}
+	if (this->hasCV()){
+		connectionNames.push_back(std::string(name + "_" + cvName));
+	}
+}
+
+
+
 Source::~Source()
 {
 }
@@ -32,7 +49,9 @@ std::string Source::getDevice(){
 std::string Source::getARName(){
 	return arName;
 }
-
+std::string Source::getARParameters(){
+	return arParameters;
+}
 std::string Source::getCVName(){
 	return cvName;
 }

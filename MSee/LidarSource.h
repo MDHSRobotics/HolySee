@@ -11,6 +11,7 @@ private:
 
 public:
 	LidarSource(std::string name, std::string device, std::string arName, std::string cvName);
+	LidarSource(std::string name, std::string device, std::string arName, std::string arParameters, std::string cvName);
 	~LidarSource();
 	std::string getPipelineSegment();
 };

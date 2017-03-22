@@ -38,3 +38,11 @@ void Filter::postDoubleEvent(std::string eventName, double eventData){
 	GstStructure* msgStruct = gst_structure_new(eventName.c_str(), "filter", G_TYPE_STRING, getName().c_str(), "eventData", G_TYPE_DOUBLE, eventData, NULL);
 	post(msgStruct);
 }
+
+void Filter::setParameters(std::string& parameters){
+	this->parameters = parameters;
+}
+
+std::string Filter::getParameters(){
+	return parameters;
+}

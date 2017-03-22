@@ -20,6 +20,11 @@ LidarDevice::LidarDevice(char * device,bool isSimulation) : device(std::string(d
 
 LidarDevice::~LidarDevice()
 {
+	ifs.close();
+	printf("%s closed\n",readFrom.c_str());
+	ofs.flush();
+	ofs.close();
+	printf("%s closed\n",recordTo.c_str());
 	if(isSimulation) return;
 	if(drv==NULL) return;
 	drv->stop();
@@ -30,7 +35,11 @@ LidarDevice::~LidarDevice()
 Frame LidarDevice::read(){
 	//printf("reading ...");
 	Frame frame;
-	if (isSimulation){
+	if(!readFrom.empty()){
+		//printf("reading from %s\n",readFrom.c_str());
+		readFrameFromFile(frame);
+	}
+	else if (isSimulation){
 		//printf("simulate frame");
 		simulateFrame(frame);
 	}
@@ -49,6 +58,38 @@ Reading createReading(float angle, float distance, unsigned char qualityFlag, un
 	reading.qualityFlag = qualityFlag;
 	reading.syncFlag = syncFlag;
 	return reading;
+}
+
+void LidarDevice::readFrameFromFile(Frame& frame){
+	Header * pHeader = &(frame.header);
+	char * buffer = NULL;
+	buffer = reinterpret_cast<char *>(pHeader);
+	ifs.read(buffer,sizeof(Header));
+	if(ifs.eof()){
+		printf("detected eof when reading frame, looping ...\n");
+		ifs.clear();
+		ifs.seekg(0,std::ios::beg);
+		buffer = reinterpret_cast<char *>(pHeader);
+		ifs.read(buffer,sizeof(Header));
+	}
+	if(!ifs){
+		printf("File read failed\n");
+		throw std::runtime_error("unable to read from file");
+	}
+	//printf("frame: count[%d], size[%d]\n",frame.header.count,frame.header.size);
+	
+	for(size_t i=0;i<frame.header.count;i++){
+		Reading reading;
+		Reading * pReading = &reading;
+		buffer = reinterpret_cast<char *>(pReading);
+		ifs.read(buffer,sizeof(Reading));
+		if(!ifs){
+			printf("File read failed\n");
+			throw std::runtime_error("unable to read from file");
+		}
+		//printf("reading: angle[% 10.4f], distance[% 10.4f], Q[%02x], S[%02x]\n",reading.angle, reading.distance, reading.qualityFlag, reading.syncFlag);
+		frame.readings.push_back(reading);
+	}
 }
 
 void LidarDevice::initialize(){
@@ -442,9 +483,9 @@ int LidarDevice::calculateY(Reading& reading, double scale, int height, int yOff
 }
 
 unsigned char LidarDevice::calculateColor(Reading& reading){
-	unsigned char color = 255;  //default to white
+	unsigned char color = 0;  //default to black
 	if (reading.distance > 0 && reading.distance < LidarDevice::Range){
-		color = (unsigned char)((int)(reading.distance*255.0f / LidarDevice::Range));
+		color = (unsigned char)(255-(int)(reading.distance*255.0f / LidarDevice::Range));
 	}
 	return color;
 }
@@ -479,4 +520,47 @@ void LidarDevice::deviceRead(Frame& frame){
 
             frame.header = header;
 	}	
+}
+
+
+void LidarDevice::setRecordTo(char * recordTo){
+	this->recordTo = std::string(recordTo);
+	//open file for recording
+	//clear existing contents
+	ofs.open(this->recordTo.c_str(), std::ios::out | std::ios::binary);
+	if(!ofs){
+		printf("File write failed\n");
+		throw std::runtime_error("unable to open file");
+	}
+	if(ofs.is_open()){
+		printf("%s is opened\n",this->recordTo.c_str());
+	}
+}
+
+std::string& LidarDevice::getRecordTo(){
+	return recordTo;
+}
+
+void LidarDevice::setReadFrom(char * readFrom){
+	this->readFrom = std::string(readFrom);
+	//open file for reading
+	ifs.open(this->readFrom.c_str(), std::ios::in | std::ios::binary);
+	if(!ifs){
+		printf("File read failed\n");
+		throw std::runtime_error("unable to open file");
+	}
+	if(ifs.is_open()){
+		printf("%s is opened\n",this->readFrom.c_str());
+		ifs.seekg(0,std::ios::beg);
+	}
+}
+
+std::string& LidarDevice::getReadFrom(){
+	return readFrom;
+}
+
+void LidarDevice::save(unsigned char * buffer, size_t length){
+	//printf("attempting to save buffer");
+	char * c_buff = reinterpret_cast<char *>(buffer);
+	ofs.write(c_buff,length);
 }

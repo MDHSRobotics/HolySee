@@ -9,18 +9,21 @@ class Source
 protected:
 	std::string name;
 	std::string device;
-	std::string arName;  //filter name to use for augmented reality view
-	std::string cvName;  //filter name to use for CV app sink
+	std::string arName;        //filter name to use for augmented reality view
+	std::string arParameters;  //parameters to pass to augmented reality filter
+	std::string cvName;        //filter name to use for CV app sink
 	bool _showRaw = false;
 	std::vector<std::string> connectionNames; // a pipeline connection means that a source is streaming something into some part of the pipeline
 	std::vector<std::string> channelNames; // a channel is a connection that is intended to be streamed out, not all connections are streamed out (e.g. app sinks)
     void devSwap(std::string& line, std::string&device);
 public:
 	Source(std::string name, std::string device, bool showRaw, std::string AR_Name, std::string CV_Name);
+	Source(std::string name, std::string device, bool showRaw, std::string AR_Name, std::string AR_Params, std::string CV_Name);
 	~Source();
 	std::string getName();
 	std::string getDevice();
 	std::string getARName();
+	std::string getARParameters();
 	std::string getCVName();
 	bool showRaw();
 	bool hasAR();

@@ -11,6 +11,7 @@
 #include "Source.h"
 
 #define AR_TOKEN std::string("AR")
+#define AR_PARAMETERS_TOKEN std::string("ARParameters")
 #define CV_TOKEN std::string("CV")
 #define source_TOKEN std::string("source")
 

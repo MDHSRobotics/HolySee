@@ -70,6 +70,7 @@ Config::Config(std::string& configRoot, std::string& configFileName) : configFil
 		
 		std::string usbText;
 		discover(usbCommand,usbText);
+		usbText = std::string("/dev/ttyUSB0 - Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001"); //to test lidar in msee
 		discoverUSB(usbText);
 
 		//printf("%d devices\n",devices.size());
@@ -144,12 +145,16 @@ void Config::discoverUSB(std::string& usbText){
 					pConf->keys((configRoot+std::string(".")+name), keys);
 					std::string arFilter;
 					std::string cvFilter;
+					std::string arParameters;
 					if(keys.size()>0){
 						for(std::string key : keys){
 							std::string paramName = configRoot+std::string(".")+name+std::string(".")+key;
 							//printf("retrieving %s\n",paramName.c_str());
 							if(key == AR_TOKEN){
 								arFilter=get(paramName);
+							}
+							if(key==AR_PARAMETERS_TOKEN){
+								arParameters = get(paramName);
 							}
 							if(key == CV_TOKEN){
 								cvFilter=get(paramName);
@@ -159,7 +164,7 @@ void Config::discoverUSB(std::string& usbText){
 					}
 
 					//printf("usb device[name: %s,path:%s, description:%s]\n",name.c_str(), device.c_str(), description.c_str());
-					std::shared_ptr<Source> dev(new LidarSource(name,device,arFilter,cvFilter));
+					std::shared_ptr<Source> dev(new LidarSource(name,device,arFilter,arParameters,cvFilter));
 					devices[name]=dev;
 					break;
 				}
@@ -222,6 +227,7 @@ void Config::discoverCameras(std::string& camerasText){
 						pConf->keys((configRoot+std::string(".")+name), keys);
 
 						std::string arFilter;
+						std::string arParameters;
 						std::string cvFilter;
 						std::string source;
 
@@ -237,12 +243,15 @@ void Config::discoverCameras(std::string& camerasText){
 								if(key == source_TOKEN){
 									source = get(paramName);
 								}
+								if(key==AR_PARAMETERS_TOKEN){
+									arParameters = get(paramName);
+								}
 							}
 						}
 						//printf("camera[name: %s, path:%s, id:%s, busInfo:%s]\n",name.c_str(), path.c_str(), id.c_str(), busInfo.c_str());
 						std::shared_ptr<Source> dev;
-						if(source.empty()) dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,cvFilter));
-						else dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,cvFilter,source));
+						if(source.empty()) dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,arParameters,cvFilter));
+						else dev = std::shared_ptr<Source>(new VideoSource(name,path,false,arFilter,arParameters,cvFilter,source));
 						name.insert(0,std::to_string(devices.size())+std::string("_"));
 						devices[name]=dev;
 						break;
@@ -362,6 +371,10 @@ void Config::createPipelineDefinition(){
 						std::string filterName = channelName.substr(pos+1);
 						pipelineDefinition.append("arfilter filter=");
 						pipelineDefinition.append(filterName);
+						if(!dev->getARParameters().empty()){
+							pipelineDefinition.append(" parameters=");
+							pipelineDefinition.append(dev->getARParameters());
+						}
 						pipelineDefinition.append(" ! ");
 					}
 					pipelineDefinition.append(streamName);

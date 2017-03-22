@@ -54,7 +54,9 @@ enum
 	PROP_0,
 	PROP_DEVICE,
 	PROP_IS_LIVE,
-	PROP_IS_SIMULATION
+	PROP_IS_SIMULATION,
+	PROP_RECORD_TO,
+	PROP_READ_FROM
 };
 
 struct GstLidarBuffer
@@ -119,7 +121,7 @@ gst_lidar_src_class_init(GstLidarSrcClass * klass)
 	g_object_class_install_property(gobject_class, PROP_DEVICE,
 		g_param_spec_string("device",
 		"Device path",
-		"The device path for the lidar, , typically /dev/ttyUSB0",
+		"The device path for the lidar, typically /dev/ttyUSB0",
 		NULL, (GParamFlags)(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
 
 	g_object_class_install_property(gobject_class, PROP_IS_LIVE,
@@ -131,9 +133,21 @@ gst_lidar_src_class_init(GstLidarSrcClass * klass)
 		g_param_spec_boolean("simulate", "Is this a simulation",
 		"True if the the source should simulate a device", FALSE,
 		(GParamFlags)(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+		
+	g_object_class_install_property(gobject_class, PROP_RECORD_TO,
+		g_param_spec_string("recordTo",
+		"Record To path",
+		"The file path to record lidar data to, e.g. /tmp/lidar.dat.  Existing files are overwritten",
+		NULL, (GParamFlags)(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
 
-//	gst_element_class_add_static_pad_template(gstelement_class, &srctemplate);  //doesn't work in 14.04
-	gst_element_class_add_pad_template(gstelement_class,gst_static_pad_template_get(&srctemplate));
+	g_object_class_install_property(gobject_class, PROP_READ_FROM,
+		g_param_spec_string("readFrom",
+		"Read From path",
+		"The file path to read a previously recorded lidar session data from, e.g. /tmp/lidar.dat.",
+		NULL, (GParamFlags)(G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS)));
+
+	gst_element_class_add_static_pad_template(gstelement_class, &srctemplate);  //doesn't work in 14.04
+//	gst_element_class_add_pad_template(gstelement_class,gst_static_pad_template_get(&srctemplate));
 	
 	gst_element_class_set_static_metadata(gstelement_class,
 		"Lidar Source",
@@ -186,6 +200,16 @@ const GValue * value, GParamSpec * pspec)
 		self->isSimulation = g_value_get_boolean(value);
 		GST_OBJECT_UNLOCK(object);
 		break;
+	case PROP_RECORD_TO:
+		GST_OBJECT_LOCK(object);
+		self->recordTo = g_value_dup_string(value);
+		GST_OBJECT_UNLOCK(object);
+		break;
+	case PROP_READ_FROM:
+		GST_OBJECT_LOCK(object);
+		self->readFrom = g_value_dup_string(value);
+		GST_OBJECT_UNLOCK(object);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
@@ -208,6 +232,12 @@ GValue * value, GParamSpec * pspec)
 	case PROP_IS_SIMULATION:
 		g_value_set_boolean(value, self->isSimulation);
 		break;
+	case PROP_RECORD_TO:
+		g_value_set_string(value, self->recordTo);
+		break;
+	case PROP_READ_FROM:
+		g_value_set_string(value, self->readFrom);
+		break;
 	default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID(object, prop_id, pspec);
 		break;
@@ -225,6 +255,12 @@ gst_lidar_src_start_reading(GstLidarSrc * self)
 		return FALSE;
 	}
 	self->lidar = new LidarDevice(self->device, self->isSimulation);
+	if(self->recordTo !=NULL){
+		self->lidar->setRecordTo(self->recordTo);
+	}
+	if(self->readFrom !=NULL){
+		self->lidar->setReadFrom(self->readFrom);
+	}
 	self->lidar->initialize();
 	return TRUE;
 }
@@ -241,15 +277,6 @@ gst_lidar_src_stop_reading(GstLidarSrc * self)
 		//g_print("freeing up lidar resources");
 	}
 
-	//if (self->pipe) {
-	//	gst_shm_pipe_dec(self->pipe);
-	//	self->pipe = NULL;
-
-	//	gst_poll_remove_fd(self->poll, &self->pollfd);
-	//}
-
-	//gst_poll_fd_init(&self->pollfd);
-	//gst_poll_set_flushing(self->poll, TRUE);
 }
 
 static gboolean
@@ -266,8 +293,8 @@ static gboolean
 gst_lidar_src_stop(GstBaseSrc * bsrc)
 {
 	//g_print("gst_lidar_src_stop\n");
-	//if (!gst_base_src_is_live(bsrc))
-	//	gst_lidar_src_stop_reading(GST_LIDAR_SRC(bsrc));
+	if (!gst_base_src_is_live(bsrc))
+		gst_lidar_src_stop_reading(GST_LIDAR_SRC(bsrc));
 
 	return TRUE;
 }
@@ -344,6 +371,10 @@ gst_lidar_src_create(GstPushSrc * psrc, GstBuffer ** outbuf)
 	int bytesWritten = writeFrame(frame, buffer, bufferSize);
 
 //	g_print("Got buffer %p of size %d\n", buffer, bufferSize);
+
+	if(!self->lidar->getRecordTo().empty()){
+		self->lidar->save(buffer,bytesWritten);
+	}
 	glb->buf = buffer;
 
 	*outbuf = gst_buffer_new_wrapped_full(GST_MEMORY_FLAG_READONLY,
