@@ -7,6 +7,9 @@
 #include "Config.h"
 #include "easywsclient.hpp"
 #include "Poco/JSON/Parser.h"
+#include "Poco/Message.h"
+#include "Poco/Logger.h"
+
 class Streamer;
 
 class MSee
@@ -18,11 +21,14 @@ private:
 	Config* config = NULL;
 	std::queue<std::string> outqueue;
 
+
 public:
+    
 	static Streamer* streamer;
 	static unsigned char currentChannel;
 	static unsigned char channelCount;
 	MSee(int argc,char**argv,std::string& instanceName, std::string& configFileName);
+    ~MSee();
 	void start();
 	void stop();
 	static void switchTo(int);

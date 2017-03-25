@@ -8,21 +8,34 @@
 #define SWITH_CHANNEL_NOTIFICATION_TOKEN std::string("SwitchChannelNotification")
 #define CONSOLE_CONNECTION_NOTIFICATION_TOKEN std::string("ConsoleConnectionNotification")
 
-MSee::MSee(int argc, char**argv, std::string& instanceName, std::string& configFileName) : instanceName(instanceName), configFileName(configFileName)
+MSee::MSee(int argc, char**argv, std::string& instanceName, std::string& configFileName) : instanceName(instanceName), configFileName(configFileName) 
 {
 	config = new Config(instanceName, configFileName);
 	MSee::streamer = new Streamer(argc,argv,*config, this);
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information("MSee instantiated");
+}
+
+MSee::~MSee(){
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.close();
 }
 
 void MSee::start(){
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information("starting streamer");
 	MSee::streamer->play();
 }
 
+
 void MSee::stop(){
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information("stopping streamer");
 	MSee::streamer->stop();
 }
 void MSee::switchTo(int channelId){
-	
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information("switching channel");
 	MSee::streamer->setChannel(channelId);
 	//printf("channel now set to %d\n",channelId);
 }
@@ -39,7 +52,13 @@ unsigned char MSee::channelCount = 0;
 
 void handle_message(const std::string & message)
 {
-    //printf("ws received>>> %s\n", message.c_str());
+    std::string logmessage("");
+    logmessage.append("ws received>>> ");
+    logmessage.append(message);
+    logmessage.append("\n");
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information(logmessage.c_str());
+
 	Poco::JSON::Parser parser;
 	parser.parse(message);
 	Poco::JSON::Object::Ptr object = parser.result().extract<Poco::JSON::Object::Ptr>();
@@ -69,17 +88,43 @@ void handleCommunications(MSee * msee){
 	easywsclient::WebSocket::pointer ws;
 	ws = easywsclient::WebSocket::from_url(msee->getRobotURI());
 	assert(ws);
+    std::string logmessage;
+    logmessage.append(std::string("connected to >>> "));
+    logmessage.append(msee->getRobotURI());
+    logmessage.append(std::string("\n"));
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information(logmessage.c_str());
 	std::string message = "{\"type\":\"remoteIdentification\", \"id\":\"tegra\"}";
 	msee->post(message);
     bool done = false;
+    logmessage.clear();
     while(!done){
-    	        ws->poll(50);
-    	        ws->dispatch(handle_message);
-				while(msee->hasMessages()){
-					const std::string& messageSent = msee->nextMessage(); 
-					ws->send(messageSent);
-					printf("sent \"%s\"\n",messageSent.c_str());
-				}
+        easywsclient::WebSocket::readyStateValues state = ws->getReadyState();
+        switch(state){
+            case easywsclient::WebSocket::readyStateValues::CLOSING:
+                logmessage = std::string("ws closing");
+                logger.information(logmessage.c_str());
+            break;
+            case easywsclient::WebSocket::readyStateValues::CLOSED:
+                logmessage = std::string("ws closed");
+                logger.information(logmessage.c_str());
+            break;
+            case easywsclient::WebSocket::readyStateValues::CONNECTING:
+                logmessage = std::string("ws connecting");
+                logger.information(logmessage.c_str());
+            break;
+            case easywsclient::WebSocket::readyStateValues::OPEN:
+                logmessage = std::string("ws still opened");
+                logger.information(logmessage.c_str());
+                ws->poll(50);
+                ws->dispatch(handle_message);
+                while(msee->hasMessages()){
+                    const std::string& messageSent = msee->nextMessage(); 
+                    ws->send(messageSent);
+                    printf("sent \"%s\"\n",messageSent.c_str());
+                }
+            break;
+        }
 
     }
     delete ws; //

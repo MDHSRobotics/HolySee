@@ -8,8 +8,8 @@
 #include "GearAR.h"
 
 GearAR::GearAR() : Filter(name){
-	targets.push_back(cv::Rect(175,235,60,115));
-    targets.push_back(cv::Rect(310,240,60,115));
+	targets.push_back(cv::Rect(150,235,60,115));
+    targets.push_back(cv::Rect(290,240,60,115));
 }
 
 GearAR::~GearAR() {
@@ -19,9 +19,9 @@ void GearAR::process(cv::Mat& frame){
 	//Step HSV_Threshold0:
 	//input
 	cv::Mat hsvThresholdInput = frame;
-	double hsvThresholdHue[] = {17.805755395683452, 90.92150170648463};
-	double hsvThresholdSaturation[] = {185.74640287769785, 255.0};
-	double hsvThresholdValue[] = {27.51798561151079, 150.5631399317406};
+	double hsvThresholdHue[] = {0.0, 180.0};
+	double hsvThresholdSaturation[] = {57.32913669064748, 255.0};
+	double hsvThresholdValue[] = {215.5575539568345, 255.0};
 	hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->hsvThresholdOutput);
 	//Step Find_Contours0:
 	//input

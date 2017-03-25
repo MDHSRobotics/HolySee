@@ -8,6 +8,9 @@
 #include <stdio.h>
 #include <termios.h>
 #include <unistd.h>
+#include "Poco/Logger.h"
+#include "Poco/SimpleFileChannel.h"
+#include "Poco/AutoPtr.h"
 
 #include"DNSSDBrowser.h"
 
@@ -29,6 +32,13 @@ int main(int argc,char *argv[])
 {
 	std::string instanceName("Tegra"); //default name
 	std::string configFile("msee.conf"); //default config file location
+    
+    Poco::AutoPtr<Poco::SimpleFileChannel> pChannel(new Poco::SimpleFileChannel);
+    pChannel->setProperty("path", "/var/log/msee/msee.log");
+    pChannel->setProperty("rotation", "2 K");
+    Poco::Logger::root().setChannel(pChannel);
+    Poco::Logger& logger = Poco::Logger::get("MSeeLogger");
+    logger.information("program starting ...");
 
 	for (int i = 1; i < argc; i++){
 		if (argv[i][0] != '-'){
