@@ -8,8 +8,13 @@
 #include "GearAR.h"
 
 GearAR::GearAR() : Filter(name){
-	targets.push_back(cv::Rect(150,235,60,115));
-    targets.push_back(cv::Rect(290,240,60,115));
+	//targets.push_back(cv::Rect(43,215,65,203));
+	targets.push_back(cv::Rect(45,370,65,55));
+	targets.push_back(cv::Rect(45,215,65,145));
+	targets.push_back(cv::Rect(290,220,118,280));
+	
+	
+	
 }
 
 GearAR::~GearAR() {
@@ -19,9 +24,9 @@ void GearAR::process(cv::Mat& frame){
 	//Step HSV_Threshold0:
 	//input
 	cv::Mat hsvThresholdInput = frame;
-	double hsvThresholdHue[] = {0.0, 180.0};
-	double hsvThresholdSaturation[] = {57.32913669064748, 255.0};
-	double hsvThresholdValue[] = {215.5575539568345, 255.0};
+	double hsvThresholdHue[] = {16.18705035971223, 103.20819112627986};
+	double hsvThresholdSaturation[] = {107.77877697841726, 153.46990325828077};
+	double hsvThresholdValue[] = {233.90287769784175, 255.0};
 	hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, this->hsvThresholdOutput);
 	//Step Find_Contours0:
 	//input
@@ -51,25 +56,25 @@ void GearAR::process(cv::Mat& frame){
 void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::Point> > & contours,cv::Mat &arImage){
 //loop through contours
 	arImage = original;
-
+    
 
     bool IAmGood= contours.size()>0;
     //printf(("testing bb in targets\n"));
 
     for(int c=0;c<contours.size();c++){
-        printf("testing bb %d\n",c);
+//        printf("testing bb %d\n",c);
 		std::vector<cv::Point> contour =contours.at(c);
 	    bool IAmInTarget= false;
 	    cv::Rect bb = cv::boundingRect(contour);
 		for (cv::Rect t : targets){
-	        printf("testing target bbx1:%d,tx1:%d, bby1:%d,ty1:%d, bbx2:%d,tx2:%d, bby2:%d,ty2:%d, fit:%s\n",
-	        		bb.x,t.x,bb.y,t.y,bb.x+bb.width,t.width+t.x,bb.y+bb.height,t.height+t.y,
-					((
-							bb.x>=t.x &&
-							bb.y>=t.y &&
-							bb.x+bb.width <= t.width+t.x &&
-							bb.y+bb.height <= t.height+t.y)?"true":"false")
-					);
+//	        printf("testing target bbx1:%d,tx1:%d, bby1:%d,ty1:%d, bbx2:%d,tx2:%d, bby2:%d,ty2:%d, fit:%s\n",
+//	        		bb.x,t.x,bb.y,t.y,bb.x+bb.width,t.width+t.x,bb.y+bb.height,t.height+t.y,
+//					((
+//							bb.x>=t.x &&
+//							bb.y>=t.y &&
+//							bb.x+bb.width <= t.width+t.x &&
+//							bb.y+bb.height <= t.height+t.y)?"true":"false")
+//					);
 		    if (
 				bb.x>=t.x &&
 				bb.y>=t.y &&
@@ -86,7 +91,36 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 		}
 	}
 //    printf((IAmGood?"IAmGood\n":"bummer ...\n"));
+		if(IAmGood){
+			
+			double targetsArea=0;
+			for (cv::Rect t : targets){
+				targetsArea = targetsArea + (t.width*t.height);
+			}
+			double contoursArea=0;
+			for(int c=0;c<contours.size();c++){
+		//        printf("testing bb %d\n",c);
+				std::vector<cv::Point> contour =contours.at(c);
+				cv::Rect bb = cv::boundingRect(contour);
+				contoursArea = contoursArea + (bb.width*bb.height);
+			}
+			
+			if((contoursArea/targetsArea)>=0.60 && (contoursArea/targetsArea)<=0.67){
+				
+			}
+			else{
+				IAmGood = false;
+			}
+			
+			if(IAmGood)
+			printf("amgood\n");
+			
+			// target is 60%
+			
+			if(IAmGood)
+			printf("coutoursArea=% 10.2f\ttargetsArea=% 10.2f\tratio=% 10.2f",contoursArea,targetsArea,(contoursArea/targetsArea));
 
+		}
 	for(int c=0;c<contours.size();c++){
 		std::vector<cv::Point> contour =contours.at(c);
 
@@ -95,19 +129,22 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 				cv::Point point=contour.at(p);
 				cv::circle(arImage,point,2,(IAmGood?GREEN:RED),2,CV_AA,0);
 		}
-
+		
 		//for each contour draw boundingRect
 		cv::Rect bb = cv::boundingRect(contour);
-		printf("contour %d Rect(%d,%d,%d,%d)\n",c,bb.x,bb.y,bb.width,bb.height);
+		if(IAmGood){
+			printf("contour %d Rect(%d,%d,%d,%d)\n",c,bb.x,bb.y,bb.width,bb.height);
+		}
 		cv::rectangle(arImage,bb,(IAmGood?GREEN:RED),2,CV_AA,0);
+		
 	}
 
 
 
 
-	for (cv::Rect t : targets){
-		cv::rectangle(arImage,t,WHITE,2,CV_AA,0);
-	}
+	    for (cv::Rect t : targets){
+        cv::rectangle(arImage,t,WHITE,2,CV_AA,0);	
+		}
 
 
 }
