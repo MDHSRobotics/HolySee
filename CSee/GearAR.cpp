@@ -8,10 +8,10 @@
 #include "GearAR.h"
 
 GearAR::GearAR() : Filter(name){
-	//targets.push_back(cv::Rect(43,215,65,203));
-	targets.push_back(cv::Rect(45,370,65,55));
-	targets.push_back(cv::Rect(45,215,65,145));
-	targets.push_back(cv::Rect(290,220,118,280));
+	targets.push_back(cv::Rect(43,215,68,205));
+	//targets.push_back(cv::Rect(45,370,65,55));
+	//targets.push_back(cv::Rect(45,215,65,145));
+	targets.push_back(cv::Rect(287,220,121,280));
 	
 	
 	
@@ -105,7 +105,7 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 				contoursArea = contoursArea + (bb.width*bb.height);
 			}
 			
-			if((contoursArea/targetsArea)>=0.60 && (contoursArea/targetsArea)<=0.67){
+			if((contoursArea/targetsArea)>=0.60 && (contoursArea/targetsArea)<=0.65){
 				
 			}
 			else{
