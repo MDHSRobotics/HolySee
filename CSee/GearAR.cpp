@@ -105,12 +105,12 @@ void GearAR::makeMatFromContours(cv::Mat & original,std::vector<std::vector<cv::
 				contoursArea = contoursArea + (bb.width*bb.height);
 			}
 			
-			//if((contoursArea/targetsArea)>=0.60 && (contoursArea/targetsArea)<=0.65){
+			if((contoursArea/targetsArea)>=0.60 && (contoursArea/targetsArea)<=0.65){
 				
-			//}
-			//else{
-				//IAmGood = false;
-			//}
+			}
+			else{
+				IAmGood = false;
+			}
 			
 			if(IAmGood)
 			printf("amgood\n");
