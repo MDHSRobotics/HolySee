@@ -8,7 +8,7 @@ plugin_init(GstPlugin * plugin)
 	//g_print("%s\n", "plugin_init");
 	return 
 		gst_element_register(plugin, "arfilter",
-		GST_RANK_NONE, GST_TYPE_ARFILTER) &&
+		GST_RANK_NONE, GST_TYPE_ARFILTER);
 		gst_element_register(plugin, "lidarsrc",
 		GST_RANK_NONE, GST_TYPE_LIDAR_SRC) &&
 		gst_element_register(plugin, "lidarimg",
